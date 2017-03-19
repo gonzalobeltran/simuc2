@@ -4,7 +4,6 @@ import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
 import { Camara } from './collections.js';
 import { Config } from './collections.js';
-import { Schema } from './schemas.js';
 
 // Lanza un error si el usuario no tiene rol requerido
 var checkRole = function(t, role) {

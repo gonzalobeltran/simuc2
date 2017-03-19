@@ -1,10 +1,10 @@
 <template name="Reglamento">
-  <div class="modal" role="dialog">
+  <div id="reglamento" class="modal" role="dialog">
     <div class="modal-dialog">
       <div class="modal-content">
         <div class="modal-header">
           {{#unless this}}
-            <button type="button" class="close js-cierraReglamento">&times;</button>
+            <button type="button" class="close" data-dismiss="modal">&times;</button>
           {{/unless}}
           <h4 class="modal-title">Reglamento de uso de salas</h4>
         </div>
@@ -61,8 +61,8 @@
 
           {{#if this}}
             <h5>Declaro haber leído y aceptado las condiciones de uso:</h5>
-            <button class="btn btn-primary js-acepto">Acepto</button>
-            <button class="btn btn-primary js-rechazo">Rechazo</button>
+            <button class="btn btn-primary js-acepto" data-dismiss="modal">Acepto</button>
+            <button class="btn btn-primary js-rechazo" data-dismiss="modal">Rechazo</button>
           {{/if}}
         </div>
       </div>

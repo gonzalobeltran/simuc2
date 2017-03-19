@@ -25,27 +25,6 @@
       {{/each}}
     </div>
 
-    <div class="mobile">
-      {{#each usuarios}}
-        <div class="js-editaUsuario {{isAdmin}}">
-          <div class="table-wrap">
-            <div class="cell info dark">{{nombre}}</div>
-            <div class="cell info dark">{{email}}</div>
-          </div>
-          <div class="table-wrap">
-            <div class="cell info">{{ocupacion}}</div>
-            <div class="cell info">{{instrumento}}</div>
-          </div>
-          {{#if amonestado}}
-          <div class="table-wrap">
-            <div class="cell info">Amonestado hasta: {{amonestado}}</div>
-          </div>
-          {{/if}}
-        </div>
-        <br>
-      {{/each}}
-    </div>
-
     <div class="no-print">
       <br>
       <button class="js-editaUsuario btn btn-default btn-full">Nuevo usuario</button>

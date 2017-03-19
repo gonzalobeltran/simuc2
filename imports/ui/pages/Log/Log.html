@@ -33,26 +33,6 @@
       {{/each}}
     </div>
 
-    <div class="mobile">
-      {{#each log}}
-      <div class="js-GoTo">
-        <div class="table-wrap">
-          <div class="cell info dark">{{timestamp}}</div>
-          <div class="cell info dark">{{owner}}</div>
-        </div>
-        <div class="table-wrap">
-          <div class="cell info">{{sala}}</div>
-          <div class="cell info">{{fecha}}</div>
-          <div class="cell info">{{nomModulo modulo}}</div>
-        </div>
-        <div class="table-wrap">
-          <div class="cell info">{{act}}</div>
-        </div>
-        <br>
-      </div>
-      {{/each}}
-    </div>
-
   {{else}}
     <h4>Cargando...</h4>
   {{/if}}

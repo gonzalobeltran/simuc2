@@ -1,6 +1,5 @@
 import { Mongo } from 'meteor/mongo';
 import { Meteor } from 'meteor/meteor';
-//import { SimpleSchema } from 'meteor/aldeed:simple-schema';
 
 export const Salas = new Mongo.Collection('salas');
 export const Reservas = new Mongo.Collection('reservas');
