@@ -1,0 +1,59 @@
+<template name="Log">
+
+  <div class="form-group form-group-sm no-print">
+    <input type="text" class="form-control" placeholder="Buscar..." value="{{logFiltro}}" id="filtro">
+  </div>
+
+  <ul class="pager no-print">
+    <li class="previous"><a class="js-Ant">Anterior</a></li>
+    <li><a class="js-Reset">{{logStep}}</a></li>
+    <li class="next"><a class="js-Sig">Siguiente</a></li>
+  </ul>
+
+  {{#if Template.subscriptionsReady}}
+    <div class="desktop">
+      <div class="table-wrap">
+        <div class="cell info dark">TS</div>
+        <div class="cell info dark">Usuario</div>
+        <div class="cell info dark">Sala</div>
+        <div class="cell info dark">Fecha</div>
+        <div class="cell info dark">Modulo</div>
+        <div class="cell info dark notSmall">Actividad</div>
+      </div>
+
+      {{#each log}}
+        <div class="table-wrap striped js-GoTo">
+          <div class="cell info">{{timestamp}}</div>
+          <div class="cell info">{{owner}}</div>
+          <div class="cell info">{{sala}}</div>
+          <div class="cell info">{{fecha}}</div>
+          <div class="cell info">{{nomModulo modulo}}</div>
+          <div class="cell info notSmall">{{act}}</div>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="mobile">
+      {{#each log}}
+      <div class="js-GoTo">
+        <div class="table-wrap">
+          <div class="cell info dark">{{timestamp}}</div>
+          <div class="cell info dark">{{owner}}</div>
+        </div>
+        <div class="table-wrap">
+          <div class="cell info">{{sala}}</div>
+          <div class="cell info">{{fecha}}</div>
+          <div class="cell info">{{nomModulo modulo}}</div>
+        </div>
+        <div class="table-wrap">
+          <div class="cell info">{{act}}</div>
+        </div>
+        <br>
+      </div>
+      {{/each}}
+    </div>
+
+  {{else}}
+    <h4>Cargando...</h4>
+  {{/if}}
+</template>

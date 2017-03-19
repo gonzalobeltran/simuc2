@@ -1,0 +1,328 @@
+
+/* Controles */
+
+.form-control, .btn, .select2-choices {
+  padding-top: 2px;
+  padding-bottom: 2px;
+  box-shadow: 0px 0px 0px 0px white !important;
+}
+
+select.form-control {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-image: url('select.svg');
+  background-position: 100% 50%;
+  background-repeat: no-repeat;
+  padding-right: 20px;
+}
+
+.pager {
+  margin-top: 0px;
+  margin-bottom: 5px;
+}
+
+.control-small {
+  width: auto;
+  display: inline;
+}
+
+.btn-full {
+  width: 100%;
+}
+
+.table tbody>tr>td{
+  vertical-align: middle;
+}
+/* Header */
+
+header {
+  z-index: 10;
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  right: 0px;
+  background: #2f549e;
+  padding: 5px 10px 5px 10px;
+}
+
+.titulo {
+  color: #febe10;
+  font-weight: bold;
+  padding: 6px 10px 6px 10px;
+  float: left;
+}
+
+/* Menú */
+
+.menu {
+  z-index: 1000;
+  position: fixed;
+  top: 0px;
+  left: 100%;
+  width: 200px;
+  height: 100%;
+  background-color: #fdfdfd;
+  -webkit-transition: left .3s;
+  -moz-transition: left .3s;
+  transition: left .3s;
+}
+
+.mensaje {
+  border-style: groove;
+  padding: 5px;
+}
+
+.expand {
+  left: calc(100% - 200px);
+}
+
+.menu-btn {
+  background-color: #1f448e;
+  color: #ddd;
+  padding: 6px 10px 6px 10px;
+  float: right;
+}
+
+.nav li a {
+  padding-top: 5px;
+  padding-bottom: 5px;
+}
+
+/* Modal */
+
+.modal {
+  display: block;
+  overflow-y: scroll;
+  text-align: left;
+}
+
+button.close {
+  padding: 5px 10px 10px 10px;
+}
+
+/* Contenido */
+
+.contenido {
+  padding: 65px 0px 20px 0px;
+}
+
+.table-wrap {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+.cell {
+  display: table-cell;
+  margin: 0px;
+  padding: 10px 0px 10px 0px;
+  background-color: white;
+  font-size: 0.9em;
+}
+
+.cell.notSmall {
+  width: 30%;
+}
+
+.cell.big {
+  width: 50%;
+}
+
+.cell.bigger {
+  width: 80%;
+}
+
+.cell.info {
+  padding: 10px;
+}
+
+.striped:nth-child(even) {
+  filter: brightness(98%);
+}
+
+.center {
+  text-align: center;
+  vertical-align: middle;
+}
+
+.modulo {
+  text-align: center;
+  vertical-align: middle;
+  padding: 10px;
+  cursor: copy;
+}
+
+.modulo:hover {
+  filter: brightness(90%);
+}
+
+.smallText {
+  font-size: 0.9em;
+}
+
+.justificar {
+  text-align: justify;
+  padding-right: 40px;
+}
+/* Colores */
+
+.adminColor {
+  color: #c42;
+}
+
+.dark {
+  border: 1px solid #eee;
+  background-color: #eee;
+  font-weight: bold;
+}
+
+.destaca {
+  background-color: #e2e2e2;
+}
+
+.destacaModulo {
+  filter: brightness(70%);
+}
+
+.desactivado, .desactivado:hover {
+  filter: opacity(60%);
+  cursor: not-allowed;
+}
+
+.res1color, .err {
+  color: #c42;
+}
+
+.res2color {
+  color: #fa0;
+}
+
+.permColor {
+  color: #0dd;
+}
+
+.res1 {
+  background-color: #c42;
+  color: white;
+  border: 1px solid #b31;
+}
+
+.res2 {
+  background-color: #e90;
+  color: white;
+  border: 1px solid #d80;
+}
+
+.perm {
+  background-color: #0aa;
+  color: white;
+  border: 1px solid #099;
+}
+
+.dup12 {
+  background-image: linear-gradient(135deg, #e90 5px, #c42 5px);
+  background-position: 2px 2px;
+}
+
+.dup1perm {
+  background-image: linear-gradient(135deg, #0aa 5px, #c42 5px);
+  background-position: 2px 2px;
+}
+
+.choque {
+  background-image: linear-gradient(135deg, #e90 50%, #c42 50%);
+  color: white;
+}
+
+.curso {
+  background-color: #00a;
+  color: white;
+  border: 1px solid #009;
+}
+
+.sda {
+  background-color: #361;
+  color: white;
+  border: 1px solid #250;
+}
+
+.audicion {
+  background-color: #990;
+  color: white;
+  border: 1px solid #880;
+}
+
+.correp {
+  background-color: #840;
+  color: white;
+  border: 1px solid #740;
+}
+
+/* Media */
+
+.print-only {
+  display: none;
+}
+
+.mobile {
+  display: block;
+}
+
+.desktop {
+  display: none;
+}
+
+@media print {
+  .print-only {
+    display: block;
+  }
+
+  .no-print {
+    display: none;
+  }
+  .mobile {
+    display: none;
+  }
+
+  .desktop {
+    display: block;
+  }
+
+  .btn-full {
+    width: auto;
+  }
+
+  .contenido {
+    padding: 0px;
+  }
+
+  .modulo {
+    height: auto;
+  }
+}
+
+@media (min-width: 768px) {
+  .mobile {
+    display: none;
+  }
+
+  .desktop {
+    display: block;
+  }
+
+  .btn-full {
+    width: auto;
+  }
+
+  .modulo {
+    height: 70px;
+  }
+
+  .moduloDisplay {
+    height: 100px;
+  }
+
+  .contenido {
+    padding: 65px 15px 20px 15px;
+  }
+}

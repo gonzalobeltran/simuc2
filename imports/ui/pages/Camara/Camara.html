@@ -1,0 +1,25 @@
+<template name="Camara">
+
+  <div class="table-wrap">
+    <div class="cell info dark">Profesor</div>
+    <div class="cell info dark bigger">Integrantes</div>
+  </div>
+  {{#if ready}}
+    {{#each grupos}}
+      <div class="table-wrap striped js-editaGrupo">
+        <div class="cell info">{{profesor}}</div>
+        <div class="cell info bigger">{{separaConComa integrantes}}</div>
+      </div>
+    {{/each}}
+
+    <br>
+    <button class="js-editaGrupo btn btn-default btn-full">Nuevo grupo</button>
+
+    {{#if editaGrupo}}
+      {{> EditaGrupo editaGrupo}}
+    {{/if}}
+  {{else}}
+    <h4>Cargando...</h4>
+  {{/if}}
+
+</template>

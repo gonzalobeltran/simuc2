@@ -1,0 +1,69 @@
+<template name="Usuarios">
+
+  <div class="form-group form-group-sm no-print">
+    <input type="text" class="form-control" placeholder="Buscar..." id="filtro">
+  </div>
+
+  {{#if ready}}
+    <div class="desktop">
+      <div class="table-wrap">
+        <div class="cell info dark">Nombre</div>
+        <div class="cell info dark">E-Mail</div>
+        <div class="cell info dark">Ocupación</div>
+        <div class="cell info dark">Instrumento</div>
+        <div class="cell info dark">Amonestación</div>
+      </div>
+
+      {{#each usuarios}}
+        <div class="table-wrap striped js-editaUsuario {{isAdmin}}">
+          <div class="cell info">{{nombre}}</div>
+          <div class="cell info">{{email}}</div>
+          <div class="cell info">{{ocupacion}}</div>
+          <div class="cell info">{{instrumento}}</div>
+          <div class="cell info">{{amonestado}}</div>
+        </div>
+      {{/each}}
+    </div>
+
+    <div class="mobile">
+      {{#each usuarios}}
+        <div class="js-editaUsuario {{isAdmin}}">
+          <div class="table-wrap">
+            <div class="cell info dark">{{nombre}}</div>
+            <div class="cell info dark">{{email}}</div>
+          </div>
+          <div class="table-wrap">
+            <div class="cell info">{{ocupacion}}</div>
+            <div class="cell info">{{instrumento}}</div>
+          </div>
+          {{#if amonestado}}
+          <div class="table-wrap">
+            <div class="cell info">Amonestado hasta: {{amonestado}}</div>
+          </div>
+          {{/if}}
+        </div>
+        <br>
+      {{/each}}
+    </div>
+
+    <div class="no-print">
+      <br>
+      <button class="js-editaUsuario btn btn-default btn-full">Nuevo usuario</button>
+
+      <span class="btn btn-default btn-file btn-full">
+        <span>Agregar mediante archivo .csv</span>
+        <input type="file" class="uploadCSV">
+      </span>
+      <span>{{cargandoArchivo}}</span>
+    </div>
+
+    <p class="err">{{err}}</p>
+
+    {{#if editaUsuario}}
+      {{> EditaUsuario editaUsuario}}
+    {{/if}}
+  {{else}}
+    <h4>Cargando...</h4>
+  {{/if}}
+
+</template>

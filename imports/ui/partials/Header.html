@@ -1,0 +1,103 @@
+<template name="Header">
+  <header class="no-print">
+
+    <span class="titulo">SalasIMUC {{#if currentUser}}- {{usuario}}{{/if}}</span>
+
+    <!-- Sólo muestra el menú si hay sesión iniciada -->
+    {{#if currentUser}}
+      <button class="btn menu-btn">Menú</button>
+
+      <!-- Menú -->
+      <div class="menu no-print">
+        <ul class="nav nav-pills nav-stacked">
+          {{#if isInRole 'display'}}
+            <li class="{{isActiveRoute 'display'}}">
+              <a href="/display">
+                <span class="glyphicon glyphicon-facetime-video">&nbsp;</span>
+                Display</a></li>
+          {{/if}}
+
+          {{#if isInRole 'usuario'}}
+            <li class="{{isActiveRoute 'reservas'}}">
+              <a href="/reservas">
+                <span class="glyphicon glyphicon-pencil">&nbsp;</span>
+                Mis Reservas</a></li>
+          {{/if}}
+
+          {{#unless isInRole 'display'}}
+            <li class="{{isActiveRoute 'semana'}}"><a href="/semana">
+              <span class="glyphicon glyphicon-calendar">&nbsp;</span>
+              Ver por sala</a></li>
+
+            <li class="{{isActiveRoute 'dia'}}"><a href="/dia">
+              <span class="glyphicon glyphicon-tasks">&nbsp;</span>
+              Ver por día</a></li>
+          {{/unless}}
+
+          {{#if isInRole 'usuario'}}
+            <li class="{{isActiveRoute 'salas'}}"><a href="/salas">
+              <span class="glyphicon glyphicon-list">&nbsp;</span>
+              Salas y prioridades</a></li>
+          {{/if}}
+
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'camara'}}"><a href="/camara">
+              <span class="glyphicon glyphicon-music">&nbsp;</span>
+              Cámara</a></li>
+
+            <li class="{{isActiveRoute 'usuarios'}}"><a href="/usuarios">
+              <span class="glyphicon glyphicon-user">&nbsp;</span>
+              Usuarios</a></li>
+          {{/if}}
+
+          {{#if isInRole 'superadmin'}}
+            <li class="{{isActiveRoute 'log'}}"><a href="/log">
+              <span class="glyphicon glyphicon-book">&nbsp;</span>
+              Log</a></li>
+
+            <li class="{{isActiveRoute 'config'}}"><a href="/config">
+              <span class="glyphicon glyphicon-wrench">&nbsp;</span>
+              Config</a></li>
+          {{/if}}
+          <li><hr></li>
+
+          {{#if isInRole 'usuario'}}
+            <li><a class="js-ayuda" data-toggle="modal" data-target="#myModal">
+              <span class="glyphicon glyphicon-question-sign">&nbsp;</span>
+              Ayuda</a></li>
+          {{/if}}
+
+          <li><a class="js-reglamento">
+            <span class="glyphicon glyphicon-list-alt">&nbsp;</span>
+            Reglamento</a></li>
+
+          <li><a class="js-print">
+            <span class="glyphicon glyphicon-print">&nbsp;</span>
+            Imprimir</a></li>
+
+          <li><a href="/change-password">
+            <span class="glyphicon glyphicon-lock">&nbsp;</span>
+            Cambiar clave</a></li>
+
+          <li><a class="js-signOut">
+            <span class="glyphicon glyphicon-log-out">&nbsp;</span>
+            Salir</a></li>
+        </ul>
+      </div>
+
+    {{/if}}
+
+  </header>
+
+  {{#if aunNoAcepta}}
+    {{> Reglamento aunNoAcepta}}
+  {{/if}}
+
+  {{#if ayuda}}
+    {{> Ayuda}}
+  {{/if}}
+
+  {{#if reglamento}}
+    {{> Reglamento aunNoAcepta}}
+  {{/if}}
+</template>

@@ -1,0 +1,34 @@
+/*
+Salas
+  nombre
+  prioridad
+  acepta
+
+camara
+  profesor
+  integrantes
+
+reservas
+  sala
+  fecha
+  modulo
+  actividad
+  integrantes
+  prioridad
+  owner
+  timestamp
+
+usuarios
+  nombre
+  ocupacion
+  instrumento
+  email
+  clave
+  amonestado
+  reglamento
+
+config
+  maxReservas
+  maxCamaraPorSemana
+  mensaje
+  */

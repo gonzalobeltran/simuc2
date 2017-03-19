@@ -1,0 +1,71 @@
+<template name="Reglamento">
+  <div class="modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          {{#unless this}}
+            <button type="button" class="close js-cierraReglamento">&times;</button>
+          {{/unless}}
+          <h4 class="modal-title">Reglamento de uso de salas</h4>
+        </div>
+        <div class="modal-body justificar">
+          <h5>Generales</h5>
+          <ol>
+            <li>Se prohíbe el consumo de alimentos y/o bebidas dentro de las salas</li><br>
+            <li>Se prohíbe tocar instrumentos ajenos a la mención de quien usa la sala. Esto, con el fin de evitar un deterioro en los instrumentos.</li><br>
+            <li>Se prohíbe utilizar material de profesores/as guardados en armarios y casilleros sin previa autorización.</li><br>
+            <li>Los/as estudiantes de las menciones <strong>Composición, Musicología y Teoría y Literatura</strong> pueden solicitar salas con Nolfi Ceriche (nceriche@uc.cl). Estas deben ser pedidas con un mínimo de 5 días hábiles de anticipación y deben estar destinadas exclusivamente para actividades relacionadas con la carrera (ensayo de obras de compositores, prácticas de piezas de armonía, preparaciones en grupo para pruebas de teoría, etc.)</li><br>
+            <li>Es deber de los estudiantes fiscalizar y velar por el cumplimiento de este reglamento, considerando que permite un mejor uso de la infraestructura del Instituto. En caso de notar alguna irregularidad, se debe notificar el/la encargado/a del sistema préstamo de salas.</li><br>
+          </ol>
+
+          <h5>Salas con reserva</h5>
+          <ol>
+            <li>Se puede reservar un máximo de <strong>2 módulos de estudio</strong> de instrumento al día</li><br>
+            <li>Se puede reservar un máximo de <strong>1 módulo de actividad grupal</strong> semanal por curso inscrito. El sistema permite este tipo de reserva sólo si el/la estudiante está inscrito en alguno de los siguientes cursos:
+              <ul>
+                <li>Taller barroco</li>
+                <li>Música de cámara</li>
+                <li>Ensayo de dirección coral</li>
+              </ul><br>
+              Por ejemplo: si un alumno tiene inscrito Taller Barroco y Música de Cámara, puede pedir dos salas para práctica grupal a la semana, una por cada conjunto. <strong>El uso individual de una sala reservada para uso grupal es una falta grave al reglamento.</strong>
+            </li><br>
+            <li>Las salas solicitadas para actividades grupales deben inscribir a todos sus participantes en el sistema de reserva. En caso de no ser así, la sala no quedará reservada.</li><br>
+            <li>Una reserva se pierde si la persona que hace la solicitud no llega antes de 10 minutos después de iniciado el módulo correspondiente. Después de transcurrido este tiempo, la sala entra a la categoría "sala sin reserva"</li><br>
+          </ol>
+
+          <h5>Sala sin reserva</h5>
+          <ol>
+            <li>Puede ser utilizada por cualquier estudiante de Interpretación Musical por orden de llegada, independiente de la preferencia de la sala. Otras menciones pueden hacer uso de las salas sin reserva, pero considerando que los estudiantes de Interpretación tienen prioridad.</li><br>
+            <li>Se puede utilizar una sala sin reserva por un máximo de 1 módulo seguido (independiente de la cantidad de salas reservadas por el alumno en el sistema).
+              <ul>
+                <li>Cuando el módulo acabe, se debe dejar libre por 10 minutos, retirando elementos personales e instrumentos. De esta forma, se da la posibilidad a otro estudiante para que utilice la sala.</li>
+                <li>Sólo en caso de que transcurridos estos 10 minutos nadie quiera hacer uso de la sala en el siguiente módulo (y que no esté reservada), el estudiante puede continuar usando la sala por un nuevo módulo.</li>
+              </ul>
+            </li><br>
+          </ol>
+
+          <h5>Horarios extraordinarios</h5>
+          <ul>
+            <li>Las peticiones de sala para los fines de semana deberán ser realizadas a Nolfi Ceriche (nceriche@uc.cl). Podrá ser reservada alguna de las siguientes salas, por un máximo de dos módulos consecutivos:
+            <ul>
+              <li>Aula Interpretación Musical 1 a 15 y 23 a 27 (para estudio personal)</li>
+              <li>Auditorio IMUC, Aula 1 a 4, Aula Mozart y Casa Coro (para actividad grupal)</li>
+            </ul></li>
+          </ul>
+
+          <h5>Sanciones</h5>
+          <ul>
+            <li>En caso de incumplir cualquiera de los puntos anteriores, el/la encargado/a del sistema de préstamo de salas o la autoridad del IMUC puede sancionar al/la estudiante impidiendo la reserva de nuevas salas a través del sistema por una semana o más, según la gravedad del caso.</li>
+          </ul>
+
+
+          {{#if this}}
+            <h5>Declaro haber leído y aceptado las condiciones de uso:</h5>
+            <button class="btn btn-primary js-acepto">Acepto</button>
+            <button class="btn btn-primary js-rechazo">Rechazo</button>
+          {{/if}}
+        </div>
+      </div>
+    </div>
+  </div>
+</template>
