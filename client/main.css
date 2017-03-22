@@ -25,10 +25,9 @@ select.form-control {
 /* Header */
 
 header {
-  margin-left: 0px;
-  margin-right: 0px;
+  margin-left: -15px;
+  margin-right: -15px;
   background: #2f549e;
-
 }
 
 .titulo {
@@ -40,11 +39,6 @@ header {
 
 /* Menú */
 
-.mensaje {
-  border-style: groove;
-  padding: 5px;
-}
-
 .menu-btn {
   background-color: #1f448e;
   color: white;
@@ -52,17 +46,7 @@ header {
   border-radius: 0px;
 }
 
-.nav li a {
-  padding-top: 5px;
-  padding-bottom: 5px;
-}
-
 /* Modal */
-
-.modal {
-  overflow-y: scroll;
-  text-align: left;
-}
 
 button.close {
   padding: 5px 10px 10px 10px;
@@ -72,6 +56,11 @@ button.close {
 
 .contenido {
   padding: 20px 0px 20px 0px;
+}
+
+.mensaje {
+  border-style: groove;
+  padding: 5px;
 }
 
 .table-wrap {
@@ -86,6 +75,7 @@ button.close {
   padding: 10px 0px 10px 0px;
   background-color: white;
   font-size: 0.9em;
+  width: 100px;
 }
 
 .cell.notSmall {

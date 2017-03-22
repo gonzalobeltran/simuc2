@@ -26,8 +26,10 @@ Meteor.startup(function(){
 
 //------- Variables de sesión
   // La sala seleccionada actualmente
-  Session.set('sala', 'Seleccionar sala...');
+  Session.set('sala', '');
+  //Para la paginación del log
   Session.set('logStep', 0);
+  //Filtro del log
   Session.set('logFiltro', '');
 
   let actividades = ['-',
@@ -112,6 +114,10 @@ Meteor.startup(function(){
 
   Handlebars.registerHelper('separaConComa', function(txt) {
     return txt.join(", ");
+  });
+
+  Handlebars.registerHelper('ready', function() {
+    return Session.get('ready');
   });
 
 });

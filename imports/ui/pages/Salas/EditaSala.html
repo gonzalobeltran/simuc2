@@ -1,3 +1,49 @@
 <template name="EditaSala">
+  <div id="editaSala" class="modal" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          <form id="salaForm">
+            <!-- Nombre -->
+            <div class="form-group form-group-sm">
+              <label for="nombre">Nombre:</label>
+              <input name="nombre" type="text" class="form-control" value="{{nombre}}" id="nombre">
+            </div>
+
+            <!-- Prioridad -->
+            <div class="form-group form-group-sm">
+              <label for="prioridad">Prioridad:</label>
+              <select multiple class="form-control" name="prioridad" id="prioridad">
+                {{#each actividad in actividades}}
+                  <option selected={{esPrioridad actividad}}>{{actividad}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <!-- Reservas que acepta -->
+            <div class="form-group form-group-sm">
+              <label for="acepta">Acepta:</label>
+              <select multiple class="form-control" name="acepta" id="acepta">
+                {{#each actividad in actividades}}
+                  <option selected={{esAceptado actividad}}>{{actividad}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+
+            {{#if this}}
+              <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+              <button type="button" class="js-borraSala btn btn-danger btn-sm pull-right">Eliminar</button>
+            {{else}}
+              <button type="submit" class="btn btn-primary btn-sm">Crear</button>
+            {{/if}}
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 
 </template>

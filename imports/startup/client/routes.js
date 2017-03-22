@@ -37,7 +37,7 @@ FlowRouter.route('/', {
   name: 'home',
   action() {
     if (Meteor.userId()) {
-      if (Roles.userIsInRole(Meteor.userId(), 'admin')) FlowRouter.go('/semana');
+      if (Roles.userIsInRole(Meteor.userId(), 'admin')) FlowRouter.go('/porsala');
       else if (Roles.userIsInRole(Meteor.userId(), 'display')) FlowRouter.go('/display');
       else if (Roles.userIsInRole(Meteor.userId(), 'usuario')) FlowRouter.go('/reservas');
       else FlowRouter.go('/semana');
@@ -65,11 +65,11 @@ userRoutes.route('/reservas', {
   },
 });
 
-FlowRouter.route('/semana', {
-  name: 'semana',
+FlowRouter.route('/porsala', {
+  name: 'porsala',
   triggersEnter: [AccountsTemplates.ensureSignedIn],
   action() {
-    BlazeLayout.render('AppBody', { main: 'Semana' });
+    BlazeLayout.render('AppBody', { main: 'PorSala' });
   },
 });
 

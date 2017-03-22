@@ -1,4 +1,5 @@
 import { Meteor } from 'meteor/meteor';
+import { check } from 'meteor/check'
 
 import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
@@ -64,41 +65,43 @@ Meteor.methods({
     return salas;
   },
 
-  'creaSala'(sala) {
+  'creaSala'(nombre, prioridad, acepta) {
     checkRole(this, 'superadmin');
+    check(nombre, String);
+    check(prioridad, [String]);
+    check(acepta, [String]);
 
-    const existe = Salas.find({nombre: sala.nombre}).count();
+    const existe = Salas.find({nombre: nombre}).count();
 
     if (existe) {
       throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
     }
 
-    Salas.insert(sala);
+    Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta});
   },
 
-  'editaSala'(sala) {
+  'editaSala'(id, nombre, prioridad, acepta) {
     checkRole(this, 'superadmin');
+    check(id, String);
+    check(nombre, String);
+    check(prioridad, [String]);
+    check(acepta, [String]);
 
-    let salaOld = Salas.findOne({_id: sala._id});
+    let salaOld = Salas.findOne({_id: id});
 
-    if (salaOld.nombre != sala.nombre)
-      Reservas.update({sala: salaOld.nombre}, {$set: {sala: sala.nombre}}, {multi: true});
+    //Si cambia el nombre de la sala, actualiza todas las reservas hechas en esa sala
+    if (salaOld.nombre != nombre) {
+      Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
+    }
 
-    Salas.update({_id: sala._id}, {$set: {
-      nombre: sala.nombre,
-      nombre2: sala.nombre2,
-      prioridad: sala.prioridad,
-      acepta: sala.acepta
-    }});
-
-    if (salaOld.nombre != sala.nombre)
-      Reservas.update({sala: salaOld.nombre}, {$set: {sala: sala.nombre}}, {multi: true});
+    Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta}});
   },
 
-  'borraSala'(sala) {
+  'borraSala'(id) {
     checkRole(this, 'superadmin');
+    check(id, String);
 
-    Salas.remove({_id: sala._id});
+    Salas.remove({_id: id});
   },
 
 //------------Funciones de cámara
@@ -165,12 +168,7 @@ Meteor.methods({
   },
 
   'listaUsuarios'() {
-    var usuarios = [];
-    Meteor.users.find({}, {sort: {'profile.nombre':1}}).forEach(function(u) {
-      if (u.profile.nombre != 'display')
-        usuarios.push(u.profile.nombre);
-    });
-    return usuarios;
+    return Meteor.users.find({}, {sort: {'profile.nombre':1}}).map((d) => {return d.profile.nombre});
   },
 
   'editaUsuario'(usuario) {

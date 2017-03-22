@@ -1,4 +1,11 @@
 <template name="Config">
   <h4>Configuración</h4>
   <br>
+
+  {{> quickForm schema=config doc=doc id="cambiaConfigForm" type="method" meteormethod="cambiaConfig" buttonContent="Modificar"}}
+
+  <hr>
+  <label>Reinicializar aceptación de reglamento: </label>
+  <br>
+  <button class="btn btn-danger" id="resetReglamento">Reset</button>
 </template>

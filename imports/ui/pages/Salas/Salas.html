@@ -1,3 +1,30 @@
 <template name="Salas">
+{{#if ready}}
 
+  <div class="table-responsive">
+    <table class="table table-condensed table-hover">
+      <thead>
+        <tr>
+          <th>Nombre</th>
+          <th>Prioridad</th>
+          <th>Reservas que acepta</th>
+        </tr>
+      </thead>
+      <tbody>
+        {{#each salas}}
+          <tr class="js-editaSala" data-toggle="modal" data-target="#editaSala">
+            <td class="col-sm-3">{{nombre}}</td>
+            <td class="col-sm-3">{{separaConComa prioridad}}</td>
+            <td class="col-sm-6">{{separaConComa acepta}}</td>
+          </tr>
+        {{/each}}
+      </tbody>
+    </table>
+  </div>
+
+  <button class="js-creaSala btn btn-default btn-sm" data-toggle="modal" data-target="#editaSala">Crea nueva sala</button>
+
+  {{> EditaSala estaSala}}
+
+{{else}}<h4>...</h4>{{/if}}
 </template>
