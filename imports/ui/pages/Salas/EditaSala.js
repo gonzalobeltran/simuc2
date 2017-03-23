@@ -30,12 +30,12 @@ Template.EditaSala.events({
     }
 
     template.find("form").reset();
-    $('#editaSala').modal('toggle');
+    Modal.hide();
   },
   'click .js-borraSala'(event, template) {
     Meteor.call('borraSala', this._id);
 
     template.find("form").reset();
-    $('#editaSala').modal('toggle');
+    Modal.hide();
   },
 });

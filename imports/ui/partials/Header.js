@@ -1,6 +1,17 @@
+import { Meteor } from 'meteor/meteor';
+import { Template } from 'meteor/templating';
+
 import './Header.html';
 import './Ayuda.html';
-import './Reglamento.html';
+import './Reglamento.js';
+
+Template.Header.onCreated(function() {
+  this.autorun( () => {
+    if (Meteor.user() && !Meteor.user().profile.reglamento) {
+      Modal.show('Reglamento', true, {backdrop: 'static', keyboard: false});
+    }
+  });
+});
 
 Template.Header.helpers({
   menu() {
@@ -17,24 +28,16 @@ Template.Header.helpers({
 
     return menu;
   },
-  aunNoAcepta() {
-    if (Meteor.user()) {
-      return !Meteor.user().profile.reglamento;
-    }
-  },
 });
 
 Template.Header.events({
+  'click .js-ayuda'() {
+    Modal.show('Ayuda');
+  },
+  'click .js-reglamento'() {
+    Modal.show('Reglamento');
+  },
   'click .js-signOut'() {
-    AccountsTemplates.logout();
-  },
-  'click .js-print'() {
-    window.print();
-  },
-  'click .js-acepto'() {
-    Meteor.call('aceptaReglamento');
-  },
-  'click .js-rechazo'() {
     AccountsTemplates.logout();
   },
 });

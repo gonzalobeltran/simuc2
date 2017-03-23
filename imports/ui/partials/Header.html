@@ -21,9 +21,8 @@
 
           <li><hr></li>
 
-          <li><a data-toggle="modal" href="#ayuda"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Ayuda</a></li>
-          <li><a data-toggle="modal" href="#reglamento"><span class="glyphicon glyphicon-list-alt">&nbsp;</span>Reglamento</a></li>
-          <li><a class="js-print"><span class="glyphicon glyphicon-print">&nbsp;</span>Imprimir</a></li>
+          <li><a class="js-ayuda"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Ayuda</a></li>
+          <li><a class="js-reglamento"><span class="glyphicon glyphicon-list-alt">&nbsp;</span>Reglamento</a></li>
           <li><a href="/change-password"><span class="glyphicon glyphicon-lock">&nbsp;</span>Cambiar clave</a></li>
           <li><a class="js-signOut"><span class="glyphicon glyphicon-log-out">&nbsp;</span>Salir</a></li>
 
@@ -32,17 +31,4 @@
     {{/if}}
 
   </header>
-
-  {{> Ayuda}}
-  {{> Reglamento aunNoAcepta}}
-
-  {{#if aunNoAcepta}}
-    <script>
-      $(document).ready(function(){
-          $("#reglamento").modal({backdrop: "static"});
-          $("#reglamento").modal("show");
-      });
-    </script>
-  {{/if}}
-
 </template>
