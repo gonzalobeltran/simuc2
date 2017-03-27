@@ -11,13 +11,13 @@
 
           <ul class="nav nav-tabs">
             <li class="js-tipo3 active">
-              <a data-toggle="tab" title="Reserva con prioridad">Con prior.</a>
+              <a data-toggle="tab" title="Reserva con prioridad">{{hayPrior 3}}Con prior.</a>
             </li>
             <li class="js-tipo1">
-              <a data-toggle="tab" title="Reserva sin prioridad">Sin prior.</a>
+              <a data-toggle="tab" title="Reserva sin prioridad">{{hayPrior 1}}Sin prior.</a>
             </li>
             <li class="js-tipo2">
-              <a data-toggle="tab" title="Reserva fija">Fija</a>
+              <a data-toggle="tab" title="Reserva fija">{{hayPrior 2}}Fija</a>
             </li>
           </ul>
 
@@ -25,6 +25,7 @@
 
           {{#with reservas tipo}}
             <form id="reservaForm">
+
               <!-- Actividad -->
               <div class="form-group">
                 <label>Actividad:</label>
@@ -41,7 +42,7 @@
                 </select>
               </div>
 
-
+              <!-- Botones -->
               {{#if _id}}
                 <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
                 <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
@@ -49,6 +50,7 @@
                 <button type="submit" class="btn btn-primary btn-sm">Reservar</button>
               {{/if}}
               <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+
             </form>
           {{/with}}
 

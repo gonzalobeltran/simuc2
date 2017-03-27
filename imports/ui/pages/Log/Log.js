@@ -19,20 +19,19 @@ Template.Log.helpers({
   log() {
     let rxp = new RegExp(Session.get('logFiltro'), 'i');
 
-    return Reservas.find({$or: [
+    let res = Reservas.find({$or: [
       {sala: {$regex: rxp}},
       {fecha: {$regex: rxp}},
       {timestamp: {$regex: rxp}},
       {owner: {$regex: rxp}},
-      {'res1.actividad': {$regex: rxp}},
-      {'res2.actividad': {$regex: rxp}},
-      {'perm.actividad': {$regex: rxp}},
-    ]}, {sort: {timestamp: -1}, limit: 15});
-  },
-  act() {
-    if (this.res1) return this.res1.actividad;
-    if (this.res2) return this.res2.actividad;
-    if (this.perm) return this.perm.actividad;
+      {actividad: {$regex: rxp}},
+    ]}, {sort: {timestamp: -1}, limit: 15}).fetch();
+
+    res.map((r) => {
+      if (r.fecha.length > 1) r.fecha='Fija';
+    });
+
+    return res;
   },
   nomModulo(m) {
     if (m == 9) return 'Almuerzo';
@@ -65,9 +64,4 @@ Template.Log.events({
     step += 15;
     Session.set('logStep', step);
   },
-  'click .js-GoTo'() {
-    Session.set('sala', this.sala);
-    if (this.fecha != '-') updateFechas(this.fecha);
-    FlowRouter.go('/semana');
-  }
 });

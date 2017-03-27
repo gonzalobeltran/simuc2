@@ -31,6 +31,8 @@ Meteor.startup(function(){
   Session.set('logStep', 0);
   //Filtro del log
   Session.set('logFiltro', '');
+  //Para mostrar errores
+  Session.set('err', '');
 
   let actividades = ['-',
   'Música de Cámara',
@@ -61,16 +63,16 @@ Meteor.startup(function(){
   Session.set('actividades', actividades);
 
   let textoModulo = [
-    'Módulo',
-    '1 (08:30-09:50)',
-    '2 (10:00-11:20)',
-    '3 (11:30-12:50)',
-    'Almuerzo',
-    '4 (14:00-15:20)',
-    '5 (15:30-16:50)',
-    '6 (17:00-18:20)',
-    '7 (18:30-19:50)',
-    '8 (20:00-21:20)'
+    {texto: 'Módulo', tipo: 'dark center smallText'},
+    {texto: '1 (08:30-09:50)', tipo: 'dark center smallText'},
+    {texto: '2 (10:00-11:20)', tipo: 'dark center smallText'},
+    {texto: '3 (11:30-12:50)', tipo: 'dark center smallText'},
+    {texto: 'Almuerzo', tipo: 'dark center smallText'},
+    {texto: '4 (14:00-15:20)', tipo: 'dark center smallText'},
+    {texto: '5 (15:30-16:50)', tipo: 'dark center smallText'},
+    {texto: '6 (17:00-18:20)', tipo: 'dark center smallText'},
+    {texto: '7 (18:30-19:50)', tipo: 'dark center smallText'},
+    {texto: '8 (20:00-21:20)', tipo: 'dark center smallText'},
   ];
 
   let modulo = [

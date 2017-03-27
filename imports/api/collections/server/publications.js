@@ -16,12 +16,7 @@ Meteor.publish('reservasFijas', function(sala) {
 
 //Publica las reservas de un usuario en un rango de fechas
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
-  return Reservas.find({
-    fecha: {$gte: ini, $lte: fin},
-    $or: [
-      {'res1.integrantes': usuario},
-      {'res2.integrantes': usuario}]
-  });
+  return Reservas.find({fecha: {$gte: ini, $lte: fin}, integrantes: usuario});
 });
 
 //Publica las reservas de un módulo y fecha determinados (Si la fecha está en vacaciones, no muestra las reservas permanentes)
@@ -46,9 +41,7 @@ Meteor.publish('reservasLog', function(filtro, step) {
     {fecha: {$regex: rxp}},
     {timestamp: {$regex: rxp}},
     {owner: {$regex: rxp}},
-    {'res1.actividad': {$regex: rxp}},
-    {'res2.actividad': {$regex: rxp}},
-    {'perm.actividad': {$regex: rxp}},
+    {actividad: {$regex: rxp}},
   ]}, {sort: {timestamp: -1}, skip: step, limit: 15});
 
 });

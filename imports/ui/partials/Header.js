@@ -28,6 +28,9 @@ Template.Header.helpers({
 
     return menu;
   },
+  hayError() {
+    return Session.get('err');
+  }
 });
 
 Template.Header.events({
@@ -40,4 +43,7 @@ Template.Header.events({
   'click .js-signOut'() {
     AccountsTemplates.logout();
   },
+  'click .js-cierraError'() {
+    Session.set('err', '');
+  }
 });

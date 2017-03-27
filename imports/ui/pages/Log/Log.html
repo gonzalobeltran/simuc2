@@ -11,24 +11,26 @@
   </ul>
 
   {{#if Template.subscriptionsReady}}
-    <div class="desktop">
+    <div class="table-responsive">
       <div class="table-wrap">
         <div class="cell info dark">TS</div>
         <div class="cell info dark">Usuario</div>
         <div class="cell info dark">Sala</div>
         <div class="cell info dark">Fecha</div>
         <div class="cell info dark">Modulo</div>
-        <div class="cell info dark notSmall">Actividad</div>
+        <div class="cell info dark">Actividad</div>
+        <div class="cell info dark">Integrantes</div>
       </div>
 
       {{#each log}}
-        <div class="table-wrap striped js-GoTo">
+        <div class="table-wrap striped">
           <div class="cell info">{{timestamp}}</div>
           <div class="cell info">{{owner}}</div>
           <div class="cell info">{{sala}}</div>
           <div class="cell info">{{fecha}}</div>
-          <div class="cell info">{{nomModulo modulo}}</div>
-          <div class="cell info notSmall">{{act}}</div>
+          <div class="cell info">{{modulo}}</div>
+          <div class="cell info">{{actividad}}</div>
+          <div class="cell info">{{integrantes}}</div>
         </div>
       {{/each}}
     </div>

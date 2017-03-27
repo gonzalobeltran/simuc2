@@ -1,5 +1,5 @@
 import { Meteor } from 'meteor/meteor';
-import { check } from 'meteor/check'
+import { check } from 'meteor/check';
 
 import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
@@ -16,7 +16,7 @@ var checkRole = function(t, role) {
 var fechasHastaDic = function(inicio) {
   var fechas = [];
   var f = inicio;
-  var fin = moment("2017-12-15").format('YYYY-MM-DD');
+  var fin = moment().endOf('year').format('YYYY-MM-DD');
   var i = 0;
 
   do {
@@ -42,6 +42,10 @@ Meteor.methods({
     check(actividad, String);
     check(integrantes, [String]);
 
+    if (!actividad) {
+      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    }
+
     if (integrantes) {
       let duplicado = Reservas.find({fecha: fecha, modulo: modulo, integrantes: integrantes}).count();
       if (duplicado) {
@@ -51,14 +55,18 @@ Meteor.methods({
     }
 
     //Solo un admin puede sobreescrbir reservas
-    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gte: prioridad}}).count();
+    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gt: 1}}).count();
     if (hayOtra) {
       checkRole(this, 'admin');
     }
 
-    
+    //Si es reserva fija, reserva todas las semanas en el mismo día y módulo
+    let fechas = [fecha];
+    if (prioridad == 2) {
+      fechas = fechasHastaDic(fecha);
+    }
 
-    Reservas.insert({sala: sala, fecha: fecha, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes,
+    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes,
       timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
@@ -69,7 +77,10 @@ Meteor.methods({
     check(actividad, String);
     check(integrantes, [String]);
 
-    //Solo un admin puede sobreescrbir reservas
+    if (!actividad) {
+      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    }
+
     Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
   },
 

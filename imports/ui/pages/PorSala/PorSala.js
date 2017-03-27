@@ -50,55 +50,83 @@ Template.PorSala.helpers({
   fecha() {
     return Session.get('fecha');
   },
-  modulos() {
-    return [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
-  },
-  celdas(fila) {
-
-    //Si es la primera fila, retorna los días de la semana escogida
-    if (fila == 0) {
-      return Session.get('diasSemana');
-    }
-
-    //La primera celda de la fila indíca el número de módulo y las horas
-    let textoModulo = Session.get('textoModulo')[fila];
-    let modulo = Session.get('modulo')[fila];
-    let celdas = [];
-    celdas.push({texto: textoModulo, tipo: 'dark center smallText'});
+  celdas() {
 
     let semana = Session.get('semana');
     let sala = Session.get('sala');
+    let modulo = Session.get('modulo');
+    let textoModulo = Session.get('textoModulo');
+    let celdas = [];
 
-    //Rellena la fila con reservas vacías
-    for (let n = 1; n <= 7; n+=1) {
-      celdas[n] = {
-        sala: sala,
-        fecha: semana[n],
-        modulo: modulo,
-        texto: (modulo == 'almuerzo') ? '-' : 'Disponible',
-        prioridad: 0,
-        cuenta: 0,
-        tipo: 'modulo',
-        onClick: 'js-editaModulo'
-      }
-    }
+    for (let fila = 0; fila < 10; fila += 1) { //10 filas: cabecera + 9 módulos
+      celdas[fila] = [];
+      for (let columna = 0; columna < 8; columna += 1) { //8 columnas: módulo + 7 días
 
-    //Busca en la base de datos reservas hechas en esa sala para la semana escogida en el módulo actual
-    let reservas = Reservas.find({sala: sala, fecha: {$gte: semana[1], $lte: semana[7]}, modulo: modulo}).fetch();
+        if (fila == 0) { //Primera fila: muestra las fechas
 
-    for (let i in reservas) {
-      //Ve en qué día de la semana se hizo la reserva
-      let dia = semana.indexOf(reservas[i].fecha);
-      //Almacena la reserva encontrada en 'celdas' si tiene más prioridad que almacenada
-      celdas[dia].cuenta += 1;
-      if (reservas[i].prioridad > celdas[dia].prioridad) {
-        celdas[dia].texto = reservas[i].actividad;
-        celdas[dia].prioridad = reservas[i].prioridad;
+          celdas[fila][columna] = Session.get('diasSemana')[columna];
+
+        } else if (columna == 0) { //Primera columna: muestra los horarios de los módulos
+
+          celdas[fila][columna] = textoModulo[fila];
+
+        } else {
+
+          //Módulo vacío
+          celdas[fila][columna] = {
+            sala: sala,
+            fecha: semana[columna],
+            modulo: modulo[fila],
+            texto: (modulo[fila] == 'almuerzo') ? '-' : 'Disponible',
+            prioridad: 0,
+            cuenta: 0,
+            tipo: 'modulo',
+            onClick: 'js-editaModulo'
+          }
+
+          let reservas = Reservas.find({sala: sala, fecha: semana[columna], modulo: modulo[fila] }).fetch();
+
+          for (let i in reservas) {
+            celdas[fila][columna].cuenta += 1;
+            if (reservas[i].prioridad > celdas[fila][columna].prioridad) {
+              celdas[fila][columna].texto = reservas[i].actividad;
+              celdas[fila][columna].prioridad = reservas[i].prioridad;
+            }
+          }
+        }
       }
     }
 
     return celdas;
+  },
+  color(prioridad, texto) {
+    if (prioridad == 3) return 'resCP';
+    if (prioridad == 1) return 'resSP';
+    if (prioridad ==2) {
+      let txt = texto.slice(0,3);
+      switch(txt) {
+        case 'MUC':
+        case 'CE ':
+          return 'curso';
+          break;
 
+        case 'SDA':
+          return 'sda';
+          break;
+
+        case 'Aud':
+          return 'audicion';
+          break;
+
+        case 'Cor':
+          return 'correp';
+          break;
+      }
+      return 'resFija';
+    }
+  },
+  masDeUna() {
+    return this.cuenta > 1;
   }
 });
 
@@ -111,5 +139,11 @@ Template.PorSala.events({
   },
   'click .js-editaModulo'() {
     Modal.show('EditaModulo', this);
-  }
+  },
+  'click .js-semanaAnt'() {
+    cambiaFecha(-7);
+  },
+  'click .js-semanaSig'() {
+    cambiaFecha(7);
+  },
 });

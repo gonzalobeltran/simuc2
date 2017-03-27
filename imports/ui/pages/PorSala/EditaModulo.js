@@ -31,6 +31,9 @@ Template.EditaModulo.helpers({
     return reserva;
 
   },
+  hayPrior(prioridad) {
+    if ( Reservas.find({sala: this.sala, fecha: this.fecha, modulo: this.modulo, prioridad: prioridad}).count() ) return '*';
+  },
   tipo() {
     return Session.get('tipo');
   },
@@ -64,10 +67,14 @@ Template.EditaModulo.events({
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
 
     if (!id) {
-      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes);
+      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes, (err,res) => {
+        if (err) Session.set('err', err.reason);
+      });
     }
     else {
-      Meteor.call('modificaReserva', id, actividad, integrantes);
+      Meteor.call('modificaReserva', id, actividad, integrantes, (err,res) => {
+        if (err) Session.set('err', err.reason);
+      });
     }
 
     Modal.hide();

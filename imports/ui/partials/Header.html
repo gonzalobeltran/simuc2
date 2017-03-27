@@ -31,4 +31,12 @@
     {{/if}}
 
   </header>
+  {{#if hayError}}
+    <br>
+    <div class="alert alert-danger">
+      <a class="close js-cierraError" aria-label="close">&times;</a>
+      <strong>Error:</strong> {{hayError}}
+    </div>
+  {{/if}}
+
 </template>

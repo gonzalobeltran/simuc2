@@ -16,12 +16,20 @@
   <br>
 
   {{#if ready}}
+    <!-- Avanzar o retroceder la fecha -->
+    <ul class="pager no-print">
+      <li class="previous"><a class="js-semanaAnt">Anterior</a></li>
+      <li class="next"><a class="js-semanaSig">Siguiente</a></li>
+    </ul>
 
     <div class="table-responsive">
-      {{#each fila in modulos}}
+      {{#each fila in celdas}}
         <div class="table-wrap">
-          {{#each celdas fila}}
-            <div class="cell {{tipo}} {{onClick}}">
+          {{#each fila}}
+            <div class="cell {{tipo}} {{onClick}} {{color prioridad texto}}">
+              {{#if masDeUna}}
+                <div class="counter">{{cuenta}}</div>
+              {{/if}}
               {{texto}}
             </div>
           {{/each}}
