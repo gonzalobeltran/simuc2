@@ -60,6 +60,35 @@ Meteor.startup(function(){
 
   Session.set('actividades', actividades);
 
+  let textoModulo = [
+    'Módulo',
+    '1 (08:30-09:50)',
+    '2 (10:00-11:20)',
+    '3 (11:30-12:50)',
+    'Almuerzo',
+    '4 (14:00-15:20)',
+    '5 (15:30-16:50)',
+    '6 (17:00-18:20)',
+    '7 (18:30-19:50)',
+    '8 (20:00-21:20)'
+  ];
+
+  let modulo = [
+    'modulo',
+    '1',
+    '2',
+    '3',
+    'almuerzo',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8'
+  ];
+
+  Session.set('modulo', modulo);
+  Session.set('textoModulo', textoModulo);
+
   // La fecha de hoy, en formato largo y corto
   Session.set('hoy', moment().format('YYYY-MM-DD'));
   Session.set('hoyCorto', moment(Session.get('hoy')).format('dd D/M'));
@@ -75,12 +104,12 @@ Meteor.startup(function(){
 
   // Cambia las variables de sesión de fecha en función de la fecha seleccionada
   updateFechas = function(fecha) {
-    var semana = [];
-    var diasSemana = [];
+    var semana = ['Módulo'];
+    var diasSemana = [{texto: 'Módulo', tipo: 'dark center smallText'}];
     for (let d = 0; d < 7; d+=1) {
       // Guarda las fechas de esta semana
       semana.push( moment(fecha).weekday(d).format("YYYY-MM-DD") );
-      diasSemana.push( moment(fecha).weekday(d).format("dd D/M") );
+      diasSemana.push( {texto: moment(fecha).weekday(d).format("dd D/M"), tipo: 'dark center smallText'} );
     }
     Session.set('fecha', moment(fecha).format('YYYY-MM-DD'));
     Session.set('semana', semana);
@@ -97,21 +126,6 @@ Meteor.startup(function(){
 
 
 //------- Helpers globales
-  Handlebars.registerHelper('numModulo', function(index) {
-    let numModulo = [
-      '1 (08:30-09:50)',
-      '2 (10:00-11:20)',
-      '3 (11:30-12:50)',
-      'Almuerzo',
-      '4 (14:00-15:20)',
-      '5 (15:30-16:50)',
-      '6 (17:00-18:20)',
-      '7 (18:30-19:50)',
-      '8 (20:00-21:20)'
-    ];
-    return numModulo[index];
-  });
-
   Handlebars.registerHelper('separaConComa', function(txt) {
     return txt.join(", ");
   });

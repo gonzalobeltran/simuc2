@@ -32,28 +32,52 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'reserva'(r) {
+  'nuevaReserva'(sala, fecha, modulo, prioridad, actividad, integrantes) {
     checkRole(this, 'usuario');
 
-    let duplicado = Reservas.find({fecha: r.fecha, modulo: r.modulo, integrantes: r.integrantes}).count();
-    if (duplicado && r.integrantes) {
-      throw new Meteor.Error('Error al insertar', 'Integrante ya tiene una reserva en ese módulo');
+    check(sala, String);
+    check(fecha, String);
+    check(modulo, String);
+    check(prioridad, Number);
+    check(actividad, String);
+    check(integrantes, [String]);
+
+    if (integrantes) {
+      let duplicado = Reservas.find({fecha: fecha, modulo: modulo, integrantes: integrantes}).count();
+      if (duplicado) {
+        //Solo un admin puede reservar más de un módulo con los mismos integrantes
+        checkRole(this, 'admin');
+      }
     }
 
     //Solo un admin puede sobreescrbir reservas
-    let hayOtra = Reservas.find({sala: r.sala, fecha: r.fecha, modulo: r.modulo, prioridad: {$lte: r.prioridad}}).count();
+    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
       checkRole(this, 'admin');
     }
 
-    Reservas.upsert({sala: r.sala, fecha: r.fecha, modulo: r.modulo, actividad: r.actividad, integrantes: r.integrantes, prioridad: r.prioridad,
-      owner: r.owner, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+    
+
+    Reservas.insert({sala: sala, fecha: fecha, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes,
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
-  'eliminaRes'(r) {
-    checkRole(this, 'usuario');
+  'modificaReserva'(id, actividad, integrantes) {
+    checkRole(this, 'admin');
 
-    Reservas.remove({_id: r._id});
+    check(id, String);
+    check(actividad, String);
+    check(integrantes, [String]);
+
+    //Solo un admin puede sobreescrbir reservas
+    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+  },
+
+  'eliminaReserva'(id) {
+    checkRole(this, 'usuario');
+    check(id, String);
+
+    Reservas.remove({_id: id});
   },
 
 //------------Funciones de salas

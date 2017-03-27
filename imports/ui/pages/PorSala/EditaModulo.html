@@ -1,0 +1,60 @@
+<template name="EditaModulo">
+
+  <div class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h4>{{sala}}</h4>
+          <h5>{{fecha}} | Módulo {{modulo}}</h5>
+        </div>
+        <div class="modal-body">
+
+          <ul class="nav nav-tabs">
+            <li class="js-tipo3 active">
+              <a data-toggle="tab" title="Reserva con prioridad">Con prior.</a>
+            </li>
+            <li class="js-tipo1">
+              <a data-toggle="tab" title="Reserva sin prioridad">Sin prior.</a>
+            </li>
+            <li class="js-tipo2">
+              <a data-toggle="tab" title="Reserva fija">Fija</a>
+            </li>
+          </ul>
+
+          <br>
+
+          {{#with reservas tipo}}
+            <form id="reservaForm">
+              <!-- Actividad -->
+              <div class="form-group">
+                <label>Actividad:</label>
+                <input name="actividad" type="text" class="form-control" value="{{actividad}}">
+              </div>
+
+              <!-- Integrantes -->
+              <div class="form-group">
+                <label>Integrantes:</label>
+                <select multiple class="form-control" name="integrantes" id="integrantes">
+                  {{#each usuario in usuarios}}
+                    <option selected="{{esIntegrante usuario}}">{{usuario}}</option>
+                  {{/each}}
+                </select>
+              </div>
+
+
+              {{#if _id}}
+                <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+                <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
+              {{else}}
+                <button type="submit" class="btn btn-primary btn-sm">Reservar</button>
+              {{/if}}
+              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+            </form>
+          {{/with}}
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>

@@ -1,20 +1,33 @@
 <template name="PorSala">
-{{#if ready}}
 
-  <div class="table-wrap mo-print">
-    <div class="cell">
+  <div class="row">
+    <div class="col-sm-6">
       <select name="sala" class="js-salaSelect form-control">
         {{#each sala in salas}}
           <option selected={{isSelected sala}}>{{sala}}</option>
         {{/each}}
       </select>
     </div>
-    <div class="cell">
-      <input type="text" class="form-control" id="fecha">
+    <div class="col-sm-6">
+      <input type="text" class="form-control" value="{{fecha}}" id="fecha">
     </div>
   </div>
 
+  <br>
 
+  {{#if ready}}
 
-{{else}}<h4>...</h4>{{/if}}
+    <div class="table-responsive">
+      {{#each fila in modulos}}
+        <div class="table-wrap">
+          {{#each celdas fila}}
+            <div class="cell {{tipo}} {{onClick}}">
+              {{texto}}
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+    </div>
+
+  {{else}}<h4>...</h4>{{/if}}
 </template>
