@@ -21,7 +21,7 @@ Meteor.startup(() => {
         profile: {
             nombre: 'Gonzalo Beltrán',
             ocupacion: 'Profesor',
-            instrumento: 'Violín'
+            instrumento: ['Violín']
         }
     });
     Roles.addUsersToRoles(id, ['usuario', 'admin', 'superadmin']);
