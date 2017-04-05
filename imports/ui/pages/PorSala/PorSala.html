@@ -26,9 +26,9 @@
       {{#each fila in celdas}}
         <div class="table-wrap">
           {{#each fila}}
-            <div class="cell {{tipo}} {{onClick}} {{color prioridad texto}}">
-              {{#if masDeUna}}
-                <div class="counter">{{cuenta}}</div>
+            <div class="cell {{tipo}} {{onClick}} {{color}}">
+              {{#if esFija}}
+                <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
               {{/if}}
               {{texto}}
             </div>

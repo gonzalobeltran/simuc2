@@ -3,28 +3,24 @@
   <div class="modal">
     <div class="modal-dialog">
       <div class="modal-content">
-        <div class="modal-header">
-          <h4>{{sala}}</h4>
-          <h5>{{fecha}} | Módulo {{modulo}}</h5>
-        </div>
         <div class="modal-body">
 
-          <ul class="nav nav-tabs">
-            <li class="js-tipo3 active">
-              <a data-toggle="tab" title="Reserva con prioridad">{{hayPrior 3}}Con prior.</a>
-            </li>
-            <li class="js-tipo1">
-              <a data-toggle="tab" title="Reserva sin prioridad">{{hayPrior 1}}Sin prior.</a>
-            </li>
-            <li class="js-tipo2">
-              <a data-toggle="tab" title="Reserva fija">{{hayPrior 2}}Fija</a>
-            </li>
-          </ul>
+          <h5>{{sala}}</h5>
+          <h5>{{fecha}} | Módulo {{modulo}}</h5>
+          <hr>
 
-          <br>
-
-          {{#with reservas tipo}}
+          {{#with reserva}}
             <form id="reservaForm">
+              <!-- Es reserva fija o no -->
+              {{#if _id}}
+                {{#if esFija}}
+                  <span class="red pull-right"><span class="glyphicon glyphicon-pushpin"></span> Reserva fija</span>
+                {{/if}}
+              {{else}}
+                <div class="checkbox">
+                  <label><input type="checkbox" name="esFija">Reserva fija</label>
+                </div>
+              {{/if}}
 
               <!-- Actividad -->
               <div class="form-group">
@@ -44,16 +40,40 @@
 
               <!-- Botones -->
               {{#if _id}}
-                <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
-                <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
+                {{#if esFija}}
+                  <div class="btn-group-vertical">
+                    <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+                  </div>
+                  <div class="btn-group-vertical pull-right">
+                    <button type="button" class="js-eliminaEstaFecha btn btn-warning btn-sm">Eliminar esta</button>
+                    <button type="button" class="js-eliminar btn btn-danger btn-sm">Eliminar todas</button>
+                  </div>
+                {{else}}
+                  <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+                  <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
+                {{/if}}
               {{else}}
                 <button type="submit" class="btn btn-primary btn-sm">Reservar</button>
+                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
               {{/if}}
-              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
 
             </form>
           {{/with}}
 
+          {{#with reservaSP}}
+            {{#if _id}}
+              <hr>
+              <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
+              <div class="greyed">
+                <label>Reserva Sin Prioridad</label>
+                <p>Actividad: {{actividad}}</p>
+                <p>Integrantes: {{separaConComa integrantes}}</p>
+              </div>
+
+            {{/if}}
+          {{/with}}
         </div>
       </div>
     </div>

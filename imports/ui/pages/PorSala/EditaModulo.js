@@ -4,38 +4,47 @@ import { Reservas } from '/imports/api/collections/collections.js';
 
 import './EditaModulo.html';
 
-Template.EditaModulo.onCreated(function() {
-  Session.set('tipo', 3);
-});
-
 
 Template.EditaModulo.rendered = function(){
   $('#integrantes').select2();
 }
 
 Template.EditaModulo.helpers({
-  reservas(prioridad) {
-    reserva = Reservas.findOne({sala: this.sala, fecha: this.fecha, modulo: this.modulo, prioridad: prioridad});
+  reserva() {
+    Session.set('estaFecha', this.fecha);
+
+    reserva = Reservas.findOne({sala: this.sala, fecha: this.fecha, modulo: this.modulo, prioridad: 2});
 
     if (!reserva) {
       return {
         sala: this.sala,
         fecha: this.fecha,
         modulo: this.modulo,
-        prioridad: prioridad,
+        prioridad: 2,
         actividad: '',
         integrantes: [''],
+        esFija: false
       }
     }
 
     return reserva;
+  },
+  reservaSP() {
+    reserva = Reservas.findOne({sala: this.sala, fecha: this.fecha, modulo: this.modulo, prioridad: 1});
 
-  },
-  hayPrior(prioridad) {
-    if ( Reservas.find({sala: this.sala, fecha: this.fecha, modulo: this.modulo, prioridad: prioridad}).count() ) return '*';
-  },
-  tipo() {
-    return Session.get('tipo');
+    if (!reserva) {
+      return {
+        sala: this.sala,
+        fecha: this.fecha,
+        modulo: this.modulo,
+        prioridad: 1,
+        actividad: '',
+        integrantes: [''],
+        esFija: false
+      }
+    }
+
+    return reserva;
   },
   usuarios() {
     return Session.get('usuarios');
@@ -46,15 +55,6 @@ Template.EditaModulo.helpers({
 });
 
 Template.EditaModulo.events({
-  'click .js-tipo1'() {
-    Session.set('tipo', 1);
-  },
-  'click .js-tipo2'() {
-    Session.set('tipo', 2);
-  },
-  'click .js-tipo3'() {
-    Session.set('tipo', 3);
-  },
   'submit #reservaForm'(event, template) {
     event.preventDefault();
 
@@ -65,9 +65,13 @@ Template.EditaModulo.events({
     let prioridad = this.prioridad;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
+    let esFija = this.esFija;
+    if (!id) {
+      esFija = event.target.esFija.checked;
+    }
 
     if (!id) {
-      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes, (err,res) => {
+      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes, esFija, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     }
@@ -81,6 +85,10 @@ Template.EditaModulo.events({
   },
   'click .js-eliminar'() {
     Meteor.call('eliminaReserva', this._id);
+    Modal.hide();
+  },
+  'click .js-eliminaEstaFecha'() {
+    Meteor.call('eliminaEstaFecha', this._id, Session.get('estaFecha'));
     Modal.hide();
   }
 });

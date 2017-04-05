@@ -47,5 +47,5 @@ Meteor.startup(() => {
     mensaje: '-'
   }
 
-  if (Config.find().count() == 0) Config.insert(configuracion);
+  if (Config.find().count() === 0) Config.insert(configuracion);
 });

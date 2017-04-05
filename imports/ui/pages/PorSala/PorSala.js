@@ -91,6 +91,7 @@ Template.PorSala.helpers({
             if (reservas[i].prioridad > celdas[fila][columna].prioridad) {
               celdas[fila][columna].texto = reservas[i].actividad;
               celdas[fila][columna].prioridad = reservas[i].prioridad;
+              celdas[fila][columna].esFija = reservas[i].esFija;
             }
           }
         }
@@ -99,35 +100,21 @@ Template.PorSala.helpers({
 
     return celdas;
   },
-  color(prioridad, texto) {
-    if (prioridad == 3) return 'resCP';
-    if (prioridad == 1) return 'resSP';
-    if (prioridad ==2) {
-      let txt = texto.slice(0,3);
-      switch(txt) {
-        case 'MUC':
-        case 'CE ':
-          return 'curso';
-          break;
-
-        case 'SDA':
-          return 'sda';
-          break;
-
-        case 'Aud':
-          return 'audicion';
-          break;
-
-        case 'Cor':
-          return 'correp';
-          break;
-      }
-      return 'resFija';
+  color() {
+    let clase = '';
+    if (this.prioridad == 2) {
+      clase = 'resCP';
     }
+    else if (this.prioridad == 1) {
+      clase = 'resSP';
+    }
+
+    if (this.cuenta > 1) {
+      clase = 'superpuesta';
+    }
+
+    return clase;
   },
-  masDeUna() {
-    return this.cuenta > 1;
-  }
 });
 
 Template.PorSala.events({

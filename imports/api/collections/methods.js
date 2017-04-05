@@ -32,7 +32,7 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'nuevaReserva'(sala, fecha, modulo, prioridad, actividad, integrantes) {
+  'nuevaReserva'(sala, fecha, modulo, prioridad, actividad, integrantes, esFija) {
     checkRole(this, 'usuario');
 
     check(sala, String);
@@ -41,32 +41,37 @@ Meteor.methods({
     check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
+    check(esFija, Boolean);
 
     if (!actividad) {
       throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
     }
 
-    if (integrantes) {
+    if (integrantes.length) {
       let duplicado = Reservas.find({fecha: fecha, modulo: modulo, integrantes: integrantes}).count();
       if (duplicado) {
-        //Solo un admin puede reservar más de un módulo con los mismos integrantes
-        checkRole(this, 'admin');
+        throw new Meteor.Error('Error al reservar','Usuario ya tiene reservada otra sala en ese módulo');
       }
     }
 
-    //Solo un admin puede sobreescrbir reservas
-    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gt: 1}}).count();
+    //Verifica que no haya otra reserva en ese módulo
+    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
-      checkRole(this, 'admin');
+      throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
     //Si es reserva fija, reserva todas las semanas en el mismo día y módulo
     let fechas = [fecha];
-    if (prioridad == 2) {
+    if (esFija) {
       fechas = fechasHastaDic(fecha);
     }
 
-    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes,
+    let hayReserva = Reservas.find({sala:sala, fecha: {$in: fechas}, modulo:modulo, prioridad: {$gte: prioridad}}).count();
+    if (hayReserva) {
+      throw new Meteor.Error('Error al reservar','Hay un tope de reservas');
+    }
+
+    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, esFija: esFija,
       timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
@@ -89,6 +94,14 @@ Meteor.methods({
     check(id, String);
 
     Reservas.remove({_id: id});
+  },
+
+  'eliminaEstaFecha'(id, fecha) {
+    checkRole(this, 'admin');
+    check(id, String);
+    check(fecha, String);
+
+    Reservas.update({_id: id}, {$pull: {fecha: fecha}});
   },
 
 //------------Funciones de salas

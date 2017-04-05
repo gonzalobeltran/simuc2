@@ -11,7 +11,10 @@ Tracker.autorun(() => {
   Session.set('config', Config.findOne({}));
 });
 
-Subs = new SubsManager();
+Subs = new SubsManager({
+    cacheLimit: 10,
+    expireIn: 5
+  });
 
 Meteor.startup(function(){
   // Selecciona español
