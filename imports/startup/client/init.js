@@ -112,7 +112,7 @@ Meteor.startup(function(){
     for (let d = 0; d < 7; d+=1) {
       // Guarda las fechas de esta semana
       semana.push( moment(fecha).weekday(d).format("YYYY-MM-DD") );
-      diasSemana.push( {texto: moment(fecha).weekday(d).format("dd D/M"), tipo: 'dark center smallText'} );
+      diasSemana.push( moment(fecha).weekday(d).format("dd D/M") );
     }
     Session.set('fecha', moment(fecha).format('YYYY-MM-DD'));
     Session.set('semana', semana);

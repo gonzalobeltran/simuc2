@@ -5,6 +5,7 @@ import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
 import { Camara } from './collections.js';
 import { Config } from './collections.js';
+import { Log } from './collections.js';
 
 // Lanza un error si el usuario no tiene rol requerido
 var checkRole = function(t, role) {
@@ -13,10 +14,10 @@ var checkRole = function(t, role) {
 }
 
 //Retorna un array con todas las fechas entre dos fechas dadas
-var fechasHastaDic = function(inicio) {
+var fechasHasta = function(inicio, fin) {
   var fechas = [];
   var f = inicio;
-  var fin = moment().endOf('year').format('YYYY-MM-DD');
+  var fin = moment(fin).format('YYYY-MM-DD');
   var i = 0;
 
   do {
@@ -32,7 +33,7 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'nuevaReserva'(sala, fecha, modulo, prioridad, actividad, integrantes, esFija) {
+  'nuevaReservaUsuario'(sala, fecha, modulo, prioridad, actividad, integrantes) {
     checkRole(this, 'usuario');
 
     check(sala, String);
@@ -41,7 +42,6 @@ Meteor.methods({
     check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
-    check(esFija, Boolean);
 
     if (!actividad) {
       throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
@@ -60,19 +60,32 @@ Meteor.methods({
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
-    //Si es reserva fija, reserva todas las semanas en el mismo día y módulo
-    let fechas = [fecha];
-    if (esFija) {
-      fechas = fechasHastaDic(fecha);
-    }
-
-    let hayReserva = Reservas.find({sala:sala, fecha: {$in: fechas}, modulo:modulo, prioridad: {$gte: prioridad}}).count();
-    if (hayReserva) {
-      throw new Meteor.Error('Error al reservar','Hay un tope de reservas');
-    }
-
-    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, esFija: esFija,
+    Reservas.insert({sala: sala, fecha: [fecha], modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: fecha,
       timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+  },
+
+  'nuevaReservaAdmin'(sala, fecha, modulo, prioridad, actividad, integrantes, repiteHasta) {
+    checkRole(this, 'admin');
+
+    check(sala, String);
+    check(fecha, String);
+    check(modulo, String);
+    check(prioridad, Number);
+    check(actividad, String);
+    check(integrantes, [String]);
+    check(repiteHasta, String);
+
+    if (!actividad) {
+      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    }
+
+    fechas = fechasHasta(fecha, repiteHasta);
+
+    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: repiteHasta,
+      timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+
+    Log.insert({sala: sala, fecha: fecha, modulo: modulo, nueva: actividad, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+    console.log(this);
   },
 
   'modificaReserva'(id, actividad, integrantes) {
@@ -86,7 +99,9 @@ Meteor.methods({
       throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
     }
 
+    let old = Reservas.find({_id: id}).fetch();
     Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+
   },
 
   'eliminaReserva'(id) {

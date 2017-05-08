@@ -13,8 +13,6 @@
     </div>
   </div>
 
-  <br>
-
   {{#if ready}}
     <!-- Avanzar o retroceder la fecha -->
     <ul class="pager no-print">
@@ -24,20 +22,25 @@
 
     <div class="tabla">
       <div class="fila">
-        <div class="modulo"></div>
+        <div class="cabeza">Módulos</div>
         {{#each diasSemana}}
-          <div class="modulo dark center smallText">{{this}}</div>
+          <div class="cabeza">{{this}}</div>
         {{/each}}
       </div>
 
       {{#each fila in celdas}}
         <div class="fila">
-          <div class="cell dark center smallText">{{modulo @index}}</div>
+          <div class="cabeza">{{modulo @index}}</div>
           {{#each fila}}
             <div class="cell">
               <div class="contenedor">
                 {{#each showInfo}}
-                  <div class="modulo js-editaModulo">{{actividad}}</div>
+                  <div class="reserva js-editaModulo {{color}}">
+                    {{actividad}}
+                    {{#if repite}}
+                      <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
+                    {{/if}}
+                  </div>
                 {{/each}}
               </div>
             </div>
@@ -49,6 +52,3 @@
 
   {{else}}<h4>...</h4>{{/if}}
 </template>
-
-
-                  <!-- <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div> -->

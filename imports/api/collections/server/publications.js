@@ -10,29 +10,22 @@ Meteor.publish('reservasSala', function(sala, ini, fin) {
   return Reservas.find({sala: sala, fecha: {$gte: ini, $lte: fin}});
 });
 
-Meteor.publish('reservasFijas', function(sala) {
-  return Reservas.find({sala: sala, fecha: '-'});
-});
-
 //Publica las reservas de un usuario en un rango de fechas
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
   return Reservas.find({fecha: {$gte: ini, $lte: fin}, integrantes: usuario});
 });
 
-//Publica las reservas de un módulo y fecha determinados (Si la fecha está en vacaciones, no muestra las reservas permanentes)
-Meteor.publish('reservasModulo', function(fecha, dia, modulo) {
-  if (fecha < config.sinCursosIni || fecha > config.sinCursosFin)
-    return Reservas.find({modulo: modulo, $or: [{fecha: fecha}, {dia: dia, fecha: '-'}]});
-  else
-    return Reservas.find({modulo: modulo, fecha: fecha});
+//Publica las reservas de un módulo y fecha determinados
+Meteor.publish('reservasModulo', function(fecha, modulo) {
+  return Reservas.find({fecha: fecha, modulo: modulo});
 });
 
-//Publica las reservas de un grupo de salas en una fecha determinada (Display) (Si la fecha está en vacaciones, no muestra las reservas permanentes)
+//Publica las reservas de un grupo de salas en una fecha determinada (Display)
 Meteor.publish('reservasDisplay', function(fecha) {
-  let dia = moment(fecha).weekday();
-  return Reservas.find({$or: [{fecha: fecha}, {fecha: '-', dia: dia}]});
+  return Reservas.find({fecha: fecha});
 });
 
+//Publica el log con un filtro determinado
 Meteor.publish('reservasLog', function(filtro, step) {
   let rxp = new RegExp(filtro, 'i');
 
@@ -71,7 +64,7 @@ Meteor.publish('salasAcepta', function(actividad) {
   return Salas.find({acepta: actividad});
 });
 
-//Publica todos los usuarios
+//Publica todos los usuarios (con un filtro determinado)
 Meteor.publish('usuarios', function(filtro){
   if (Roles.userIsInRole(this.userId, 'admin')) {
     if (filtro == "*") filtro = "";

@@ -5,3 +5,4 @@ export const Salas = new Mongo.Collection('salas');
 export const Reservas = new Mongo.Collection('reservas');
 export const Camara = new Mongo.Collection('camara');
 export const Config = new Mongo.Collection('config');
+export const Log = new Mongo.Collection('log');
