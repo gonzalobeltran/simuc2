@@ -65,13 +65,9 @@ Template.EditaModulo.events({
     let prioridad = this.prioridad;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
-    let esFija = this.esFija;
-    if (!id) {
-      esFija = event.target.esFija.checked;
-    }
 
     if (!id) {
-      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes, esFija, (err,res) => {
+      Meteor.call('nuevaReserva', sala, fecha, modulo, prioridad, actividad, integrantes, false, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     }

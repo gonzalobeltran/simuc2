@@ -48,7 +48,7 @@ header {
   min-height: 700px;
 }
 
-.table-wrap {
+.fila {
   display: table;
   width: 100%;
   table-layout: fixed;
@@ -57,7 +57,6 @@ header {
 .cell {
   display: table-cell;
   margin: 0px;
-  padding: 10px 0px 10px 0px;
   background-color: white;
   font-size: 0.9em;
   width: 100px;
@@ -88,7 +87,13 @@ header {
   vertical-align: middle;
 }
 
+.contenedor {
+  display: table;
+  width: 100%;
+}
+
 .modulo {
+  display: table-cell;
   text-align: center;
   vertical-align: middle;
   padding: 10px;

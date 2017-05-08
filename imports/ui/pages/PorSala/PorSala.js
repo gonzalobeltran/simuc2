@@ -19,7 +19,7 @@ Template.PorSala.onCreated(function(){
     let semana = Session.get('semana');
 
     Subs.subscribe('salas');
-    let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[1], semana[7]);
+    let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
 
   });
@@ -55,50 +55,45 @@ Template.PorSala.helpers({
     let semana = Session.get('semana');
     let sala = Session.get('sala');
     let modulo = Session.get('modulo');
-    let textoModulo = Session.get('textoModulo');
+
     let celdas = [];
 
-    for (let fila = 0; fila < 10; fila += 1) { //10 filas: cabecera + 9 módulos
+    for (let fila = 0; fila < 9; fila += 1) { //9 módulos
       celdas[fila] = [];
-      for (let columna = 0; columna < 8; columna += 1) { //8 columnas: módulo + 7 días
+      for (let columna = 0; columna < 7; columna += 1) { //7 días
 
-        if (fila == 0) { //Primera fila: muestra las fechas
+        //Módulo vacío
+        celdas[fila][columna] = [{
+          sala: sala,
+          fecha: semana[columna],
+          modulo: modulo[fila],
+          actividad: (modulo[fila] == 'almuerzo') ? '-' : 'Disponible',
+          prioridad: 0,
+          onClick: 'js-editaModulo'
+        }];
 
-          celdas[fila][columna] = Session.get('diasSemana')[columna];
+        let reservas = Reservas.find({sala: sala, fecha: semana[columna], modulo: modulo[fila]}).fetch();
 
-        } else if (columna == 0) { //Primera columna: muestra los horarios de los módulos
-
-          celdas[fila][columna] = textoModulo[fila];
-
-        } else {
-
-          //Módulo vacío
-          celdas[fila][columna] = {
-            sala: sala,
-            fecha: semana[columna],
-            modulo: modulo[fila],
-            texto: (modulo[fila] == 'almuerzo') ? '-' : 'Disponible',
-            prioridad: 0,
-            cuenta: 0,
-            tipo: 'modulo',
-            onClick: 'js-editaModulo'
-          }
-
-          let reservas = Reservas.find({sala: sala, fecha: semana[columna], modulo: modulo[fila] }).fetch();
-
-          for (let i in reservas) {
-            celdas[fila][columna].cuenta += 1;
-            if (reservas[i].prioridad > celdas[fila][columna].prioridad) {
-              celdas[fila][columna].texto = reservas[i].actividad;
-              celdas[fila][columna].prioridad = reservas[i].prioridad;
-              celdas[fila][columna].esFija = reservas[i].esFija;
-            }
-          }
+        for (let i in reservas) {
+          celdas[fila][columna].push(reservas[i]);
         }
+
       }
     }
 
     return celdas;
+  },
+  showInfo() {
+    if (this.length > 1) this.shift();
+
+    return this;
+  },
+  diasSemana() {
+    return Session.get('semana');
+  },
+  modulo(index) {
+    let modulo = Session.get('textoModulo');
+    return modulo[index];
   },
   color() {
     let clase = '';
@@ -125,6 +120,7 @@ Template.PorSala.events({
     updateFechas(event.target.value);
   },
   'click .js-editaModulo'() {
+    console.log(this);
     Modal.show('EditaModulo', this);
   },
   'click .js-semanaAnt'() {

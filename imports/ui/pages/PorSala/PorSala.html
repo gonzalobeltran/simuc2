@@ -23,19 +23,32 @@
     </ul>
 
     <div class="tabla">
+      <div class="fila">
+        <div class="modulo"></div>
+        {{#each diasSemana}}
+          <div class="modulo dark center smallText">{{this}}</div>
+        {{/each}}
+      </div>
+
       {{#each fila in celdas}}
-        <div class="table-wrap">
+        <div class="fila">
+          <div class="cell dark center smallText">{{modulo @index}}</div>
           {{#each fila}}
-            <div class="cell {{tipo}} {{onClick}} {{color}}">
-              {{#if esFija}}
-                <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
-              {{/if}}
-              {{texto}}
+            <div class="cell">
+              <div class="contenedor">
+                {{#each showInfo}}
+                  <div class="modulo js-editaModulo">{{actividad}}</div>
+                {{/each}}
+              </div>
             </div>
           {{/each}}
         </div>
       {{/each}}
+
     </div>
 
   {{else}}<h4>...</h4>{{/if}}
 </template>
+
+
+                  <!-- <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div> -->

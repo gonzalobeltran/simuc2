@@ -9,18 +9,8 @@
           <h5>{{fecha}} | Módulo {{modulo}}</h5>
           <hr>
 
-          {{#with reserva}}
             <form id="reservaForm">
               <!-- Es reserva fija o no -->
-              {{#if _id}}
-                {{#if esFija}}
-                  <span class="red pull-right"><span class="glyphicon glyphicon-pushpin"></span> Reserva fija</span>
-                {{/if}}
-              {{else}}
-                <div class="checkbox">
-                  <label><input type="checkbox" name="esFija">Reserva fija</label>
-                </div>
-              {{/if}}
 
               <!-- Actividad -->
               <div class="form-group">
@@ -60,20 +50,7 @@
               {{/if}}
 
             </form>
-          {{/with}}
 
-          {{#with reservaSP}}
-            {{#if _id}}
-              <hr>
-              <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
-              <div class="greyed">
-                <label>Reserva Sin Prioridad</label>
-                <p>Actividad: {{actividad}}</p>
-                <p>Integrantes: {{separaConComa integrantes}}</p>
-              </div>
-
-            {{/if}}
-          {{/with}}
         </div>
       </div>
     </div>
