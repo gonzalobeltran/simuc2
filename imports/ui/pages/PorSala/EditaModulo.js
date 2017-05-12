@@ -22,14 +22,18 @@ Template.EditaModulo.rendered = function(){
 }
 
 Template.EditaModulo.helpers({
+  texto(actividad) {
+    if (actividad == 'Disponible') return '';
+    return actividad;
+  },
   usuarios() {
     return Session.get('usuarios');
   },
   esIntegrante(usuario) {
-    if ( _.contains(this.integrantes, usuario) ) return "selected";
+    if ( _.contains(this.integrantes, usuario) ) return 'selected';
   },
   esModulo(modulo) {
-    if ( _.contains(this.modulo, modulo) ) return "selected";
+    if ( _.contains(this.modulo, modulo) ) return 'checked';
   },
   repite() {
     if (this.fecha.length > 1) return true;
@@ -51,9 +55,12 @@ Template.EditaModulo.events({
     let prioridad = this.prioridad;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
-    let modulos = _.pluck( _.filter(event.target.modulos.options, (i) => {return i.selected}) , 'value');
 
-    if (!modulos.length) return false;
+    let modSelect = template.findAll( "input[type=checkbox]:checked");
+    let modulos = _.map(modSelect, function(item) {
+      return item.defaultValue;
+    });
+    if (!repiteHasta || !actividad || !modulos.length) return false;
 
     if (!id) {
       Meteor.call('nuevaReservaAdmin', sala, fecha, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
