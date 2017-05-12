@@ -6,7 +6,7 @@
         <div class="modal-body">
 
           <h5>{{sala}}</h5>
-          <h5>{{estaFecha}} | Módulo {{modulo}}</h5>
+          <h5>{{estaFecha}}</h5>
           <hr>
 
             <form id="reservaForm">
@@ -27,6 +27,15 @@
               </div>
 
               <div class="form-group">
+                <label>Módulos:</label>
+                <select multiple class="form-control" name="modulos">
+                  {{#each modulo in modulos}}
+                    <option selected="{{esModulo modulo}}">{{modulo}}</option>
+                  {{/each}}
+                </select>
+              </div>
+
+              <div class="form-group">
                 <label>Repite hasta:</label>
                 <input type="text" class="form-control" value="{{repiteHasta}}" name="repiteHasta" id="repiteHasta">
               </div>
@@ -39,7 +48,7 @@
                     <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
                   </div>
                   <div class="btn-group-vertical pull-right">
-                    <button type="button" class="js-eliminaEstaFecha btn btn-warning btn-sm">Eliminar esta</button>
+                    <button type="button" class="js-eliminaEstaFecha btn btn-warning btn-sm">Eliminar día</button>
                     <button type="button" class="js-eliminar btn btn-danger btn-sm">Eliminar todas</button>
                   </div>
                 {{else}}

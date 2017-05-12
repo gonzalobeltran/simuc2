@@ -77,7 +77,7 @@ Meteor.startup(function(){
     '8 (20:00-21:20)'
   ];
 
-  let modulo = [
+  let modulos = [
     '1',
     '2',
     '3',
@@ -89,7 +89,7 @@ Meteor.startup(function(){
     '8'
   ];
 
-  Session.set('modulo', modulo);
+  Session.set('modulos', modulos);
   Session.set('textoModulo', textoModulo);
 
   // La fecha de hoy, en formato largo y corto

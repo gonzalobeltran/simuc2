@@ -64,43 +64,46 @@ Meteor.methods({
       timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
-  'nuevaReservaAdmin'(sala, fecha, modulo, prioridad, actividad, integrantes, repiteHasta) {
+  'nuevaReservaAdmin'(sala, fecha, modulos, prioridad, actividad, integrantes, repiteHasta) {
     checkRole(this, 'admin');
 
     check(sala, String);
     check(fecha, String);
-    check(modulo, String);
+    check(modulos, [String]);
     check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
     check(repiteHasta, String);
 
-    if (!actividad) {
-      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    if (!sala || !fecha || !modulos.length || !actividad || !repiteHasta) {
+      throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    fechas = fechasHasta(fecha, repiteHasta);
+    let fechas = fechasHasta(fecha, repiteHasta);
 
-    Reservas.insert({sala: sala, fecha: fechas, modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: repiteHasta,
+    Reservas.insert({sala: sala, fecha: fechas, modulo: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: repiteHasta,
       timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
 
-    Log.insert({sala: sala, fecha: fecha, modulo: modulo, nueva: actividad, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
-    console.log(this);
+    //Log.insert({sala: sala, fecha: fecha, modulo: modulo, nueva: actividad, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
-  'modificaReserva'(id, actividad, integrantes) {
+  'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta) {
     checkRole(this, 'admin');
 
     check(id, String);
     check(actividad, String);
     check(integrantes, [String]);
+    check(modulos, [String]);
+    check(repiteHasta, String);
 
-    if (!actividad) {
-      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    if (!actividad || !modulos.length || !repiteHasta) {
+      throw new Meteor.Error('Error al reservar','Faltan datos para modificar la reserva');
     }
 
     let old = Reservas.find({_id: id}).fetch();
-    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+    let fechas = fechasHasta(old[0].fecha[0], repiteHasta);
+
+    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fecha: fechas, modulo: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
 
   },
 

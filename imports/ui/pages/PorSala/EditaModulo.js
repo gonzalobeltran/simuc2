@@ -15,7 +15,9 @@ Template.EditaModulo.rendered = function(){
     weekStart: 1,
     disableTouchKeyboard: true,
     maxViewMode: 2,
-    language: "es"
+    language: "es",
+    startDate: new Date(),
+    setDate: this.repiteHasta,
   });
 }
 
@@ -26,9 +28,15 @@ Template.EditaModulo.helpers({
   esIntegrante(usuario) {
     if ( _.contains(this.integrantes, usuario) ) return "selected";
   },
+  esModulo(modulo) {
+    if ( _.contains(this.modulo, modulo) ) return "selected";
+  },
   repite() {
-    if (this.fechaIni != this.repiteHasta) return true;
+    if (this.fecha.length > 1) return true;
     return false;
+  },
+  modulos() {
+    return Session.get('modulos');
   }
 });
 
@@ -40,18 +48,20 @@ Template.EditaModulo.events({
     let sala = this.sala;
     let fecha = this.fecha;
     let repiteHasta = event.target.repiteHasta.value;
-    let modulo = this.modulo;
     let prioridad = this.prioridad;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
+    let modulos = _.pluck( _.filter(event.target.modulos.options, (i) => {return i.selected}) , 'value');
+
+    if (!modulos.length) return false;
 
     if (!id) {
-      Meteor.call('nuevaReservaAdmin', sala, fecha, modulo, 2, actividad, integrantes, repiteHasta, (err,res) => {
+      Meteor.call('nuevaReservaAdmin', sala, fecha, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     }
     else {
-      Meteor.call('modificaReserva', id, actividad, integrantes, (err,res) => {
+      Meteor.call('modificaReserva', id, actividad, integrantes, modulos, repiteHasta, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     }
