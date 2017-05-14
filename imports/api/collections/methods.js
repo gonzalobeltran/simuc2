@@ -68,21 +68,20 @@ Meteor.methods({
     checkRole(this, 'admin');
 
     check(sala, String);
-    check(fecha, String);
+    check(fecha, [String]);
     check(modulos, [String]);
     check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
     check(repiteHasta, String);
 
-    if (!sala || !fecha || !modulos.length || !actividad || !repiteHasta) {
+    if (!sala || !fecha.length || !modulos.length || !actividad || !repiteHasta) {
       throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    let fechas = fechasHasta(fecha, repiteHasta);
+    let fechas = fechasHasta(fecha[0], repiteHasta);
 
-    Reservas.insert({sala: sala, fecha: fechas, modulo: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: repiteHasta,
-      timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+    Reservas.insert({sala: sala, fecha: fechas, modulo: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
 
     //Log.insert({sala: sala, fecha: fecha, modulo: modulo, nueva: actividad, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },

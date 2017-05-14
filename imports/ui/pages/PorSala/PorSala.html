@@ -28,13 +28,13 @@
         {{/each}}
       </div>
 
-      {{#each fila in celdas}}
+      {{#each fila in tablaReservas}}
         <div class="fila">
           <div class="cabeza">{{modulo @index}}</div>
-          {{#each fila}}
+          {{#each celda in fila}}
             <div class="cell">
               <div class="contenedor">
-                {{#each showInfo}}
+                {{#each celda}}
                   <div class="reserva {{accion}} {{color}}">
                     {{actividad}}
                     {{#if repite}}

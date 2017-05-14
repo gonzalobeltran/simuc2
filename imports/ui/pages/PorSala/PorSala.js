@@ -52,7 +52,7 @@ Template.PorSala.helpers({
   fecha() { //Retorna la fecha seleccionada
     return Session.get('fecha');
   },
-  celdas() { //Retorna la tabla con todas las reservas
+  tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semana');
     let sala = Session.get('sala');
     let modulos = Session.get('modulos');
@@ -66,9 +66,8 @@ Template.PorSala.helpers({
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: sala,
-          fecha: semana[columna],
+          fecha: [semana[columna]],
           estaFecha: semana[columna],
-          repiteHasta: semana[columna],
           modulo: [modulos[fila]],
           actividad: (modulos[fila] == 'almuerzo') ? '-' : 'Disponible',
           prioridad: 0,
@@ -78,18 +77,13 @@ Template.PorSala.helpers({
 
         for (let i in reservas) {
           reservas[i].estaFecha = semana[columna];
-          celdas[fila][columna].push(reservas[i]);
+          celdas[fila][columna][i] = reservas[i];
         }
 
       }
     }
 
     return celdas;
-  },
-  showInfo() { //Si hay alguna reserva en el módulo, oculta la casilla 'Disponible'
-    if (this.length > 1) this.shift();
-
-    return this;
   },
   diasSemana() { //Retorna los días de la semana
     return Session.get('diasSemana');
@@ -119,7 +113,7 @@ Template.PorSala.helpers({
     return 'desactivado';
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.fecha != this.repiteHasta) return true;
+    if (this.fecha.length > 1) return true;
     return false;
   }
 });

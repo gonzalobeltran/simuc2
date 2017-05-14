@@ -17,7 +17,7 @@ Template.EditaModulo.rendered = function(){
     maxViewMode: 2,
     language: "es",
     startDate: new Date(),
-    setDate: this.repiteHasta,
+    setDate: this.data.fecha[this.data.fecha.length - 1],
   });
 }
 
@@ -41,6 +41,9 @@ Template.EditaModulo.helpers({
   },
   modulos() {
     return Session.get('modulos');
+  },
+  repiteHasta() {
+    return this.fecha[this.fecha.length - 1];
   }
 });
 
