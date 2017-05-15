@@ -25,7 +25,6 @@ header {
   color: #febe10;
   font-weight: bold;
   padding: 6px 10px 6px 10px;
-  float: right;
 }
 
 /* Menú */
@@ -176,6 +175,29 @@ header {
   border: 1px solid #d80;
 }
 
+.chkModulos {
+  display: flex;
+  width: 100%;
+}
+
+.chkMod {
+  border: 1px solid grey;
+  background-color: white;
+  color: grey;
+  padding: 5px;
+  width: 11%;
+  text-align: center;
+}
+
+.chkMod:hover {
+  filter: brightness(90%);
+}
+
+.chkMod.marcado {
+  border: 1px solid #b31;
+  background-color: #c42;
+  color: white;
+}
 /* Media */
 
 .print-only {

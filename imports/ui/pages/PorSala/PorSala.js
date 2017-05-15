@@ -70,7 +70,6 @@ Template.PorSala.helpers({
           estaFecha: semana[columna],
           modulo: [modulos[fila]],
           actividad: (modulos[fila] == 'almuerzo') ? '-' : 'Disponible',
-          prioridad: 0,
         }];
 
         let reservas = Reservas.find({sala: sala, fecha: semana[columna], modulo: modulos[fila]}).fetch();
@@ -126,6 +125,7 @@ Template.PorSala.events({
     updateFechas(event.target.value);
   },
   'click .js-editaModulo'() { //Muestra el modal para editar módulos
+    if (this.actividad == 'Disponible') this.actividad = '';
     Modal.show('EditaModulo', this);
   },
   'click .js-semanaAnt'() { //Retrocede la fecha una semana

@@ -4,6 +4,21 @@ import { Reservas } from '/imports/api/collections/collections.js';
 
 import './EditaModulo.html';
 
+Template.EditaModulo.onCreated(function() {
+  let mods = Session.get('modulos');
+  let chkModulos = [];
+
+  //Crea los objetos para el selector de módulos, marcando los previamente seleccionados
+  for (let i in mods) {
+    let marca = '';
+    let txt = (mods[i] == 'almuerzo') ? 'A': mods[i];
+    if ( _.contains(this.data.modulo, mods[i]) ) marca = 'marcado';
+    chkModulos.push( {index: i, val: mods[i], txt: txt, marca: marca} );
+  }
+
+  //Guarda la lista del selector de módulos en una variable de sesión
+  Session.set('chkModulos', chkModulos);
+});
 
 Template.EditaModulo.rendered = function(){
   $('#integrantes').select2();
@@ -22,55 +37,58 @@ Template.EditaModulo.rendered = function(){
 }
 
 Template.EditaModulo.helpers({
-  texto(actividad) {
-    if (actividad == 'Disponible') return '';
-    return actividad;
-  },
   usuarios() {
     return Session.get('usuarios');
   },
-  esIntegrante(usuario) {
+  esIntegrante(usuario) { //Marca como preseleccionados los usuarios que están en la reserva
     if ( _.contains(this.integrantes, usuario) ) return 'selected';
   },
-  esModulo(modulo) {
-    if ( _.contains(this.modulo, modulo) ) return 'checked';
-  },
-  repite() {
+  repite() { //Indica si es una reserva que tiene más de una fecha, para cambiar los botones que se muestran
     if (this.fecha.length > 1) return true;
     return false;
   },
-  modulos() {
-    return Session.get('modulos');
+  modulos() { //Retorna los objetos para el selector de módulos
+    return Session.get('chkModulos');
   },
-  repiteHasta() {
+  repiteHasta() { //Retorna la última fecha de la reserva
     return this.fecha[this.fecha.length - 1];
   }
 });
 
 Template.EditaModulo.events({
+  'click .chkMod'() { //Cambia la selección del selector de módulos
+    let mods = Session.get('chkModulos');
+    mods[this.index].marca = (mods[this.index].marca == '') ? 'marcado' : '';
+    Session.set('chkModulos', mods);
+  },
+  'click .js-hastaFin'(event, template) {
+    let fecha = moment().endOf('year').format('YYYY-MM-DD');
+    $('#repiteHasta').datepicker('update', fecha);
+  },
   'submit #reservaForm'(event, template) {
     event.preventDefault();
 
     let id = this._id;
     let sala = this.sala;
     let fecha = this.fecha;
-    let repiteHasta = event.target.repiteHasta.value;
-    let prioridad = this.prioridad;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
+    let repiteHasta = event.target.repiteHasta.value;
 
-    let modSelect = template.findAll( "input[type=checkbox]:checked");
-    let modulos = _.map(modSelect, function(item) {
-      return item.defaultValue;
-    });
+    //Guarda los módulos marcados en el selector
+    let mods = Session.get('chkModulos');
+    let modulos = [];
+    for (let i in mods) {
+      if (mods[i].marca == 'marcado') modulos.push(mods[i].val);
+    }
+
     if (!repiteHasta || !actividad || !modulos.length) return false;
 
-    if (!id) {
+    if (!id) { //Si es una nueva reserva
       Meteor.call('nuevaReservaAdmin', sala, fecha, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
-    }
-    else {
+    } else { //Si modifica una reserva existente
       Meteor.call('modificaReserva', id, actividad, integrantes, modulos, repiteHasta, (err,res) => {
         if (err) Session.set('err', err.reason);
       });

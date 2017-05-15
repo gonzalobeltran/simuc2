@@ -13,7 +13,7 @@
               <!-- Actividad -->
               <div class="form-group">
                 <label>Actividad:</label>
-                <input name="actividad" type="text" class="form-control" value="{{texto actividad}}">
+                <input name="actividad" type="text" class="form-control" value="{{actividad}}">
               </div>
 
               <!-- Integrantes -->
@@ -29,16 +29,17 @@
               <!-- Módulos -->
               <div class="form-group">
                 <label>Módulos:</label>
-                {{#each modulo in modulos}}
-                  <div class="checkbox">
-                    <label class="checkbox-inline"><input type="checkbox" name="modulos" value="{{modulo}}" checked="{{esModulo modulo}}">{{modulo}}</label>
-                  </div>
-                {{/each}}
+                <div class="chkModulos">
+                  {{#each modulos}}
+                    <div class="chkMod {{marca}}">{{txt}}</div>
+                  {{/each}}
+                </div>
               </div>
 
               <!-- Fecha hasta la que se repite la reserva semanalmente -->
               <div class="form-group">
                 <label>Repite hasta:</label>
+                <button type="button" class="btn btn-default btn-xs pull-right js-hastaFin">Hasta fin de año</button>
                 <input type="text" class="form-control" value="{{repiteHasta}}" name="repiteHasta" id="repiteHasta">
               </div>
 
