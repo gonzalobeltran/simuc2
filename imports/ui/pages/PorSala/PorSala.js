@@ -66,13 +66,13 @@ Template.PorSala.helpers({
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: sala,
-          fecha: [semana[columna]],
+          fechas: [semana[columna]],
           estaFecha: semana[columna],
-          modulo: [modulos[fila]],
+          modulos: [modulos[fila]],
           actividad: (modulos[fila] == 'almuerzo') ? '-' : 'Disponible',
         }];
 
-        let reservas = Reservas.find({sala: sala, fecha: semana[columna], modulo: modulos[fila]}).fetch();
+        let reservas = Reservas.find({sala: sala, fechas: semana[columna], modulos: modulos[fila]}).fetch();
 
         for (let i in reservas) {
           reservas[i].estaFecha = semana[columna];
@@ -107,12 +107,12 @@ Template.PorSala.helpers({
     return clase;
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
-    if (this.fecha < Session.get('hoy')) return 'desactivado';
+    if (this.estaFecha < Session.get('hoy')) return 'desactivado';
     if (Roles.userIsInRole(Meteor.userId(), 'admin')) return 'js-editaModulo';
     return 'desactivado';
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.fecha.length > 1) return true;
+    if (this.fechas.length > 1) return true;
     return false;
   }
 });

@@ -48,42 +48,43 @@ Meteor.methods({
     }
 
     if (integrantes.length) {
-      let duplicado = Reservas.find({fecha: fecha, modulo: modulo, integrantes: integrantes}).count();
+      let duplicado = Reservas.find({fechas: fecha, modulos: modulo, integrantes: integrantes}).count();
       if (duplicado) {
         throw new Meteor.Error('Error al reservar','Usuario ya tiene reservada otra sala en ese módulo');
       }
     }
 
     //Verifica que no haya otra reserva en ese módulo
-    let hayOtra = Reservas.find({sala: sala, fecha: fecha, modulo: modulo, prioridad: {$gte: prioridad}}).count();
+    let hayOtra = Reservas.find({sala: sala, fechas: fecha, modulos: modulo, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
-    Reservas.insert({sala: sala, fecha: [fecha], modulo: modulo, prioridad: prioridad, actividad: actividad, integrantes: integrantes, repiteHasta: fecha,
-      timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+    Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
   },
 
-  'nuevaReservaAdmin'(sala, fecha, modulos, prioridad, actividad, integrantes, repiteHasta) {
+  'nuevaReservaAdmin'(sala, fechas, modulos, prioridad, actividad, integrantes, repiteHasta) {
     checkRole(this, 'admin');
 
     check(sala, String);
-    check(fecha, [String]);
+    check(fechas, [String]);
     check(modulos, [String]);
     check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
     check(repiteHasta, String);
 
-    if (!sala || !fecha.length || !modulos.length || !actividad || !repiteHasta) {
+    if (!sala || !fechas.length || !modulos.length || !actividad || !repiteHasta) {
       throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    let fechas = fechasHasta(fecha[0], repiteHasta);
+    let nuevasFechas = fechasHasta(fechas[0], repiteHasta);
 
-    Reservas.insert({sala: sala, fecha: fechas, modulo: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+    Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
 
-    //Log.insert({sala: sala, fecha: fecha, modulo: modulo, nueva: actividad, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
+
+    let usuario = Meteor.users.find({_id: this.userId}).map((d) => {return d.profile.nombre})[0];
+    Log.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, accion: 'crea', actividad: actividad, usuario: usuario, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
   'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta) {
@@ -99,11 +100,13 @@ Meteor.methods({
       throw new Meteor.Error('Error al reservar','Faltan datos para modificar la reserva');
     }
 
-    let old = Reservas.find({_id: id}).fetch();
-    let fechas = fechasHasta(old[0].fecha[0], repiteHasta);
+    let old = Reservas.findOne({_id: id});
+    let fechas = fechasHasta(old.fechas[0], repiteHasta);
 
-    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fecha: fechas, modulo: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
 
+    let usuario = Meteor.users.find({_id: this.userId}).map((d) => {return d.profile.nombre})[0];
+    Log.insert({sala: old.sala, fechas: fechas, modulos: modulos, accion: 'modifica', vieja: old.actividad, nueva: actividad, usuario: usuario, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
   'eliminaReserva'(id) {
@@ -118,7 +121,7 @@ Meteor.methods({
     check(id, String);
     check(fecha, String);
 
-    Reservas.update({_id: id}, {$pull: {fecha: fecha}});
+    Reservas.update({_id: id}, {$pull: {fechas: fecha}});
   },
 
 //------------Funciones de salas

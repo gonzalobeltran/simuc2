@@ -12,7 +12,7 @@ Template.EditaModulo.onCreated(function() {
   for (let i in mods) {
     let marca = '';
     let txt = (mods[i] == 'almuerzo') ? 'A': mods[i];
-    if ( _.contains(this.data.modulo, mods[i]) ) marca = 'marcado';
+    if ( _.contains(this.data.modulos, mods[i]) ) marca = 'marcado';
     chkModulos.push( {index: i, val: mods[i], txt: txt, marca: marca} );
   }
 
@@ -32,7 +32,7 @@ Template.EditaModulo.rendered = function(){
     maxViewMode: 2,
     language: "es",
     startDate: new Date(),
-    setDate: this.data.fecha[this.data.fecha.length - 1],
+    setDate: this.data.fechas[this.data.fechas.length - 1],
   });
 }
 
@@ -44,14 +44,14 @@ Template.EditaModulo.helpers({
     if ( _.contains(this.integrantes, usuario) ) return 'selected';
   },
   repite() { //Indica si es una reserva que tiene más de una fecha, para cambiar los botones que se muestran
-    if (this.fecha.length > 1) return true;
+    if (this.fechas.length > 1) return true;
     return false;
   },
   modulos() { //Retorna los objetos para el selector de módulos
     return Session.get('chkModulos');
   },
   repiteHasta() { //Retorna la última fecha de la reserva
-    return this.fecha[this.fecha.length - 1];
+    return this.fechas[this.fechas.length - 1];
   }
 });
 
@@ -70,7 +70,7 @@ Template.EditaModulo.events({
 
     let id = this._id;
     let sala = this.sala;
-    let fecha = this.fecha;
+    let fechas = this.fechas;
     let actividad = event.target.actividad.value;
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
     let repiteHasta = event.target.repiteHasta.value;
@@ -85,7 +85,7 @@ Template.EditaModulo.events({
     if (!repiteHasta || !actividad || !modulos.length) return false;
 
     if (!id) { //Si es una nueva reserva
-      Meteor.call('nuevaReservaAdmin', sala, fecha, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
+      Meteor.call('nuevaReservaAdmin', sala, fechas, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     } else { //Si modifica una reserva existente

@@ -7,22 +7,22 @@ config = Config.findOne();
 
 //Publica las reservas de una determinada sala en un rango de fechas (Si la fecha está en vacaciones, no muestra las reservas permanentes)
 Meteor.publish('reservasSala', function(sala, ini, fin) {
-  return Reservas.find({sala: sala, fecha: {$gte: ini, $lte: fin}});
+  return Reservas.find({sala: sala, fechas: {$gte: ini, $lte: fin}});
 });
 
 //Publica las reservas de un usuario en un rango de fechas
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
-  return Reservas.find({fecha: {$gte: ini, $lte: fin}, integrantes: usuario});
+  return Reservas.find({fechas: {$gte: ini, $lte: fin}, integrantes: usuario});
 });
 
 //Publica las reservas de un módulo y fecha determinados
 Meteor.publish('reservasModulo', function(fecha, modulo) {
-  return Reservas.find({fecha: fecha, modulo: modulo});
+  return Reservas.find({fechas: fecha, modulos: modulo});
 });
 
 //Publica las reservas de un grupo de salas en una fecha determinada (Display)
 Meteor.publish('reservasDisplay', function(fecha) {
-  return Reservas.find({fecha: fecha});
+  return Reservas.find({fechas: fecha});
 });
 
 //Publica el log con un filtro determinado
@@ -31,7 +31,7 @@ Meteor.publish('reservasLog', function(filtro, step) {
 
   return Reservas.find({$or: [
     {sala: {$regex: rxp}},
-    {fecha: {$regex: rxp}},
+    {fechas: {$regex: rxp}},
     {timestamp: {$regex: rxp}},
     {owner: {$regex: rxp}},
     {actividad: {$regex: rxp}},
