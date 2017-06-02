@@ -14,7 +14,7 @@ Template.Salas.onCreated(function(){
 
 Template.Salas.helpers({
   salas() {
-    return Salas.find({}, {sort: {nombre: 1}});
+    return Salas.find({}, {sort: {orden: 1}});
   },
 });
 

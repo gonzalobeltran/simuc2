@@ -41,8 +41,11 @@ Template.PorSala.rendered = function() {
 }
 
 Template.PorSala.helpers({
+  salaActiva() {
+    return Session.get('sala');
+  },
   salas() { //Lista de salas
-    let salas = Salas.find({}, {sort: {nombre: 1}}).map((d) => {return d.nombre});
+    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
     if (!Session.get('sala')) Session.set('sala', salas[0]);
     return salas;
   },

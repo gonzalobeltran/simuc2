@@ -133,11 +133,12 @@ Meteor.methods({
     return salas;
   },
 
-  'creaSala'(nombre, prioridad, acepta) {
+  'creaSala'(nombre, prioridad, acepta, orden) {
     checkRole(this, 'superadmin');
     check(nombre, String);
     check(prioridad, [String]);
     check(acepta, [String]);
+    check(orden, String);
 
     const existe = Salas.find({nombre: nombre}).count();
 
@@ -145,15 +146,16 @@ Meteor.methods({
       throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
     }
 
-    Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta});
+    Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden});
   },
 
-  'editaSala'(id, nombre, prioridad, acepta) {
+  'editaSala'(id, nombre, prioridad, acepta, orden) {
     checkRole(this, 'superadmin');
     check(id, String);
     check(nombre, String);
     check(prioridad, [String]);
     check(acepta, [String]);
+    check(orden, String);
 
     let salaOld = Salas.findOne({_id: id});
 
@@ -162,7 +164,7 @@ Meteor.methods({
       Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
     }
 
-    Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta}});
+    Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden}});
   },
 
   'borraSala'(id) {

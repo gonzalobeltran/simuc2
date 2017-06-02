@@ -1,6 +1,8 @@
 <template name="PorSala">
 
-  <div class="row">
+  <div class="print-only"><h4>{{salaActiva}}</h4><br></div>
+
+  <div class="row no-print">
     <div class="col-sm-6">
       <select name="sala" class="js-salaSelect form-control">
         {{#each sala in salas}}

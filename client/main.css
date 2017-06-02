@@ -80,14 +80,14 @@ header {
 }
 
 .nav li a {
-  padding-top: 4px;
-  padding-bottom: 4px;
+  padding-top: 5px;
+  padding-bottom: 5px;
   border-radius: 0px;
 }
 /* Contenido */
 
 .contenido {
-  padding: 70px 0px 20px 0px;
+  padding: 50px 0px 20px 0px;
   min-height: 700px;
 }
 
@@ -259,6 +259,10 @@ header {
 
   .no-print {
     display: none;
+  }
+
+  .tabla {
+    overflow-x: visible;
   }
 }
 

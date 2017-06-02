@@ -1,0 +1,23 @@
+<template name="EliminarReserva">
+
+    <div class="modal">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-body">
+
+            <h5>{{fechas}} | {{modulos}}</h5>
+            <hr>
+
+            {{#if repite}}
+              <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Solo un admin puede eliminar una reserva recurrente</button>
+            {{else}}
+              <button type="button" class="btn btn-danger btn-sm js-eliminaReserva">Eliminar reserva</button>
+              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+            {{/if}}
+
+          </div>
+        </div>
+      </div>
+    </div>
+
+</template>
