@@ -1,13 +1,13 @@
 <template name="Header">
   <header class="no-print">
 
-    <span class="titulo">SalasIMUC</span>
-    <!-- Sólo muestra el menú si hay sesión iniciada -->
-    {{#if currentUser}}
-      <div class="dropdown no-print">
-        <button class="btn menu-btn dropdown-toggle" type="button" data-toggle="dropdown">Menú</button>
+    <button class="btn menu-btn pull-right"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+    <div class="titulo">SalasIMUC</div>
 
-        <ul class="dropdown-menu">
+    {{#if currentUser}}
+      <div class="menu-bkg"></div>
+      <div class="menu no-print">
+        <ul class="nav nav-pills nav-stacked">
 
           {{#each menu}}
             {{#if isInRole role}}
@@ -31,6 +31,8 @@
     {{/if}}
 
   </header>
+
+
   {{#if hayError}}
     <br>
     <div class="alert alert-danger">

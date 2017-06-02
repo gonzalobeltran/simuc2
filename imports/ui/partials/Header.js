@@ -13,6 +13,12 @@ Template.Header.onCreated(function() {
   });
 });
 
+Template.Header.rendered = function() {
+  $("#menu").click(function () {
+    $("#menu").collapse('hide');
+  });
+}
+
 Template.Header.helpers({
   menu() {
     let menu = [
@@ -34,6 +40,18 @@ Template.Header.helpers({
 });
 
 Template.Header.events({
+  'click .menu-btn'() {
+    $('.menu-bkg').addClass('mostrar');
+    $('.menu').addClass('expand');
+  },
+  'click a'() {
+    $('.menu-bkg').removeClass('mostrar');
+    $('.menu').removeClass('expand');
+  },
+  'click .menu-bkg'() {
+    $('.menu-bkg').removeClass('mostrar');
+    $('.menu').removeClass('expand');
+  },
   'click .js-ayuda'() {
     Modal.show('Ayuda');
   },
