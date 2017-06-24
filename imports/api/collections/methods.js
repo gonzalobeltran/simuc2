@@ -314,7 +314,8 @@ Meteor.methods({
 
 //------------Funciones de config
   'cambiaConfig'(doc) {
-    checkRole(this, 'superadmin');
+    checkRole(this, 'admin');
+
 
     Config.update({}, {$set: doc});
   },

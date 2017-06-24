@@ -29,7 +29,7 @@ Template.Header.helpers({
       {txt: 'Cámara',               role: 'admin',      route: 'camara',    icon: 'glyphicon-music'},
       {txt: 'Usuarios',             role: 'admin',      route: 'usuarios',  icon: 'glyphicon-user'},
       {txt: 'Log',                  role: 'superadmin', route: 'log',       icon: 'glyphicon-book'},
-      {txt: 'Config',               role: 'superadmin', route: 'config',     icon: 'glyphicon-wrench'},
+      {txt: 'Config',               role: 'admin', route: 'config',     icon: 'glyphicon-wrench'},
     ];
 
     return menu;

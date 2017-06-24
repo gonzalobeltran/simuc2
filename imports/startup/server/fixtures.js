@@ -9,8 +9,8 @@ Meteor.startup(() => {
   //Crea la indexación para las colecciones
   Salas._ensureIndex({acepta: 1});
   Reservas._ensureIndex({sala: 1});
-  Reservas._ensureIndex({fecha: 1});
-  Reservas._ensureIndex({modulo: 1});
+  Reservas._ensureIndex({fechas: 1});
+  Reservas._ensureIndex({modulos: 1});
 
   //Crea un usuario si la lista de usuarios está vacía
   if ( Meteor.users.find({'username':'gbeltran'}).count() === 0 ) {
@@ -44,7 +44,10 @@ Meteor.startup(() => {
   configuracion = {
     maxReservas: 1,
     maxCamaraPorSemana: 1,
-    mensaje: '-'
+    mensaje: '-',
+    fecha1: moment().format('YYYY-MM-DD'),
+    fecha2: moment().format('YYYY-MM-DD'),
+    fecha3: moment().format('YYYY-MM-DD')
   }
 
   if (Config.find().count() === 0) Config.insert(configuracion);

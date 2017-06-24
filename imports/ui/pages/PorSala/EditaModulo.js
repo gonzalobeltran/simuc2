@@ -52,7 +52,19 @@ Template.EditaModulo.helpers({
   },
   repiteHasta() { //Retorna la última fecha de la reserva
     return this.fechas[this.fechas.length - 1];
-  }
+  },
+  fecha1() {
+    let config = Session.get('config');
+    return config.fecha1;
+  },
+  fecha2() {
+    let config = Session.get('config');
+    return config.fecha2;
+  },
+  fecha3() {
+    let config = Session.get('config');
+    return config.fecha3;
+  },
 });
 
 Template.EditaModulo.events({
@@ -61,8 +73,19 @@ Template.EditaModulo.events({
     mods[this.index].marca = (mods[this.index].marca == '') ? 'marcado' : '';
     Session.set('chkModulos', mods);
   },
-  'click .js-hastaFin'(event, template) {
-    let fecha = moment().endOf('year').format('YYYY-MM-DD');
+  'click .js-fecha1'(event, template) {
+    let config = Session.get('config');
+    let fecha = config.fecha1;
+    $('#repiteHasta').datepicker('update', fecha);
+  },
+  'click .js-fecha2'(event, template) {
+    let config = Session.get('config');
+    let fecha = config.fecha2;
+    $('#repiteHasta').datepicker('update', fecha);
+  },
+  'click .js-fecha3'(event, template) {
+    let config = Session.get('config');
+    let fecha = config.fecha3;
     $('#repiteHasta').datepicker('update', fecha);
   },
   'submit #reservaForm'(event, template) {

@@ -2,10 +2,52 @@
   <h4>Configuración</h4>
   <br>
 
-  {{> quickForm schema=config doc=doc id="cambiaConfigForm" type="method" meteormethod="cambiaConfig" buttonContent="Modificar"}}
+  {{#with doc}}
+    <form id="configForm">
+      <div class="form-group">
+        <label>Reservas por día:</label>
+        <select class="form-control" name="maxReservas">
+          {{#each num in modulos}}
+          <option selected="{{maxReservasSelected @index}}">{{num}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Reservas de cámara por semana:</label>
+        <select class="form-control" name="maxCamara">
+          {{#each num in modulos}}
+          <option selected="{{maxCamaraSelected @index}}">{{num}}</option>
+          {{/each}}
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label>Mensaje del día:</label>
+        <input name="mensaje" type="text" class="form-control" value="{{mensaje}}">
+      </div>
+
+      <div class="form-group">
+        <label>Fecha 1:</label>
+        <input type="text" class="form-control" value="{{fecha1}}" name="fecha1" id="fecha1">
+      </div>
+
+      <div class="form-group">
+        <label>Fecha 2:</label>
+        <input type="text" class="form-control" value="{{fecha2}}" name="fecha2" id="fecha2">
+      </div>
+
+      <div class="form-group">
+        <label>Fecha 3:</label>
+        <input type="text" class="form-control" value="{{fecha3}}" name="fecha3" id="fecha3">
+      </div>
+
+      <button type="submit" class="btn btn-primary btn-xs">Guardar</button>
+      <span class="green">{{ok}}</span>
+    </form>
+  {{/with}}
 
   <hr>
   <label>Reinicializar aceptación de reglamento: </label>
-  <br>
-  <button class="btn btn-danger" id="resetReglamento">Reset</button>
+  <button class="btn btn-danger btn-xs" id="resetReglamento">Reset</button>
 </template>
