@@ -227,12 +227,12 @@ header {
   border: 1px solid #d80;
 }
 
-.chkModulos {
+.chkBlocks {
   display: flex;
   width: 100%;
 }
 
-.chkMod {
+.chkBlock {
   border: 1px solid grey;
   background-color: white;
   color: grey;
@@ -241,11 +241,11 @@ header {
   text-align: center;
 }
 
-.chkMod:hover {
+.chkBlock:hover {
   filter: brightness(90%);
 }
 
-.chkMod.marcado {
+.chkBlock.marcado {
   border: 1px solid #b31;
   background-color: #c42;
   color: white;

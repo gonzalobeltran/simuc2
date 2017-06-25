@@ -29,9 +29,19 @@
               <!-- Módulos -->
               <div class="form-group">
                 <label>Módulos:</label>
-                <div class="chkModulos">
+                <div class="chkBlocks">
                   {{#each modulos}}
-                    <div class="chkMod {{marca}}">{{txt}}</div>
+                    <div class="chkBlock {{marca}}">{{txt}}</div>
+                  {{/each}}
+                </div>
+              </div>
+
+              <!-- Días -->
+              <div class="form-group">
+                <label>Días:</label>
+                <div class="chkBlocks">
+                  {{#each dias}}
+                    <div class="chkBlock {{marca}}">{{txt}}</div>
                   {{/each}}
                 </div>
               </div>
@@ -39,9 +49,9 @@
               <!-- Fecha hasta la que se repite la reserva semanalmente -->
               <div class="form-group">
                 <label>Repite hasta:</label>
-                <button type="button" class="btn btn-default btn-xs pull-right js-fecha1">{{fecha1}}</button>
+                <button type="button" class="btn btn-default btn-xs pull-right js-fecha3">{{fecha3}}</button>
                 <button type="button" class="btn btn-default btn-xs pull-right js-fecha2">{{fecha2}}</button>
-                <button type="button" class="btn btn-default btn-xs pull-right js-fecha3">{{fecha3}}</button>                
+                <button type="button" class="btn btn-default btn-xs pull-right js-fecha1">{{fecha1}}</button>
                 <input type="text" class="form-control" value="{{repiteHasta}}" name="repiteHasta" id="repiteHasta">
               </div>
 

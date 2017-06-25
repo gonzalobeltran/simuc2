@@ -5,19 +5,32 @@ import { Reservas } from '/imports/api/collections/collections.js';
 import './EditaModulo.html';
 
 Template.EditaModulo.onCreated(function() {
+  //Crea los objetos para el selector de módulos, marcando los previamente seleccionados
   let mods = Session.get('modulos');
   let chkModulos = [];
-
-  //Crea los objetos para el selector de módulos, marcando los previamente seleccionados
   for (let i in mods) {
     let marca = '';
     let txt = (mods[i] == 'almuerzo') ? 'A': mods[i];
     if ( _.contains(this.data.modulos, mods[i]) ) marca = 'marcado';
-    chkModulos.push( {index: i, val: mods[i], txt: txt, marca: marca} );
+    chkModulos.push( {sv: 'chkModulos', index: i, val: mods[i], txt: txt, marca: marca} );
   }
 
   //Guarda la lista del selector de módulos en una variable de sesión
   Session.set('chkModulos', chkModulos);
+
+  //Crea los objetos para el selector de días, marcando los previamente seleccionados
+  let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+  let chkDias = [];
+  for (let i = 0; i<7; i+=1) {
+    chkDias.push( {sv: 'chkDias', index: i, val: i, txt: dias[i], marca: ''} );
+  }
+  for (let d in this.data.fechas) {
+    let dia = moment(this.data.fechas[d]).weekday();
+    chkDias[dia].marca = 'marcado';
+  }
+
+  //Guarda la lista del selector de módulos en una variable de sesión
+  Session.set('chkDias', chkDias);
 });
 
 Template.EditaModulo.rendered = function(){
@@ -50,6 +63,9 @@ Template.EditaModulo.helpers({
   modulos() { //Retorna los objetos para el selector de módulos
     return Session.get('chkModulos');
   },
+  dias() { //Retorna los objetos para el selector de días
+    return Session.get('chkDias');
+  },
   repiteHasta() { //Retorna la última fecha de la reserva
     return this.fechas[this.fechas.length - 1];
   },
@@ -68,10 +84,10 @@ Template.EditaModulo.helpers({
 });
 
 Template.EditaModulo.events({
-  'click .chkMod'() { //Cambia la selección del selector de módulos
-    let mods = Session.get('chkModulos');
+  'click .chkBlock'() { //Cambia la selección del selector de módulos
+    let mods = Session.get(this.sv);
     mods[this.index].marca = (mods[this.index].marca == '') ? 'marcado' : '';
-    Session.set('chkModulos', mods);
+    Session.set(this.sv, mods);
   },
   'click .js-fecha1'(event, template) {
     let config = Session.get('config');
@@ -105,14 +121,21 @@ Template.EditaModulo.events({
       if (mods[i].marca == 'marcado') modulos.push(mods[i].val);
     }
 
+    //Guarda los días marcados en el selector
+    let chkDias = Session.get('chkDias');
+    let dias = [];
+    for (let i in chkDias) {
+      if (chkDias[i].marca == 'marcado') dias.push(chkDias[i].val);
+    }
+
     if (!repiteHasta || !actividad || !modulos.length) return false;
 
     if (!id) { //Si es una nueva reserva
-      Meteor.call('nuevaReservaAdmin', sala, fechas, modulos, 2, actividad, integrantes, repiteHasta, (err,res) => {
+      Meteor.call('nuevaReservaAdmin', sala, fechas, modulos, 2, actividad, integrantes, repiteHasta, dias, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     } else { //Si modifica una reserva existente
-      Meteor.call('modificaReserva', id, actividad, integrantes, modulos, repiteHasta, (err,res) => {
+      Meteor.call('modificaReserva', id, actividad, integrantes, modulos, repiteHasta, dias, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     }

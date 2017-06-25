@@ -14,16 +14,15 @@ var checkRole = function(t, role) {
 }
 
 //Retorna un array con todas las fechas entre dos fechas dadas
-var fechasHasta = function(inicio, fin) {
+var fechasHasta = function(inicio, fin, dias) {
   var fechas = [];
   var f = inicio;
-  var fin = moment(fin).format('YYYY-MM-DD');
   var i = 0;
 
   do {
-    fechas.push(f);
+    if ( _.contains(dias, moment(f).weekday()) ) fechas.push(f);
     i += 1;
-    f = moment(inicio).add( i , 'weeks').format('YYYY-MM-DD');
+    f = moment(inicio).add( i , 'days').format('YYYY-MM-DD');
   } while (f <= fin);
 
   return fechas;
@@ -63,7 +62,7 @@ Meteor.methods({
     Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
   },
 
-  'nuevaReservaAdmin'(sala, fechas, modulos, prioridad, actividad, integrantes, repiteHasta) {
+  'nuevaReservaAdmin'(sala, fechas, modulos, prioridad, actividad, integrantes, repiteHasta, dias) {
     checkRole(this, 'admin');
 
     check(sala, String);
@@ -73,12 +72,13 @@ Meteor.methods({
     check(actividad, String);
     check(integrantes, [String]);
     check(repiteHasta, String);
+    check(dias, [Number]);
 
-    if (!sala || !fechas.length || !modulos.length || !actividad || !repiteHasta) {
+    if (!sala || !fechas.length || !modulos.length || !actividad || !repiteHasta || !dias) {
       throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    let nuevasFechas = fechasHasta(fechas[0], repiteHasta);
+    let nuevasFechas = fechasHasta(fechas[0], repiteHasta, dias);
 
     Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
 
@@ -87,7 +87,7 @@ Meteor.methods({
     Log.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, accion: 'crea', actividad: actividad, usuario: usuario, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
-  'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta) {
+  'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta, dias) {
     checkRole(this, 'admin');
 
     check(id, String);
@@ -95,13 +95,14 @@ Meteor.methods({
     check(integrantes, [String]);
     check(modulos, [String]);
     check(repiteHasta, String);
+    check(dias, [Number]);
 
-    if (!actividad || !modulos.length || !repiteHasta) {
+    if (!actividad || !modulos.length || !repiteHasta || !dias) {
       throw new Meteor.Error('Error al reservar','Faltan datos para modificar la reserva');
     }
 
     let old = Reservas.findOne({_id: id});
-    let fechas = fechasHasta(old.fechas[0], repiteHasta);
+    let fechas = fechasHasta(old.fechas[0], repiteHasta, dias);
 
     Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
 
