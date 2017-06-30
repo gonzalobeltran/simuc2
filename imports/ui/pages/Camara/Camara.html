@@ -1,25 +1,18 @@
 <template name="Camara">
-
-  <div class="table-wrap">
-    <div class="cell info dark">Profesor</div>
-    <div class="cell info dark bigger">Integrantes</div>
-  </div>
   {{#if ready}}
-    {{#each grupos}}
-      <div class="table-wrap striped js-editaGrupo">
-        <div class="cell info">{{profesor}}</div>
-        <div class="cell info bigger">{{separaConComa integrantes}}</div>
-      </div>
-    {{/each}}
 
-    <br>
-    <button class="js-editaGrupo btn btn-default btn-full">Nuevo grupo</button>
+    <h4>Música de Cámara</h4>
 
-    {{#if editaGrupo}}
-      {{> EditaGrupo editaGrupo}}
-    {{/if}}
-  {{else}}
-    <h4>Cargando...</h4>
-  {{/if}}
+    <div class="list-group">
+      {{#each grupos}}
+        <a href="#" class="js-editaGrupo list-group-item">
+          <p><strong>Profesor:</strong> {{separaConComa profesor}}</p>
+          <p><strong>Integrantes:</strong> {{separaConComa integrantes}}</p>
+        </a>
+      {{/each}}
+    </div>
 
+    <button class="js-creaGrupo btn btn-default btn-sm">Nuevo grupo</button>
+
+  {{else}}<h4>...</h4>{{/if}}
 </template>

@@ -1,3 +1,43 @@
 <template name="EditaGrupo">
 
+  <div class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          <form id="camaraForm">
+            <!-- Profesor -->
+            <div class="form-group">
+              <label>Profesor:</label>
+              <select multiple class="form-control" name="profesor" id="profesor">
+                {{#each usuario in usuarios}}
+                  <option selected="{{esProfesor usuario}}">{{usuario}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <!-- Integrantes -->
+            <div class="form-group">
+              <label>Integrantes:</label>
+              <select multiple class="form-control" name="integrantes" id="integrantesCamara">
+                {{#each usuario in usuarios}}
+                  <option selected="{{esIntegrante usuario}}">{{usuario}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            {{#if this}}
+              <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+              <button type="button" class="js-borraGrupo btn btn-danger btn-sm pull-right">Eliminar</button>
+            {{else}}
+              <button type="submit" class="btn btn-primary btn-sm">Crear</button>
+            {{/if}}
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>
