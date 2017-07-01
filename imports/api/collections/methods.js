@@ -177,24 +177,28 @@ Meteor.methods({
 
 //------------Funciones de cámara
 
-  'creaGrupo'(grupo) {
+  'creaGrupo'(profesor, integrantes) {
     checkRole(this, 'admin');
-    Camara.insert(grupo);
+    check(profesor, [String]);
+    check(integrantes, [String]);
+
+    Camara.insert({profesor: profesor, integrantes: integrantes});
   },
 
-  'editaGrupo'(grupo) {
+  'editaGrupo'(id, profesor, integrantes) {
     checkRole(this, 'admin');
+    check(id, String);
+    check(profesor, [String]);
+    check(integrantes, [String]);
 
-    Camara.update({_id: grupo._id}, {$set: {
-      profesor: grupo.profesor,
-      integrantes: grupo.integrantes
-    }});
+    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes}});
   },
 
-  'borraGrupo'(grupo) {
+  'borraGrupo'(id) {
     checkRole(this, 'admin');
+    check(id, String);
 
-    Camara.remove({_id: grupo._id});
+    Camara.remove({_id: id});
   },
 
 

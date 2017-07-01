@@ -24,8 +24,10 @@ Template.EditaGrupo.events({
   'submit #camaraForm'(event, template) {
     event.preventDefault();
 
-    let profesor = event.target.nombre.value;
+    let profesor = _.pluck( _.filter(event.target.profesor.options, (i) => {return i.selected}) , 'value');
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
+
+    if (!profesor.length || !integrantes.length) return false;
 
     if (this._id) {
       Meteor.call('editaGrupo', this._id, profesor, integrantes);
