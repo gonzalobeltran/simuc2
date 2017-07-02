@@ -117,6 +117,10 @@ Template.PorSala.helpers({
   repite() { //Agrega un pin si es una reserva con repetición
     if (this.fechas.length > 1) return true;
     return false;
+  },
+  masDeUna(celda) {
+    if (celda.length > 1) return 'amarillo';
+    return '';
   }
 });
 

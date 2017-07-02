@@ -35,7 +35,7 @@
           <div class="cabeza">{{modulo @index}}</div>
           {{#each celda in fila}}
             <div class="cell">
-              <div class="contenedor">
+              <div class="contenedor {{masDeUna celda}}">
                 {{#each celda}}
                   <div class="reserva {{accion}} {{color}}">
                     {{actividad}}

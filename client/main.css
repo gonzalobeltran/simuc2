@@ -184,6 +184,10 @@ header {
   color: #c42;
 }
 
+.amarillo {
+  background-color: #ef0;
+}
+
 .dark {
   border: 1px solid #fafafa;
   background-color: #eee;
