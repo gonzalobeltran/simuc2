@@ -11,6 +11,12 @@ Template.Reservas.onCreated(function() {
     let semana = Session.get('semanaDesdeHoy');
 
     if (Meteor.user()) {
+      //Revisa si el usuario está amonestado
+      Meteor.call('revisaAmonestacion');
+
+      let amonestado = Meteor.user().profile.amonestado;
+      Session.set('amonestado', amonestado);
+
       //Se suscribe a las reservas del usuario en la semana activa
       let handle = Subs.subscribe('reservasUsuario', Meteor.user().profile.nombre, semana[0], semana[6]);
       Session.set('ready', handle.ready());
@@ -83,6 +89,9 @@ Template.Reservas.helpers({
     if (this.modulo != 'almuerzo') return 'js-editaModulo';
     return 'desactivado';
   },
+  amonestado() {
+    return Session.get('amonestado');
+  }
 });
 
 Template.Reservas.events({

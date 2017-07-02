@@ -1,0 +1,63 @@
+<template name="CreaUsuario">
+
+  <div class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          <form id="creaUsuarioForm">
+            <!-- Nombre -->
+            <div class="form-group form-group-sm">
+              <label>Nombre:</label>
+              <input name="nombre" type="text" class="form-control">
+            </div>
+
+            <!-- E-Mail -->
+            <div class="form-group">
+              <label>E-Mail:</label>
+              <input name="email" type="text" class="form-control">
+            </div>
+
+            <!-- Ocupación -->
+            <div class="form-group form-group-sm">
+              <label>Ocupación:</label>
+              <select class="form-control" name="ocupacion" id="creaOcupacion">
+                  <option>Alumno</option>
+                  <option>Profesor</option>
+                  <option>Auxiliar</option>
+                  <option>Administrativo</option>
+              </select>
+            </div>
+
+            <!-- Instrumento -->
+            <div class="form-group">
+              <label>Instrumento:</label>
+              <select multiple class="form-control" name="instrumento" id="creaInstrumento">
+                {{#each instrumento in instrumentos}}
+                  <option>{{instrumento}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <!-- Clave -->
+            <div class="form-group form-group-sm">
+              <label>Clave:</label>
+              <input name="clave1" type="password" class="form-control" id="clave1">
+            </div>
+
+            <!-- Repetir clave -->
+            <div class="form-group form-group-sm">
+              <label>Repetir clave:</label>
+              <input name="clave2" type="password" class="form-control" id="clave2">
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-sm">Crear</button>
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+</template>

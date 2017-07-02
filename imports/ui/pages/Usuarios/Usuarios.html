@@ -6,28 +6,32 @@
 
   {{#if ready}}
     <div class="table-responsive">
-      <div class="table-wrap">
-        <div class="cell info dark">Nombre</div>
-        <div class="cell info dark">E-Mail</div>
-        <div class="cell info dark">Ocupación</div>
-        <div class="cell info dark">Instrumento</div>
-        <div class="cell info dark">Amonestación</div>
-      </div>
-
-      {{#each usuarios}}
-        <div class="table-wrap striped js-editaUsuario {{isAdmin}}">
-          <div class="cell info">{{nombre}}</div>
-          <div class="cell info">{{email}}</div>
-          <div class="cell info">{{ocupacion}}</div>
-          <div class="cell info">{{instrumento}}</div>
-          <div class="cell info">{{amonestado}}</div>
-        </div>
-      {{/each}}
+      <table class="table table-striped">
+        <thead>
+          <th>Nombre</th>
+          <th>E-Mail</th>
+          <th>Ocupación</th>
+          <th>Instrumento</th>
+          <th>Amonestado</th>
+        </thead>
+        <tbody>
+          {{#each usuarios}}
+            <tr class="js-editaUsuario {{esAdmin}}">
+              <td>{{nombre}}</td>
+              <td>{{email}}</td>
+              <td>{{ocupacion}}</td>
+              <td>{{instrumento}}</td>
+              <td>{{amonestado}}</td>
+            </tr>
+          {{/each}}
+        </tbody>
+      </table>
     </div>
+
 
     <div class="no-print">
       <br>
-      <button class="js-editaUsuario btn btn-default btn-full">Nuevo usuario</button>
+      <button class="js-creaUsuario btn btn-default btn-full">Nuevo usuario</button>
 
       <span class="btn btn-default btn-file btn-full">
         <span>Agregar mediante archivo .csv</span>
@@ -38,9 +42,6 @@
 
     <p class="err">{{err}}</p>
 
-    {{#if editaUsuario}}
-      {{> EditaUsuario editaUsuario}}
-    {{/if}}
   {{else}}
     <h4>Cargando...</h4>
   {{/if}}

@@ -203,29 +203,35 @@ Meteor.methods({
 
 
 //------------Funciones de usuario
-  'creaUsuario'(usuario) {
+  'creaUsuario'(nombre, email, clave, ocupacion, instrumento) {
     checkRole(this, 'admin');
+    check(nombre, String);
+    check(email, String);
+    check(clave, String);
+    check(ocupacion, String);
+    check(instrumento, [String]);
 
-    if ( Meteor.users.findOne({'emails.0.address': usuario.email}) )
+    if ( Meteor.users.findOne({'emails.0.address': email}) )
       throw new Meteor.Error('Error al crear usuario', 'Ya existe usuario con esa dirección de correo');
 
     //Saca el nombre de usuario del email
-    let pos = usuario.email.indexOf('@');
-    let username = usuario.email.slice(0, pos);
+    let pos = email.indexOf('@');
+    let username = email.slice(0, pos);
 
     let id = Accounts.createUser({
-      email: usuario.email,
+      email: email,
       username: username,
-      password: usuario.clave,
+      password: clave,
       profile: {
-        nombre: usuario.nombre,
-        instrumento: usuario.instrumento,
-        ocupacion: usuario.ocupacion,
+        nombre: nombre,
+        instrumento: instrumento,
+        ocupacion: ocupacion,
+        reglamento: false,
       }
     });
 
     if (!this.isSimulation) {
-      if (usuario.ocupacion == 'Alumno' || usuario.ocupacion == 'Profesor')
+      if (ocupacion == 'Alumno' || ocupacion == 'Profesor')
         Roles.addUsersToRoles(id, ['usuario']);
     }
 
@@ -237,7 +243,7 @@ Meteor.methods({
     for (let d in data) {
       let u = data[d];
       if (!Meteor.users.findOne({'emails.0.address': u.email}) ) {
-        Meteor.call('creaUsuario',u);
+        Meteor.call('creaUsuario',u.nombre, u.email, u.clave, u.ocupacion, u.instrumento);
       }
     }
   },
@@ -246,56 +252,64 @@ Meteor.methods({
     return Meteor.users.find({}, {sort: {'profile.nombre':1}}).map((d) => {return d.profile.nombre});
   },
 
-  'editaUsuario'(usuario) {
+  'editaUsuario'(id, nombre, email, ocupacion, instrumento, amonestado, reglamento) {
     checkRole(this, 'admin');
+    check(id, String);
+    check(nombre, String);
+    check(email, String);
+    check(ocupacion, String);
+    check(instrumento, [String]);
+    check(amonestado, String);
+    check(reglamento, Boolean);
 
     //Saca el nombre de usuario del email
-    let pos = usuario.email.indexOf('@');
-    let username = usuario.email.slice(0, pos);
+    let pos = email.indexOf('@');
+    let username = email.slice(0, pos);
 
-    Meteor.users.update({_id: usuario._id}, {$set: {
-      'emails.0.address': usuario.email,
+    Meteor.users.update({_id: id}, {$set: {
+      'emails.0.address': email,
       username: username,
       profile: {
-        nombre: usuario.nombre,
-        instrumento: usuario.instrumento,
-        ocupacion: usuario.ocupacion,
-        reglamento: usuario.reglamento
+        nombre: nombre,
+        instrumento: instrumento,
+        ocupacion: ocupacion,
+        reglamento: reglamento,
       }
     }});
 
     //Guarda la fecha de amonestación, o borra el campo si no está amonestado
-    if (!usuario.amonestado || usuario.amonestado == moment().format('YYYY-MM-DD')) {
+    if (!amonestado || amonestado == moment().format('YYYY-MM-DD')) {
       Meteor.users.update(
-        {_id: usuario._id},
+        {_id: id},
         {$unset: {'profile.amonestado': ''}}
       );
     } else {
       Meteor.users.update(
-        {_id: usuario._id},
-        {$set: {'profile.amonestado': usuario.amonestado}}
+        {_id: id},
+        {$set: {'profile.amonestado': amonestado}}
       );
     }
 
     if (!this.isSimulation) {
-      if (usuario.ocupacion == 'Alumno' || usuario.ocupacion == 'Profesor')
-        Roles.addUsersToRoles(usuario._id, ['usuario']);
+      if (ocupacion == 'Alumno' || ocupacion == 'Profesor')
+        Roles.addUsersToRoles(id, ['usuario']);
 
-      if (usuario.ocupacion == 'Auxiliar' || usuario.ocupacion == 'Administrativo')
-        Roles.removeUsersFromRoles(usuario._id, ['usuario']);
+      if (ocupacion == 'Auxiliar' || ocupacion == 'Administrativo')
+        Roles.removeUsersFromRoles(id, ['usuario']);
     }
 
   },
 
-  'borraUsuario'(usuario) {
+  'borraUsuario'(id) {
     checkRole(this, 'admin');
+    check(id, String);
 
-    if (usuario._id == this.userId) return(false);
+    if (id == this.userId) return(false);
 
-    Meteor.users.remove({_id: usuario._id});
+    Meteor.users.remove({_id: id});
   },
 
-  'roleSwitch'({id, role}) {
+  'roleFlip'(id, role) {
     checkRole(this, 'superadmin');
 
     if (id == this.userId)
@@ -336,9 +350,10 @@ Meteor.methods({
     return res;
   },
 
-  'revisaAmonestacion'(fecha) {
-    if (moment().format('YYYY-MM-DD') >= fecha)
-    Meteor.users.update(this.userId, {$unset: {'profile.amonestado': ''}});
+  'revisaAmonestacion'() {
+    let usuario = Meteor.users.findOne(this.userId);
+    if (moment().format('YYYY-MM-DD') >= usuario.profile.amonestado)
+      Meteor.users.update(this.userId, {$unset: {'profile.amonestado': ''}});
   },
 
 });

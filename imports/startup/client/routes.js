@@ -40,7 +40,7 @@ FlowRouter.route('/', {
       if (Roles.userIsInRole(Meteor.userId(), 'admin')) FlowRouter.go('/porsala');
       else if (Roles.userIsInRole(Meteor.userId(), 'display')) FlowRouter.go('/display');
       else if (Roles.userIsInRole(Meteor.userId(), 'usuario')) FlowRouter.go('/reservas');
-      else FlowRouter.go('/semana');
+      else FlowRouter.go('/porsala');
     }
     else {
       FlowRouter.go('/sign-in');

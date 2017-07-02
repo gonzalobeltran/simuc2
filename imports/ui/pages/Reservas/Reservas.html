@@ -1,39 +1,43 @@
 <template name="Reservas">
+  {{#if amonestado}}
+    <h1>Usuario amonestado hasta {{amonestado}}</h1>
+  {{else}}
+    <h4>Mis Reservas</h4>
 
-  <h4>Mis Reservas</h4>
+    {{#if ready}}
 
-  {{#if ready}}
-
-    <div class="tabla">
-      <div class="fila">
-        <div class="cabeza">Módulos</div>
-        {{#each diasSemana}}
-          <div class="cabeza">{{this}}</div>
-        {{/each}}
-      </div>
-
-      {{#each fila in tablaReservas}}
+      <div class="tabla">
         <div class="fila">
-          <div class="cabeza">{{modulo @index}}</div>
-          {{#each celda in fila}}
-            <div class="cell">
-              <div class="contenedor">
-                {{#each celda}}
-                  <div class="reserva {{color}} {{accion}}">
-                    {{sala}}
-                    {{#if repite}}
-                      <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
-                    {{/if}}
-                  </div>
-                {{/each}}
-              </div>
-            </div>
+          <div class="cabeza">Módulos</div>
+          {{#each diasSemana}}
+            <div class="cabeza">{{this}}</div>
           {{/each}}
         </div>
-      {{/each}}
 
-    </div>
+        {{#each fila in tablaReservas}}
+          <div class="fila">
+            <div class="cabeza">{{modulo @index}}</div>
+            {{#each celda in fila}}
+              <div class="cell">
+                <div class="contenedor">
+                  {{#each celda}}
+                    <div class="reserva {{color}} {{accion}}">
+                      {{sala}}
+                      {{#if repite}}
+                        <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
+                      {{/if}}
+                    </div>
+                  {{/each}}
+                </div>
+              </div>
+            {{/each}}
+          </div>
+        {{/each}}
 
-  {{else}}<h4>...</h4>{{/if}}
+      </div>
+
+    {{else}}<h4>...</h4>{{/if}}
+
+  {{/if}}
 
 </template>

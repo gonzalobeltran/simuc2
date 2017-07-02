@@ -1,3 +1,69 @@
 <template name="EditaUsuario">
 
+  <div class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          <form id="usuarioForm">
+            <!-- Nombre -->
+            <div class="form-group form-group-sm">
+              <label for="nombre">Nombre:</label>
+              <input name="nombre" type="text" class="form-control" value="{{nombre}}" id="nombre">
+            </div>
+
+            <!-- E-Mail -->
+            <div class="form-group">
+              <label>E-Mail:</label>
+              <input name="email" type="text" class="form-control" value="{{email}}" id="email">
+            </div>
+
+            <!-- Ocupación -->
+            <div class="form-group form-group-sm">
+              <label for="acepta">Ocupación:</label>
+              <select class="form-control" name="ocupacion" id="ocupacion">
+                  <option selected={{esOcupacion 'Alumno'}}>Alumno</option>
+                  <option selected={{esOcupacion 'Profesor'}}>Profesor</option>
+                  <option selected={{esOcupacion 'Auxiliar'}}>Auxiliar</option>
+                  <option selected={{esOcupacion 'Administrativo'}}>Administrativo</option>
+              </select>
+            </div>
+
+            <!-- Instrumento -->
+            <div class="form-group">
+              <label>Instrumento:</label>
+              <select multiple class="form-control" name="instrumento" id="instrumento">
+                {{#each instrumento in instrumentos}}
+                  <option selected="{{esInstrumento instrumento}}">{{instrumento}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <!-- Fecha hasta la que se amonesta al usuario -->
+            <div class="form-group">
+              <label>Amonestado hasta:</label>
+              <input type="text" class="form-control" value="{{amonestado}}" name="amonestado" id="amonestado">
+            </div>
+
+            {{#if isInRole 'superadmin'}}
+              <div class="form-group">
+                <label>Nivel de acceso:</label>
+                <br>
+                <button type="button" class="js-flipUsuario btn {{esNivel 'usuario'}} btn-sm">Usuario</button>
+                <button type="button" class="js-flipAdmin btn {{esNivel 'admin'}} btn-sm">Admin</button>
+                <button type="button" class="js-flipSuperadmin btn {{esNivel 'superadmin'}} btn-sm">Superadmin</button>
+              </div>
+            {{/if}}
+
+            <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+            <button type="button" class="js-borraUsuario btn btn-danger btn-sm pull-right">Eliminar</button>
+
+            <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
 </template>

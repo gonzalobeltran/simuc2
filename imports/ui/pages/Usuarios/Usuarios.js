@@ -2,10 +2,10 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import './Usuarios.html';
+import './CreaUsuario.js';
 import './EditaUsuario.js';
 
 Template.Usuarios.onCreated(function() {
-  Session.set('editaUsuario', '');
   Session.set('cargandoArchivo', '');
   Session.set('filtroUsuarios', '--');
 
@@ -43,14 +43,8 @@ Template.Usuarios.helpers({
 
     return usuarios;
   },
-  editaUsuario() {
-    return Session.get('editaUsuario');
-  },
-  isAdmin() {
+  esAdmin() {
     if (Roles.userIsInRole(this._id, 'admin')) return 'adminColor';
-  },
-  ready() {
-    return Session.get('ready');
   },
   cargandoArchivo() {
     return Session.get('cargandoArchivo');
@@ -61,8 +55,11 @@ Template.Usuarios.helpers({
 });
 
 Template.Usuarios.events({
+  'click .js-creaUsuario'() {
+    Modal.show('CreaUsuario', '');
+  },
   'click .js-editaUsuario'() {
-    Session.set('editaUsuario', this);
+    Modal.show('EditaUsuario', this);
   },
   'change .uploadCSV'(event) {
     if (event.target.files[0].type != 'text/csv') return false;

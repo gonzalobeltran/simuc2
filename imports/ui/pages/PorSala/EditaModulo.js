@@ -115,18 +115,10 @@ Template.EditaModulo.events({
     let repiteHasta = event.target.repiteHasta.value;
 
     //Guarda los módulos marcados en el selector
-    let mods = Session.get('chkModulos');
-    let modulos = [];
-    for (let i in mods) {
-      if (mods[i].marca == 'marcado') modulos.push(mods[i].val);
-    }
+    let modulos = _.pluck( _.filter( Session.get('chkModulos'), (i) => {return i.marca == 'marcado'} ), 'val');
 
     //Guarda los días marcados en el selector
-    let chkDias = Session.get('chkDias');
-    let dias = [];
-    for (let i in chkDias) {
-      if (chkDias[i].marca == 'marcado') dias.push(chkDias[i].val);
-    }
+    let dias = _.pluck( _.filter( Session.get('chkDias'), (i) => {return i.marca == 'marcado'} ), 'val');
 
     if (!repiteHasta || !actividad || !modulos.length) return false;
 
