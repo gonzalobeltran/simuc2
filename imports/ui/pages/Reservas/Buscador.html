@@ -10,10 +10,31 @@
 
               <form id="miReservaForm">
                 <!-- Actividad -->
+                <div class="form-group">
+                  <label>Actividad:</label>
+                  <select class="form-control js-actividad" name="actividad">
+                    {{#each actividades}}
+                      <option value="{{index}}">{{menu}}</option>
+                    {{/each}}
+                  </select>
+                </div>
 
-
-                <!-- Integrantes -->
-
+                <!-- Salas disponibles -->
+                <div class="form-group">
+                  <label>Salas disponibles:</label>
+                  <select class="form-control" name="sala">
+                    <optgroup label="Con prioridad">
+                      {{#each sala in salasConPrioridad}}
+                        <option>{{sala}}</option>
+                      {{/each}}
+                    </optgroup>
+                    <optgroup label="Sin prioridad">
+                      {{#each sala in salasSinPrioridad}}
+                        <option>{{sala}}</option>
+                      {{/each}}
+                    </optgroup>
+                  </select>
+                </div>
 
                 <!-- Botones -->
 

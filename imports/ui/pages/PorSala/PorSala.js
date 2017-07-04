@@ -8,11 +8,6 @@ import './PorSala.html';
 import './EditaModulo.js';
 
 Template.PorSala.onCreated(function(){
-  // Obtiene la lista de usuarios y la guarda en una variable de sesión
-  Meteor.call('listaUsuarios', (err,res) => {
-    if (!err) Session.set('usuarios', res);
-  });
-
   this.autorun( () => {
     let semana = Session.get('semana');
 

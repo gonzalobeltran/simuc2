@@ -127,6 +127,17 @@ Meteor.startup(function(){
     updateFechas(fecha);
   }
 
+  apellidos = function(lista) {
+    let res = [];
+
+    for (let i in lista) {
+      let palabras = lista[i].split(' ');
+      let apellido = palabras[palabras.length - 1];
+      res.push(apellido);
+    }
+
+    return res.join(', ');
+  }
 
 //------- Helpers globales
   Handlebars.registerHelper('separaConComa', function(txt) {

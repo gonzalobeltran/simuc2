@@ -7,8 +7,19 @@ import './Reglamento.js';
 
 Template.Header.onCreated(function() {
   this.autorun( () => {
-    if (Meteor.user() && !Meteor.user().profile.reglamento) {
-      Modal.show('Reglamento', true, {backdrop: 'static', keyboard: false});
+    if (Meteor.user()) {
+      //Guarda el nombre del usuario
+      Session.set('usuario', Meteor.user().profile.nombre);
+
+      //Muestra el reglamento si el usuario aún no lo acepta
+      if (!Meteor.user().profile.reglamento) {
+        Modal.show('Reglamento', true, {backdrop: 'static', keyboard: false});
+      }
+
+      // Obtiene la lista de usuarios y la guarda en una variable de sesión
+      Meteor.call('listaUsuarios', (err,res) => {
+        if (!err) Session.set('usuarios', res);
+      });
     }
   });
 });

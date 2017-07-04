@@ -32,13 +32,12 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'nuevaReservaUsuario'(sala, fecha, modulo, prioridad, actividad, integrantes) {
+  'nuevaReservaUsuario'(sala, fecha, modulo, actividad, integrantes) {
     checkRole(this, 'usuario');
 
     check(sala, String);
     check(fecha, String);
     check(modulo, String);
-    check(prioridad, Number);
     check(actividad, String);
     check(integrantes, [String]);
 
@@ -59,6 +58,11 @@ Meteor.methods({
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
+    let prioridad = 1;
+    if ( Salas.find({nombre: sala, prioridad: actividad}).count() ) {
+      prioridad = 2;
+    }
+    
     Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
   },
 
