@@ -87,10 +87,15 @@ Template.Reservas.helpers({
 
     return clase;
   },
-  accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
-    if (this.fecha <= Session.get('hoy')) return 'desactivado';
-    if (this.modulo != 'almuerzo') return 'js-editaModulo';
-    return 'desactivado';
+  accion() {
+    //Cambia la acción del click dependiendo de la fecha y el módulo
+    //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
+    if ((this.fecha <= Session.get('hoy')) ||
+        (this.modulo == 'almuerzo')) return 'desactivado';
+    if (this.fecha && (moment(this.fecha).weekday() > 4)) return 'desactivado';
+    if (this.fechas && this.fechas.length > 1) return 'desactivado';
+
+    return 'js-editaModulo';
   },
   amonestado() {
     return Session.get('amonestado');
