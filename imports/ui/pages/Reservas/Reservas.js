@@ -33,10 +33,6 @@ Template.Reservas.helpers({
     let semana = Session.get('semanaDesdeHoy');
     let modulos = Session.get('modulos');
 
-    let usuario = '';
-    if (Meteor.user())
-      usuario = Meteor.user().profile.nombre;
-
     let celdas = [];
 
     for (let fila = 0; fila < 9; fila += 1) { //9 módulos
@@ -50,7 +46,7 @@ Template.Reservas.helpers({
           modulo: modulos[fila],
         }];
 
-        let reservas = Reservas.find({fechas: semana[columna], modulos: modulos[fila], integrantes: usuario}).fetch();
+        let reservas = Reservas.find({fechas: semana[columna], modulos: modulos[fila], integrantes: Session.get('usuario')}).fetch();
 
         for (let i in reservas) {
           celdas[fila][columna][i] = reservas[i];
@@ -89,11 +85,16 @@ Template.Reservas.helpers({
   },
   accion() {
     //Cambia la acción del click dependiendo de la fecha y el módulo
-    //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
-    if ((this.fecha <= Session.get('hoy')) ||
-        (this.modulo == 'almuerzo')) return 'desactivado';
-    if (this.fecha && (moment(this.fecha).weekday() > 4)) return 'desactivado';
-    if (this.fechas && this.fechas.length > 1) return 'desactivado';
+    if (this.fecha) {
+      //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
+      if (this.fecha <= Session.get('hoy')
+        || this.modulo == 'almuerzo'
+        || moment(this.fecha).weekday() > 4) return 'desactivado';
+    } else if (this.fechas) {
+      //No puede eliminar una reserva recurrente o una reserva pasada
+      if (this.fechas.length > 1
+        || this.fechas[0] < Session.get('hoy')) return 'desactivado';
+    }
 
     return 'js-editaModulo';
   },

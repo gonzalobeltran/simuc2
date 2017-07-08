@@ -8,7 +8,8 @@
             <h5>{{fecha}} | {{modulo}}</h5>
             <hr>
 
-              <form id="miReservaForm">
+            <form id="miReservaForm">
+              {{#if actividades}}
                 <!-- Actividad -->
                 <div class="form-group">
                   <label>Actividad:</label>
@@ -39,9 +40,13 @@
                 <!-- Botones -->
 
                 <button type="submit" class="btn btn-primary btn-sm">Reservar</button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+              {{else}}
+                <h4>Has utilizado todas tus reservas por este día</h4>
+              {{/if}}
 
-              </form>
+              <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
+
+            </form>
 
           </div>
         </div>

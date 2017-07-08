@@ -12,25 +12,33 @@ Template.Buscador.onCreated(function() {
     let index = 0;
 
     //Agrega los instrumentos del usuario al menú de actividades
-    Meteor.user().profile.instrumento.forEach( (i) => {
-      actividades.push({
-        index: index,
-        menu: i + ' - ' + Session.get('usuario'),
-        actividad: i,
-        integrantes: [Session.get('usuario')],
-      });
-      index += 1;
+    Meteor.user().profile.instrumento.forEach( (instrumento) => {
+      let cuenta = Reservas.find({fechas: this.data.fecha, integrantes: Session.get('usuario'), actividad: instrumento}).count();
+      //Solo puede reservar si no ha superado el máximo de reservas por día
+      if (cuenta < Session.get('config').maxReservas) {
+        actividades.push({
+          index: index,
+          menu: instrumento + ' - ' + Session.get('usuario'),
+          actividad: instrumento,
+          integrantes: [Session.get('usuario')],
+        });
+        index += 1;
+      }
     });
 
     //Agrega los grupos de cámara del usuario al menú de actividades
     Camara.find({integrantes: Session.get('usuario')}).forEach((grupo) => {
-      actividades.push({
-        index: index,
-        menu: 'Camara - ' + apellidos(grupo.integrantes),
-        actividad: 'Música de Cámara',
-        integrantes: grupo.integrantes,
-      });
-      index+=1;
+      let cuenta = Reservas.find({integrantes: grupo.integrantes, fechas: {$gt: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD')}}).count();
+      //Solo puede reservar si no ha superado el máximo de reservas en la semana
+      if (cuenta < Session.get('config').maxCamaraPorSemana) {
+        actividades.push({
+          index: index,
+          menu: 'Camara - ' + apellidos(grupo.integrantes),
+          actividad: 'Música de Cámara',
+          integrantes: grupo.integrantes,
+        });
+        index+=1;
+      }
     });
 
     Session.set('menuActividades', actividades);
