@@ -22,7 +22,7 @@ Template.EditaSala.events({
     let nombre = event.target.nombre.value;
     let prioridad = _.pluck( _.filter(event.target.prioridad.options, (i) => {return i.selected}) , 'value');
     let acepta = _.pluck( _.filter(event.target.acepta.options, (i) => {return i.selected}) , 'value');
-    let orden = event.target.orden.value;
+    let orden = Number(event.target.orden.value);
 
     if (this._id) {
       Meteor.call('editaSala', this._id, nombre, prioridad, acepta, orden);

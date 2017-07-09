@@ -62,7 +62,7 @@ Meteor.methods({
     if ( Salas.find({nombre: sala, prioridad: actividad}).count() ) {
       prioridad = 2;
     }
-    
+
     Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
   },
 
@@ -143,7 +143,7 @@ Meteor.methods({
     check(nombre, String);
     check(prioridad, [String]);
     check(acepta, [String]);
-    check(orden, String);
+    check(orden, Number);
 
     const existe = Salas.find({nombre: nombre}).count();
 
@@ -160,7 +160,7 @@ Meteor.methods({
     check(nombre, String);
     check(prioridad, [String]);
     check(acepta, [String]);
-    check(orden, String);
+    check(orden, Number);
 
     let salaOld = Salas.findOne({_id: id});
 
