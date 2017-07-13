@@ -1,8 +1,20 @@
-<template name="Display">
+<template name="PorDia">
 
-  <h4 class="center">{{fecha}}</h4>
+  <div class="print-only"><h4>{{fecha}}</h4><br></div>
+
+  <div class="row no-print">
+    <div class="col-sm-12">
+      <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
+    </div>
+  </div>
 
   {{#if ready}}
+    <!-- Avanzar o retroceder la fecha -->
+    <ul class="pager no-print">
+      <li class="previous"><a class="js-diaAnt">Anterior</a></li>
+      <li class="next"><a class="js-diaSig">Siguiente</a></li>
+    </ul>
+
     <div class="tabla">
       <div class="fila">
         <div class="cabeza">Módulos</div>

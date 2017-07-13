@@ -5,7 +5,7 @@ import { Config } from '../collections.js';
 
 config = Config.findOne();
 
-//Publica las reservas de una determinada sala en un rango de fechas (Si la fecha está en vacaciones, no muestra las reservas permanentes)
+//Publica las reservas de una determinada sala en un rango de fechas
 Meteor.publish('reservasSala', function(sala, ini, fin) {
   return Reservas.find({sala: sala, fechas: {$gte: ini, $lte: fin}});
 });
@@ -20,8 +20,8 @@ Meteor.publish('reservasModulo', function(fecha, modulo) {
   return Reservas.find({fechas: fecha, modulos: modulo});
 });
 
-//Publica las reservas de un grupo de salas en una fecha determinada (Display)
-Meteor.publish('reservasDisplay', function(fecha) {
+//Publica las reservas de todas las salas en una fecha determinada
+Meteor.publish('reservasDia', function(fecha) {
   return Reservas.find({fechas: fecha});
 });
 

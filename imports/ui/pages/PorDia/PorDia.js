@@ -4,9 +4,10 @@ import { Template } from 'meteor/templating';
 import { Reservas } from '/imports/api/collections/collections.js';
 import { Salas } from '/imports/api/collections/collections.js';
 
-import './Display.html';
+import './PorDia.html';
+import '../PorSala/EditaModulo.js';
 
-Template.Display.onCreated(function(){
+Template.PorDia.onCreated(function(){
   this.autorun( () => {
     //Se suscribe a la lista de salas
     Subs.subscribe('salas');
@@ -17,14 +18,29 @@ Template.Display.onCreated(function(){
   });
 });
 
-Template.Display.helpers({
+Template.PorDia.rendered = function() {
+  //Inicializa el selector de fecha
+  $('#fechaDia').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    todayBtn: "linked",
+    todayHighlight: true,
+    weekStart: 1,
+    disableTouchKeyboard: true,
+    maxViewMode: 2,
+    language: "es",
+    setDate: Session.get('fecha'),
+  });
+}
+
+Template.PorDia.helpers({
   salas() { //Lista de salas
     let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
     Session.set('salas', salas);
     return salas;
   },
   fecha() { //Retorna la fecha seleccionada
-    return moment().format('LLLL');
+    return Session.get('fecha');
   },
   tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semana');
@@ -86,4 +102,22 @@ Template.Display.helpers({
     if (celda.length > 1) return 'amarillo';
     return '';
   }
+});
+
+Template.PorDia.events({
+  'change #fechaDia'(event) { //Cambio en el selector de fecha
+    updateFechas(event.target.value);
+  },
+  'click .js-editaModulo'() { //Muestra el modal para editar módulos
+    if (this.actividad == 'Disponible') this.actividad = '';
+    Modal.show('EditaModulo', this);
+  },
+  'click .js-diaAnt'() { //Retrocede la fecha una semana
+    cambiaFecha(-1);
+    $('#fechaDia').datepicker('update', Session.get('fecha'));
+  },
+  'click .js-diaSig'() { //Adelanta la fecha una semana
+    cambiaFecha(1);
+    $('#fechaDia').datepicker('update', Session.get('fecha'));
+  },
 });

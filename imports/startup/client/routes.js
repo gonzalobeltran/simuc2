@@ -5,6 +5,7 @@ import { BlazeLayout } from 'meteor/kadira:blaze-layout';
 import '/imports/ui/layouts/AppBody.js';
 import '/imports/ui/pages/Reservas/Reservas.js';
 import '/imports/ui/pages/PorSala/PorSala.js';
+import '/imports/ui/pages/PorDia/PorDia.js';
 import '/imports/ui/pages/Salas/Salas.js';
 import '/imports/ui/pages/Camara/Camara.js';
 import '/imports/ui/pages/Usuarios/Usuarios.js';
@@ -73,11 +74,11 @@ FlowRouter.route('/porsala', {
   },
 });
 
-FlowRouter.route('/dia', {
-  name: 'dia',
+FlowRouter.route('/pordia', {
+  name: 'pordia',
   triggersEnter: [AccountsTemplates.ensureSignedIn],
   action() {
-    BlazeLayout.render('AppBody', { main: 'Dia' });
+    BlazeLayout.render('AppBody', { main: 'PorDia' });
   },
 });
 
