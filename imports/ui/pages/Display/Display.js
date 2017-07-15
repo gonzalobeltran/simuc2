@@ -14,13 +14,26 @@ Template.Display.onCreated(function(){
     let handle = Subs.subscribe('reservasDia', Session.get('fecha'));
     Session.set('ready', handle.ready());
 
+    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
+    Session.set('salas', salas);
+
   });
 });
 
+//Fija el intervalo de actualización cada 15 segundos, cambiando las salas que se muestran
+Template.Display.rendered = function() {
+  intervalo = Meteor.setInterval(function() {
+    let salas = Session.get('salas');
+    let first = salas.shift();
+    salas.push(first);
+    Session.set('salas', salas);
+  }, 3000);
+}
+
 Template.Display.helpers({
   salas() { //Lista de salas
-    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
-    Session.set('salas', salas);
+    let salas = Session.get('salas');
+    salas.splice(10); //Muestra 10 salas
     return salas;
   },
   fecha() { //Retorna la fecha seleccionada
@@ -29,6 +42,7 @@ Template.Display.helpers({
   tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semana');
     let salas = Session.get('salas');
+    salas.splice(10); //Muestra 10 salas
     let modulos = Session.get('modulos');
 
     let celdas = [];
@@ -36,7 +50,6 @@ Template.Display.helpers({
     for (let fila = 0; fila < 9; fila += 1) { //9 módulos
       celdas[fila] = [];
       for (let columna in salas) { //Todas las salas
-
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: salas[columna],
