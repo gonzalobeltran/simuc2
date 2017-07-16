@@ -40,7 +40,7 @@ Template.Header.helpers({
       {txt: 'Salas y prioridades',  role: 'usuario',    route: 'salas',     icon: 'glyphicon-list'},
       {txt: 'Cámara',               role: 'admin',      route: 'camara',    icon: 'glyphicon-music'},
       {txt: 'Usuarios',             role: 'admin',      route: 'usuarios',  icon: 'glyphicon-user'},
-      {txt: 'Log',                  role: 'superadmin', route: 'log',       icon: 'glyphicon-book'},
+      {txt: 'Registro',             role: 'superadmin', route: 'log',       icon: 'glyphicon-book'},
       {txt: 'Config',               role: 'admin',      route: 'config',    icon: 'glyphicon-wrench'},
     ];
 

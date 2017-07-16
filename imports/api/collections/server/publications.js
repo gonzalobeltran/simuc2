@@ -2,6 +2,7 @@ import { Salas } from '../collections.js';
 import { Reservas } from '../collections.js';
 import { Camara } from '../collections.js';
 import { Config } from '../collections.js';
+import { Log } from '../collections.js';
 
 config = Config.findOne();
 
@@ -26,16 +27,18 @@ Meteor.publish('reservasDia', function(fecha) {
 });
 
 //Publica el log con un filtro determinado
-Meteor.publish('reservasLog', function(filtro, step) {
+Meteor.publish('log', function(filtro, step) {
   let rxp = new RegExp(filtro, 'i');
 
-  return Reservas.find({$or: [
+  return Log.find({$or: [
+    {ts: {$regex: rxp}},
+    {usuario: {$regex: rxp}},
     {sala: {$regex: rxp}},
-    {fechas: {$regex: rxp}},
-    {timestamp: {$regex: rxp}},
-    {owner: {$regex: rxp}},
+    {accion: {$regex: rxp}},
     {actividad: {$regex: rxp}},
-  ]}, {sort: {timestamp: -1}, skip: step, limit: 15});
+    {fechas: {$regex: rxp}},
+    {modulos: {$regex: rxp}},
+  ]}, {sort: {ts: -1}, skip: step, limit: 15});
 
 });
 

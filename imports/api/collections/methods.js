@@ -28,6 +28,14 @@ var fechasHasta = function(inicio, fin, dias) {
   return fechas;
 }
 
+//Guarda un registro de las acciones
+var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
+  let usuario = Meteor.users.find({_id: userId}).map((d) => {return d.profile.nombre})[0];
+  let fecha = fechas[0];
+  if (fechas.length > 1) fecha = 'desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1];
+  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
+}
+
 Meteor.methods({
 
 //------------Funciones de Reservas
@@ -64,6 +72,7 @@ Meteor.methods({
     }
 
     Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
+    writeLog(this.userId, sala, 'Reserva', actividad, [fecha], modulo);
   },
 
   'nuevaReservaAdmin'(sala, fechas, modulos, prioridad, actividad, integrantes, repiteHasta, dias) {
@@ -85,10 +94,8 @@ Meteor.methods({
     let nuevasFechas = fechasHasta(fechas[0], repiteHasta, dias);
 
     Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
+    writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas, modulos);
 
-
-    let usuario = Meteor.users.find({_id: this.userId}).map((d) => {return d.profile.nombre})[0];
-    Log.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, accion: 'crea', actividad: actividad, usuario: usuario, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
   'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta, dias) {
@@ -109,16 +116,17 @@ Meteor.methods({
     let fechas = fechasHasta(old.fechas[0], repiteHasta, dias);
 
     Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+    writeLog(this.userId, old.sala, 'Modifica', actividad, fechas, modulos);
 
-    let usuario = Meteor.users.find({_id: this.userId}).map((d) => {return d.profile.nombre})[0];
-    Log.insert({sala: old.sala, fechas: fechas, modulos: modulos, accion: 'modifica', vieja: old.actividad, nueva: actividad, usuario: usuario, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')});
   },
 
   'eliminaReserva'(id) {
     checkRole(this, 'usuario');
     check(id, String);
 
+    let old = Reservas.findOne({_id: id});
     Reservas.remove({_id: id});
+    writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.fechas, old.modulos);
   },
 
   'eliminaEstaFecha'(id, fecha) {
@@ -126,7 +134,9 @@ Meteor.methods({
     check(id, String);
     check(fecha, String);
 
+    let old = Reservas.findOne({_id: id});
     Reservas.update({_id: id}, {$pull: {fechas: fecha}});
+    writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha], old.modulos);
   },
 
 //------------Funciones de salas

@@ -10,32 +10,30 @@
     <li class="next"><a class="js-Sig">Siguiente</a></li>
   </ul>
 
-  {{#if Template.subscriptionsReady}}
-    <div class="table-responsive">
-      <div class="table-wrap">
-        <div class="cell info dark">TS</div>
-        <div class="cell info dark">Usuario</div>
-        <div class="cell info dark">Sala</div>
-        <div class="cell info dark">Fecha</div>
-        <div class="cell info dark">Modulo</div>
-        <div class="cell info dark">Actividad</div>
-        <div class="cell info dark">Integrantes</div>
+  {{#if ready}}
+    <div class="tabla">
+      <div class="fila">
+        <div class="cabeza">TS</div>
+        <div class="cabeza">Usuario</div>
+        <div class="cabeza">Acción</div>
+        <div class="cabeza">Sala</div>
+        <div class="cabeza">Actividad</div>
+        <div class="cabeza">Fecha</div>
+        <div class="cabeza">Módulo</div>
       </div>
 
       {{#each log}}
-        <div class="table-wrap striped">
-          <div class="cell info">{{timestamp}}</div>
-          <div class="cell info">{{owner}}</div>
-          <div class="cell info">{{sala}}</div>
-          <div class="cell info">{{fecha}}</div>
-          <div class="cell info">{{modulo}}</div>
-          <div class="cell info">{{actividad}}</div>
-          <div class="cell info">{{integrantes}}</div>
+        <div class="fila">
+          <div class="cell">{{ts}}</div>
+          <div class="cell">{{usuario}}</div>
+          <div class="cell">{{accion}}</div>
+          <div class="cell">{{sala}}</div>
+          <div class="cell">{{actividad}}</div>
+          <div class="cell">{{fechas}}</div>
+          <div class="cell">{{modulos}}</div>
         </div>
       {{/each}}
     </div>
 
-  {{else}}
-    <h4>Cargando...</h4>
-  {{/if}}
+  {{else}}<h4>...</h4>{{/if}}
 </template>

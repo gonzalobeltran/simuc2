@@ -1,7 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
-import { Reservas } from '/imports/api/collections/collections.js';
+import { Log } from '/imports/api/collections/collections.js';
 
 import './Log.html';
 
@@ -10,7 +10,7 @@ Template.Log.onCreated(function() {
   Subs.clear();
 
   this.autorun( () => {
-    this.subscribe('reservasLog', Session.get('logFiltro'), Session.get('logStep'));
+    this.subscribe('log', Session.get('logFiltro'), Session.get('logStep'));
   });
 });
 
@@ -19,23 +19,17 @@ Template.Log.helpers({
   log() {
     let rxp = new RegExp(Session.get('logFiltro'), 'i');
 
-    let res = Reservas.find({$or: [
+    let res = Log.find({$or: [
+      {ts: {$regex: rxp}},
+      {usuario: {$regex: rxp}},
       {sala: {$regex: rxp}},
-      {fecha: {$regex: rxp}},
-      {timestamp: {$regex: rxp}},
-      {owner: {$regex: rxp}},
+      {accion: {$regex: rxp}},
       {actividad: {$regex: rxp}},
-    ]}, {sort: {timestamp: -1}, limit: 15}).fetch();
-
-    res.map((r) => {
-      if (r.fecha.length > 1) r.fecha='Fija';
-    });
+      {fechas: {$regex: rxp}},
+      {modulos: {$regex: rxp}},
+    ]}, {sort: {ts: -1}, limit: 15}).fetch();
 
     return res;
-  },
-  nomModulo(m) {
-    if (m == 9) return 'Almuerzo';
-    return m;
   },
   logFiltro() {
     return Session.get('logFiltro');
