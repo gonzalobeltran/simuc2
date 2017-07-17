@@ -138,20 +138,23 @@ header {
   border: 1px solid #f8f8f8;
   font-size: 0.9em;
   width: 140px;
+  height: 100%;
 }
 
 .contenedor {
   display: table;
   width: 100%;
   height: 100%;
-  padding: 5px;
+}
+
+.masDeUna {
+  filter: drop-shadow(0px 0px 20px red);
 }
 
 .reserva{
   background-color: white;
   display: table-cell;
   text-align: center;
-  vertical-align: middle;
   padding: 10px;
   cursor: copy;
   border-radius: 4px;
@@ -199,10 +202,6 @@ header {
 
 .adminColor {
   color: #c42;
-}
-
-.amarillo {
-  background-color: #ef0;
 }
 
 .dark {
