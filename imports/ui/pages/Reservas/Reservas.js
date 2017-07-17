@@ -68,21 +68,6 @@ Template.Reservas.helpers({
     if (this.fechas && this.fechas.length > 1) return true;
     return false;
   },
-  color() { //Cambia el color dependiendo de la reserva
-    let clase = '';
-    if (this.prioridad == 2) {
-      clase = 'resCP';
-    }
-    else if (this.prioridad == 1) {
-      clase = 'resSP';
-    }
-
-    if (this.cuenta > 1) {
-      clase = 'superpuesta';
-    }
-
-    return clase;
-  },
   accion() {
     //Cambia la acción del click dependiendo de la fecha y el módulo
     if (this.fecha) {

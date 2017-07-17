@@ -236,18 +236,6 @@ header {
   color: grey;
 }
 
-.resCP {
-  background-color: #c42;
-  color: white;
-  border: 1px solid #b31;
-}
-
-.resSP {
-  background-color: #e90;
-  color: white;
-  border: 1px solid #d80;
-}
-
 .chkBlocks {
   display: flex;
   width: 100%;

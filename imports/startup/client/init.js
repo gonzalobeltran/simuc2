@@ -139,6 +139,19 @@ Meteor.startup(function(){
     return res.join(', ');
   }
 
+  textoColor = function(str) {
+    var hash = 0;
+    for (var i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    var colour = '#';
+    for (var i = 0; i < 3; i++) {
+      var value = (hash >> (i * 8)) & 0xFF;
+      colour += ('00' + value.toString(16)).substr(-2);
+    }
+    return colour;
+  }
+
 //------- Helpers globales
   Handlebars.registerHelper('separaConComa', function(txt) {
     return txt.join(", ");
@@ -148,4 +161,12 @@ Meteor.startup(function(){
     return Session.get('ready');
   });
 
+  Handlebars.registerHelper('color', function() { //Cambia el color dependiendo de la reserva
+    if (this.actividad == '-' || this.actividad == 'Disponible') return 'background-color: white; color: black;';
+    if (this.prioridad == 1) return 'background-color: #e90; color: white;'
+
+    let color = textoColor(this.actividad);
+
+    return 'background-color:' + color + '; color: white;';
+  });
 });

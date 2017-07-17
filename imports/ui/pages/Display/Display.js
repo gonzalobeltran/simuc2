@@ -75,17 +75,6 @@ Template.Display.helpers({
     let modulo = Session.get('textoModulo');
     return modulo[index];
   },
-  color() { //Cambia el color dependiendo de la reserva
-    let clase = '';
-    if (this.prioridad == 2) {
-      clase = 'resCP';
-    }
-    else if (this.prioridad == 1) {
-      clase = 'resSP';
-    }
-
-    return clase;
-  },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
     if (this.estaFecha < Session.get('hoy')) return 'desactivado';
     if (Roles.userIsInRole(Meteor.userId(), 'admin')) return 'js-editaModulo';
