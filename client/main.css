@@ -41,15 +41,6 @@ header {
   height: 50px;
 }
 
-.cuadroSuperpuestas {
-  margin: 40px 20px 0px 20px;
-  background-color: #496;
-  border-radius: 5px;
-  box-shadow: 10px 10px 5px grey;
-  color: black;
-  padding: 10px;
-}
-
 .titulo {
   color: #febe10;
   font-size: 1.2em;
@@ -156,7 +147,7 @@ header {
 }
 
 .masDeUna {
-  filter: drop-shadow(0px 0px 20px red);
+  filter: drop-shadow(0px 0px 5px red);
 }
 
 .reserva{

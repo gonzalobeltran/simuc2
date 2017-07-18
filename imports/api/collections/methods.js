@@ -152,6 +152,10 @@ Meteor.methods({
         $match: {
           count: {$gt:1}
         }
+      }, {
+        $sort: {
+          '_id.fechas': 1
+        }
       }
     ]).map((d) => {return d._id});
 

@@ -6,7 +6,7 @@ import { Salas } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
-import '../../partials/ResSuper.js';
+import './ResSuper.js';
 
 Template.PorSala.onCreated(function(){
   this.autorun( () => {
@@ -111,6 +111,9 @@ Template.PorSala.events({
   },
   'change #fecha'(event) { //Cambio en el selector de fecha
     updateFechas(event.target.value);
+  },
+  'click .js-resSuper'() {
+    Modal.show('ResSuper');
   },
   'click .js-editaModulo'() { //Muestra el modal para editar módulos
     if (this.actividad == 'Disponible') this.actividad = '';
