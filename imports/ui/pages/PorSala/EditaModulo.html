@@ -35,22 +35,22 @@
                 <input type="text" class="form-control" value="{{repiteHasta}}" name="repiteHasta" id="repiteHasta">
               </div>
 
-              <!-- Módulos -->
-              <div class="form-group">
-                <label>Módulos:</label>
-                <div class="chkBlocks">
-                  {{#each modulos}}
-                    <div class="chkBlock {{marca}}">{{txt}}</div>
-                  {{/each}}
-                </div>
-              </div>
-
               <!-- Días -->
               <div class="form-group">
                 <label>Días:</label>
                 <div class="chkBlocks">
                   {{#each dias}}
-                    <div class="chkBlock {{marca}}">{{txt}}</div>
+                  <div class="chkBlock {{marca}}">{{txt}}</div>
+                  {{/each}}
+                </div>
+              </div>
+
+              <!-- Módulos -->
+              <div class="form-group">
+                <label>Módulos:</label>
+                <div class="chkBlocks">
+                  {{#each modulos}}
+                  <div class="chkBlock {{marca}}">{{txt}}</div>
                   {{/each}}
                 </div>
               </div>

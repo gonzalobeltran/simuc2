@@ -48,7 +48,7 @@ Template.Header.helpers({
   },
   hayError() {
     return Session.get('err');
-  }
+  },
 });
 
 Template.Header.events({

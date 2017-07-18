@@ -139,14 +139,25 @@ Meteor.methods({
     writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha], old.modulos);
   },
 
-//------------Funciones de salas
-  'listaSalas'() {
-    var salas = [];
-    Salas.find({}, {sort: {nombre: 1}}).forEach(function(u) {
-      salas.push(u.nombre);
-    });
-    return salas;
+  'reservasSuperpuestas'() {
+    return Reservas.aggregate([
+      {$unwind: "$fechas"},
+      {$unwind: "$modulos"},
+      {
+        $group: {
+          _id: {sala: "$sala", fechas: "$fechas", modulos:"$modulos"},
+          count: {$sum:1}
+        }
+      }, {
+        $match: {
+          count: {$gt:1}
+        }
+      }
+    ]).map((d) => {return d._id});
+
   },
+
+//------------Funciones de salas
 
   'creaSala'(nombre, prioridad, acepta, orden) {
     checkRole(this, 'superadmin');

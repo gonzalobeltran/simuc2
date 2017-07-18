@@ -6,6 +6,7 @@ import { Salas } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
+import '../../partials/ResSuper.js';
 
 Template.PorSala.onCreated(function(){
   this.autorun( () => {

@@ -36,6 +36,8 @@ Meteor.startup(function(){
   Session.set('logFiltro', '');
   //Para mostrar errores
   Session.set('err', '');
+  //Para mostrar superposiciones
+  Session.set('superpuestas', '');
 
   let actividades = ['-',
   'Música de Cámara',

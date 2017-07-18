@@ -38,11 +38,10 @@ harrison:papa-parse
 
 zimme:active-route
 
-
 meteorhacks:subs-manager
+meteorhacks:aggregate
 fastclick@1.0.13
 momentjs:moment
 rzymek:moment-locale-es
 
-#meteorhacks:kadira
 dynamic-import@0.1.1
