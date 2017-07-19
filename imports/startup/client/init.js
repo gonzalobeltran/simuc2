@@ -142,35 +142,29 @@ Meteor.startup(function(){
   }
 
   textoColor = function(txt) {
-    if (txt.length < 3) return '#c42';
+    if (txt.length < 4) return 'background-color: #c42; color: white';
+    let colores = [ '#DB7093', '#FFC0CB', '#8B008B', '#9400D3', '#FFA07A', '#FA8072', '#DC143C', '#B22222', '#FFD700', '#F4A460',
+        '#FFEFD5', '#BDB76B', '#32CD32', '#3CB371', '#126e87', '#6B8E23', '#8FBC8F', '#20B2AA', '#40E0D0', '#ffced3', '#AFEEEE',
+        '#4682B4', '#6495ED', '#0000CD', '#DEB887', '#8B4513', '#A52A2A', '#2F4F4F', '#708090', '#92B558', '#DC4C46', '#672E3B',
+        '#F3D6E4', '#C48F65', '#223A5E', '#898E8C', '#005960', '#9C9A40', '#4F84C4', '#D2691E' ];
 
-    let xr = (txt.charCodeAt(0) % 2) ? 1 : -1;
-    let xg = (txt.charCodeAt(1) % 2) ? 1 : -1;
-    let xb = (txt.charCodeAt(2) % 2) ? 1 : -1;
 
-    let r = 122 + txt.charCodeAt(0) * xr;
-    let g = 122 + txt.charCodeAt(1) * xg;
-    let b = 122 + txt.charCodeAt(2) * xb;
-
-    let rest = 0;
-    for (let i = 3; i < txt.length; i += 1) {
-      rest += txt.charCodeAt(i);
-    }
-
-    rest = rest % 30;
-
-    r += rest; g += rest; b += rest;
+    let index = (txt.charCodeAt(0) + txt.charCodeAt(1) + txt.charCodeAt(2) + txt.charCodeAt(3)) % colores.length;
+    let color = colores[index];
 
     //Calcula la luminosidad del color
+    let r = parseInt(color.slice(1,3), 16);
+    let g = parseInt(color.slice(3,5), 16);
+    let b = parseInt(color.slice(5,7), 16);
     let lum = 0.2126*r + 0.7152*g + 0.0722*b;
 
-    //Decide si el texto será gris o blanco, dependiendo de la luminosidad
-    let txtColor = (lum > 130) ? '#333' : 'white;'
+    //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
+    let txtColor = (lum > 120) ? '#333' : 'white;'
 
-    let color = 'rgb(' + r + ',' + g + ',' + b + ')';
+    return 'background-color:' + colores[index] + '; color:' + txtColor + ';';
 
-    return 'background-color:' + color + '; color:' + txtColor + ';';
   }
+
 
 //------- Helpers globales
   Handlebars.registerHelper('separaConComa', function(txt) {
