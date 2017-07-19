@@ -6,7 +6,6 @@ import { Salas } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
-import './ResSuper.js';
 
 Template.PorSala.onCreated(function(){
   this.autorun( () => {
@@ -19,6 +18,11 @@ Template.PorSala.onCreated(function(){
     Session.set('ready', handle.ready());
 
   });
+
+  Meteor.call('reservasSuperpuestas', (err,res) => {
+    if (!err) Session.set('superpuestas', res);
+  });
+
 });
 
 Template.PorSala.rendered = function() {
@@ -102,6 +106,9 @@ Template.PorSala.helpers({
   masDeUna(celda) {
     if (celda.length > 1) return 'masDeUna';
     return '';
+  },
+  superpuestas() {
+    return Session.get('superpuestas');
   }
 });
 
@@ -126,5 +133,14 @@ Template.PorSala.events({
   'click .js-semanaSig'() { //Adelanta la fecha una semana
     cambiaFecha(7);
     $('#fecha').datepicker('update', Session.get('fecha'));
+  },
+  'click .js-actualizaSuperpuestas'() {
+    Meteor.call('reservasSuperpuestas', (err,res) => {
+      if (!err) Session.set('superpuestas', res);
+    });
+  },
+  'click .js-verReserva'() {
+    updateFechas(this.fechas);
+    Session.set('sala', this.sala);
   },
 });

@@ -142,24 +142,35 @@ Meteor.startup(function(){
   }
 
   textoColor = function(txt) {
-    let r = txt.charCodeAt(0);
-    let g = txt.charCodeAt(1);
-    let b = txt.charCodeAt(2);
-    let rest = 0;
+    if (txt.length < 3) return '#c42';
 
+    let xr = (txt.charCodeAt(0) % 2) ? 1 : -1;
+    let xg = (txt.charCodeAt(1) % 2) ? 1 : -1;
+    let xb = (txt.charCodeAt(2) % 2) ? 1 : -1;
+
+    let r = 122 + txt.charCodeAt(0) * xr;
+    let g = 122 + txt.charCodeAt(1) * xg;
+    let b = 122 + txt.charCodeAt(2) * xb;
+
+    let rest = 0;
     for (let i = 3; i < txt.length; i += 1) {
       rest += txt.charCodeAt(i);
     }
 
-    rest = Math.floor( (rest / (txt.length - 3)));
-
+    rest = rest % 30;
 
     r += rest; g += rest; b += rest;
+
+    //Calcula la luminosidad del color
+    let lum = 0.2126*r + 0.7152*g + 0.0722*b;
+
+    //Decide si el texto será gris o blanco, dependiendo de la luminosidad
+    let txtColor = (lum > 130) ? '#333' : 'white;'
+
     let color = 'rgb(' + r + ',' + g + ',' + b + ')';
 
-    return color;
+    return 'background-color:' + color + '; color:' + txtColor + ';';
   }
-
 
 //------- Helpers globales
   Handlebars.registerHelper('separaConComa', function(txt) {
@@ -174,8 +185,6 @@ Meteor.startup(function(){
     if (!this.actividad || this.actividad == '-' || this.actividad == 'Disponible') return 'background-color: white; color: black;';
     if (this.prioridad == 1) return 'background-color: #e90; color: white;'
 
-    let color = textoColor(this.actividad);
-
-    return 'background-color:' + color + '; color: black;';
+    return textoColor(this.actividad);
   });
 });

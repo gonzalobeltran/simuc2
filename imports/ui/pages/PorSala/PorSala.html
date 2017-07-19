@@ -19,7 +19,6 @@
     <!-- Avanzar o retroceder la fecha -->
     <ul class="pager no-print">
       <li class="previous"><a class="js-semanaAnt">Anterior</a></li>
-      <li><button class="btn btn-info js-resSuper">Reservas Superpuestas</button></li>    
       <li class="next"><a class="js-semanaSig">Siguiente</a></li>
     </ul>
 
@@ -53,6 +52,16 @@
 
     </div>
 
+  {{#if isInRole 'admin'}}
+    <div class="cuadroSuperpuestas">
+      <p><strong>Reservas superpuestas: </strong> <button class="btn btn-default btn-xs js-actualizaSuperpuestas">Actualizar</button></p>
+      {{#each superpuestas}}
+        <a class="js-verReserva">{{sala}} / {{fechas}} / Módulo {{modulos}}</a><br>
+      {{else}}
+        <p>No hay ninguna superposición de reservas</p>
+      {{/each}}
+    </div>
+  {{/if}}
 
   {{else}}<h4>...</h4>{{/if}}
 

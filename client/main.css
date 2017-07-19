@@ -41,6 +41,13 @@ header {
   height: 50px;
 }
 
+.cuadroSuperpuestas {
+  margin: 20px;
+  border: 1px solid #eee;
+  border-radius: 5px;
+  padding: 10px; 
+}
+
 .titulo {
   color: #febe10;
   font-size: 1.2em;

@@ -7,6 +7,7 @@ import { Camara } from './collections.js';
 import { Config } from './collections.js';
 import { Log } from './collections.js';
 
+
 // Lanza un error si el usuario no tiene rol requerido
 var checkRole = function(t, role) {
   if (! Roles.userIsInRole(t.userId, role))
@@ -95,7 +96,6 @@ Meteor.methods({
 
     Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
     writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas, modulos);
-
   },
 
   'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta, dias) {
@@ -117,7 +117,6 @@ Meteor.methods({
 
     Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
     writeLog(this.userId, old.sala, 'Modifica', actividad, fechas, modulos);
-
   },
 
   'eliminaReserva'(id) {
