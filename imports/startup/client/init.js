@@ -177,6 +177,10 @@ Meteor.startup(function(){
     return txt.join(", ");
   });
 
+  Handlebars.registerHelper('apellidos', function() {
+    return apellidos(this.integrantes);
+  });
+
   Handlebars.registerHelper('ready', function() {
     return Session.get('ready');
   });

@@ -37,7 +37,7 @@
             <div class="cell">
               <div class="contenedor {{masDeUna celda}}">
                 {{#each celda}}
-                  <div class="reserva {{accion}}" style="{{color}}">
+                  <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
                     {{actividad}}
                     {{#if repite}}
                       <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
@@ -54,7 +54,7 @@
 
   {{#if isInRole 'admin'}}
     <div class="cuadroSuperpuestas">
-      <p><strong>Reservas superpuestas: </strong> <button class="btn btn-default btn-xs js-actualizaSuperpuestas">Actualizar</button></p>
+      <p><strong>Reservas superpuestas: </strong></p>
       {{#each superpuestas}}
         <a class="js-verReserva">{{sala}} / {{fechas}} / Módulo {{modulos}}</a><br>
       {{else}}

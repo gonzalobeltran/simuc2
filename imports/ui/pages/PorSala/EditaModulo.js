@@ -132,14 +132,17 @@ Template.EditaModulo.events({
       });
     }
 
+    Meteor.call('reservasSuperpuestas', (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   },
   'click .js-eliminar'() {
     Meteor.call('eliminaReserva', this._id);
+    Meteor.call('reservasSuperpuestas', (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   },
   'click .js-eliminaEstaFecha'() {
     Meteor.call('eliminaEstaFecha', this._id, this.estaFecha);
+    Meteor.call('reservasSuperpuestas', (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   }
 });

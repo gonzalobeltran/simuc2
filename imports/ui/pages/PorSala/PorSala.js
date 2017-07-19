@@ -134,11 +134,6 @@ Template.PorSala.events({
     cambiaFecha(7);
     $('#fecha').datepicker('update', Session.get('fecha'));
   },
-  'click .js-actualizaSuperpuestas'() {
-    Meteor.call('reservasSuperpuestas', (err,res) => {
-      if (!err) Session.set('superpuestas', res);
-    });
-  },
   'click .js-verReserva'() {
     updateFechas(this.fechas);
     Session.set('sala', this.sala);
