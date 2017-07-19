@@ -88,7 +88,7 @@ Template.PorDia.helpers({
     return false;
   },
   masDeUna(celda) {
-    if (celda.length > 1) return 'amarillo';
+    if (celda.length > 1) return 'masDeUna';
     return '';
   }
 });

@@ -160,6 +160,10 @@ Meteor.methods({
 
   },
 
+  'cuantasReservas'(sala, fecha, modulo) {
+    return Reservas.find({sala: sala, fechas: fecha, modulos: modulo}).count();
+  },
+
 //------------Funciones de salas
 
   'creaSala'(nombre, prioridad, acepta, orden) {

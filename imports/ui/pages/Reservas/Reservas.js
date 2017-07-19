@@ -49,6 +49,7 @@ Template.Reservas.helpers({
         let reservas = Reservas.find({fechas: semana[columna], modulos: modulos[fila], integrantes: Session.get('usuario')}).fetch();
 
         for (let i in reservas) {
+          reservas[i].estaFecha = semana[columna];
           celdas[fila][columna][i] = reservas[i];
         }
 
@@ -82,6 +83,15 @@ Template.Reservas.helpers({
     }
 
     return 'js-editaModulo';
+  },
+  hayOtra() {
+    if (this.estaFecha) {
+      Meteor.call('cuantasReservas', this.sala, this.estaFecha, this.modulos, (err,res) => {
+        Session.set('cuantasReservas', res);
+      });
+
+      if (Session.get('cuantasReservas') > 1) return 'masDeUna';
+    }
   },
   amonestado() {
     return Session.get('amonestado');
