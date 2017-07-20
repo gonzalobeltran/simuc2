@@ -110,7 +110,7 @@ superadminRoutes.route('/log', {
   },
 });
 
-superadminRoutes.route('/config', {
+adminRoutes.route('/config', {
   name: 'config',
   action() {
     BlazeLayout.render('AppBody', { main: 'Config' });

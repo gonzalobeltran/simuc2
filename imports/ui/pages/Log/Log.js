@@ -27,7 +27,7 @@ Template.Log.helpers({
       {actividad: {$regex: rxp}},
       {fechas: {$regex: rxp}},
       {modulos: {$regex: rxp}},
-    ]}, {sort: {ts: -1}, limit: 15}).fetch();
+    ]}, {sort: {ts: -1}, limit: 30}).fetch();
 
     return res;
   },
@@ -46,7 +46,7 @@ Template.Log.events({
   },
   'click .js-Ant'() {
     let step = Session.get('logStep');
-    step -= 15;
+    step -= 30;
     if (step < 0) step=0;
     Session.set('logStep', step);
   },
@@ -55,7 +55,7 @@ Template.Log.events({
   },
   'click .js-Sig'() {
     let step = Session.get('logStep');
-    step += 15;
+    step += 30;
     Session.set('logStep', step);
   },
 });

@@ -5,7 +5,7 @@
 
   <div class="list-group">
     {{#each salas}}
-      <a href="#" class="js-editaSala list-group-item">
+      <a class="{{accion}} list-group-item">
         <p><strong>{{orden}}. {{nombre}}</strong></p>
         <p>Prioridad: {{separaConComa prioridad}}</p>
         <p>Acepta: {{separaConComa acepta}}</p>
@@ -13,7 +13,9 @@
     {{/each}}
   </div>
 
-  <button class="js-creaSala btn btn-default btn-sm">Crea nueva sala</button>
+  {{#if isInRole 'superadmin'}}
+    <button class="js-creaSala btn btn-default btn-sm">Crea nueva sala</button>
+  {{/if}}
 
 {{else}}<h4>...</h4>{{/if}}
 </template>

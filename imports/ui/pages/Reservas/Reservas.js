@@ -41,7 +41,7 @@ Template.Reservas.helpers({
 
         //Módulo vacío
         celdas[fila][columna] = [{
-          sala: (modulos[fila] == 'almuerzo') ? ' ' : '-',
+          sala: (modulos[fila] == 'almuerzo') ? '.' : '-',
           fecha: semana[columna],
           modulo: modulos[fila],
         }];
@@ -95,6 +95,10 @@ Template.Reservas.helpers({
   },
   amonestado() {
     return Session.get('amonestado');
+  },
+  hayMensaje() {
+    config = Session.get('config');
+    if (config) return config.mensaje;
   }
 });
 

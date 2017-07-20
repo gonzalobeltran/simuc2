@@ -1,10 +1,18 @@
 <template name="Reservas">
+  {{#if hayMensaje}}
+    <div class="alert alert-info">
+      {{hayMensaje}}
+    </div>
+  {{/if}}
+
   {{#if amonestado}}
     <h1>Usuario amonestado hasta {{amonestado}}</h1>
   {{else}}
+
     <h4>Mis Reservas</h4>
 
     {{#if ready}}
+
 
       <div class="tabla">
         <div class="fila">

@@ -38,7 +38,7 @@ Meteor.publish('log', function(filtro, step) {
     {actividad: {$regex: rxp}},
     {fechas: {$regex: rxp}},
     {modulos: {$regex: rxp}},
-  ]}, {sort: {ts: -1}, skip: step, limit: 15});
+  ]}, {sort: {ts: -1}, skip: step, limit: 30});
 
 });
 

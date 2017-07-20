@@ -157,7 +157,6 @@ Meteor.methods({
         }
       }
     ]).map((d) => {return d._id});
-
   },
 
   'cuantasReservas'(sala, fecha, modulo) {

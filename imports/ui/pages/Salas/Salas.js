@@ -16,6 +16,9 @@ Template.Salas.helpers({
   salas() {
     return Salas.find({}, {sort: {orden: 1}});
   },
+  accion() {
+    if (Roles.userIsInRole(Meteor.userId(), 'superadmin')) return 'js-editaSala';
+  }
 });
 
 Template.Salas.events({
