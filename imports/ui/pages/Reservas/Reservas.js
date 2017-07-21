@@ -86,10 +86,9 @@ Template.Reservas.helpers({
   },
   hayOtra() {
     if (this.estaFecha) {
-      Meteor.call('cuantasReservas', this.sala, this.estaFecha, this.modulos, (err,res) => {
+      Meteor.call('cuantasReservas', this.sala, this.estaFecha, this.modulos[0], (err,res) => {
         Session.set('cuantasReservas', res);
       });
-
       if (Session.get('cuantasReservas') > 1) return 'masDeUna';
     }
   },
