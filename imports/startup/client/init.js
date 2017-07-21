@@ -141,28 +141,61 @@ Meteor.startup(function(){
     return res.join(', ');
   }
 
-  textoColor = function(txt) {
-    if (txt.length < 4) return 'background-color: #c42; color: white';
-    let colores = [ '#DB7093', '#FFC0CB', '#8B008B', '#9400D3', '#FFA07A', '#FA8072', '#DC143C', '#B22222', '#FFD700', '#F4A460',
-        '#FFEFD5', '#BDB76B', '#32CD32', '#3CB371', '#126e87', '#6B8E23', '#8FBC8F', '#20B2AA', '#40E0D0', '#ffced3', '#AFEEEE',
-        '#4682B4', '#6495ED', '#0000CD', '#DEB887', '#8B4513', '#A52A2A', '#2F4F4F', '#708090', '#92B558', '#DC4C46', '#672E3B',
-        '#F3D6E4', '#C48F65', '#223A5E', '#898E8C', '#005960', '#9C9A40', '#4F84C4', '#D2691E' ];
+  //Calcula el matiz de un color, 0% es el color original, 100% es blanco
+  function shadeColor(color, percent) {
+    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
+    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
+  }
 
-
-    let index = (txt.charCodeAt(0) + txt.charCodeAt(1) + txt.charCodeAt(2) + txt.charCodeAt(3)) % colores.length;
-    let color = colores[index];
-
+  //Decide si el texto debe ser negro o blanco dependiendo de la luminosidad del color de fondo
+  colorTexto = function(color) {
     //Calcula la luminosidad del color
-    let r = parseInt(color.slice(1,3), 16);
-    let g = parseInt(color.slice(3,5), 16);
-    let b = parseInt(color.slice(5,7), 16);
+    let r = parseInt(color.slice(1,3), 16) / 255; let g = parseInt(color.slice(3,5), 16) / 255; let b = parseInt(color.slice(5,7), 16) / 255;
+    r = (r < 0.03928) ? (r / 12.92) : Math.pow( (r + 0.055) / 1.055 , 2.4);
+    g = (g < 0.03928) ? (g / 12.92) : Math.pow( (g + 0.055) / 1.055 , 2.4);
+    b = (b < 0.03928) ? (b / 12.92) : Math.pow( (b + 0.055) / 1.055 , 2.4);
+
     let lum = 0.2126*r + 0.7152*g + 0.0722*b;
 
     //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
-    let txtColor = (lum > 120) ? '#333' : 'white;'
+    let txtColor = (lum > 0.179) ? 'black' : 'white;'
 
-    return 'background-color:' + colores[index] + '; color:' + txtColor + ';';
+    return txtColor;
+  }
 
+  //Calcula un color dependiendo del texto
+  textoColor = function(txt) {
+    //Posibilidades de colores
+    let colores = [
+      '#DC4C46', //Grenadine
+      '#F6D155', //Primrose Yellow
+      '#004B8D', //Lapis Blue
+      '#F2552C', //Flame
+      '#578CA9', //Niagara
+      '#5A7247', //Kale
+      '#005960', //Shaded Spruce
+      '#223A5E', //Navy Peony
+      '#95DEE3', //Island Paradise
+      '#92B558', //Greenery
+      '#AD5D5D', //Dusty Cedar
+    ];
+
+    let max = (txt.length < 4) ? txt.length : 4;
+    let sum1 = 0; sum2 = 0;
+
+    //Elige el color con las tres primeras letras y el matiz con el resto del texto
+    for (let i = 0; i < max; i += 1) sum1 += txt.charCodeAt(i);
+    for (let i = max; i < txt.length; i += 1) sum2 += txt.charCodeAt(i);
+
+    let i1 = sum1 % colores.length; //para elegir el color
+    let i2 = (30 - (sum2 % 60)) / 100; //para elegir el matiz
+
+    let color = shadeColor(colores[i1], i2);
+
+    //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
+    let txtColor = colorTexto(color);
+
+    return 'background-color:' + color + '; color:' + txtColor + ';';
   }
 
 

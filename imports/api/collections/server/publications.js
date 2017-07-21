@@ -54,7 +54,7 @@ Meteor.publish('camara', function() {
 
 //Publica la lista con los grupos de música de cámara en los que participa el usuario
 Meteor.publish('camaraUsuario', function(user) {
-  return Camara.find({ $or: [ {profesor: user}, {integrantes: user} ] });
+  return Camara.find({integrantes: user});
 });
 
 //Publica la configuración

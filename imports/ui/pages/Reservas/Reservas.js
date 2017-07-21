@@ -18,7 +18,7 @@ Template.Reservas.onCreated(function() {
       Session.set('amonestado', amonestado);
 
       //Se suscribe a los grupos de música de cámara (para ver si el usuario puede reservar salas grandes)
-      Subs.subscribe('camara');
+      Subs.subscribe('camaraUsuario', Session.get('usuario'));
 
       //Se suscribe a las reservas del usuario en la semana activa
       let handle = Subs.subscribe('reservasUsuario', Session.get('usuario'), semana[0], semana[6]);

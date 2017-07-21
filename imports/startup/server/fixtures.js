@@ -11,6 +11,8 @@ Meteor.startup(() => {
   Reservas._ensureIndex({sala: 1});
   Reservas._ensureIndex({fechas: 1});
   Reservas._ensureIndex({modulos: 1});
+  Reservas._ensureIndex({integrantes: 1});
+  Reservas._ensureIndex({prioridad: 1});
 
   //Crea un usuario si la lista de usuarios está vacía
   if ( Meteor.users.find({'username':'gbeltran'}).count() === 0 ) {
