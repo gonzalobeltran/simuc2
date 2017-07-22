@@ -141,63 +141,50 @@ Meteor.startup(function(){
     return res.join(', ');
   }
 
-  //Calcula el matiz de un color, 0% es el color original, 100% es blanco
-  function shadeColor(color, percent) {
-    var f=parseInt(color.slice(1),16),t=percent<0?0:255,p=percent<0?percent*-1:percent,R=f>>16,G=f>>8&0x00FF,B=f&0x0000FF;
-    return "#"+(0x1000000+(Math.round((t-R)*p)+R)*0x10000+(Math.round((t-G)*p)+G)*0x100+(Math.round((t-B)*p)+B)).toString(16).slice(1);
-  }
-
-  //Decide si el texto debe ser negro o blanco dependiendo de la luminosidad del color de fondo
-  colorTexto = function(color) {
-    //Calcula la luminosidad del color
-    let r = parseInt(color.slice(1,3), 16) / 255; let g = parseInt(color.slice(3,5), 16) / 255; let b = parseInt(color.slice(5,7), 16) / 255;
-    r = (r < 0.03928) ? (r / 12.92) : Math.pow( (r + 0.055) / 1.055 , 2.4);
-    g = (g < 0.03928) ? (g / 12.92) : Math.pow( (g + 0.055) / 1.055 , 2.4);
-    b = (b < 0.03928) ? (b / 12.92) : Math.pow( (b + 0.055) / 1.055 , 2.4);
-
-    let lum = 0.2126*r + 0.7152*g + 0.0722*b;
-
-    //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
-    let txtColor = (lum > 0.179) ? 'black' : 'white;'
-
-    return txtColor;
-  }
-
-  //Calcula un color dependiendo del texto
   textoColor = function(txt) {
-    //Posibilidades de colores
-    let colores = [
-      '#DC4C46', //Grenadine
-      '#F6D155', //Primrose Yellow
-      '#004B8D', //Lapis Blue
-      '#F2552C', //Flame
-      '#578CA9', //Niagara
-      '#5A7247', //Kale
-      '#005960', //Shaded Spruce
-      '#223A5E', //Navy Peony
-      '#95DEE3', //Island Paradise
-      '#92B558', //Greenery
-      '#AD5D5D', //Dusty Cedar
-    ];
+      //Posibilidades de colores
+      let colores = [
+        {r: 220, g: 76, b: 70}, //Grenadine
+        {r: 246, g: 209, b: 85}, //Primrose Yellow
+        {r: 0, g: 75, b: 141}, //Lapis Blue
+        {r: 242, g: 85, b: 44}, //Flame
+        {r: 87, g: 140, b: 169}, //Niagara
+        {r: 90, g: 114, b: 71}, //Kale
+        {r: 0, g: 89, b: 96}, //Shaded Spruce
+        {r: 34, g: 58, b: 94}, //Navy Peony
+        {r: 149, g: 222, b: 227}, //Island Paradise
+        {r: 146, g: 181, b: 88}, //Greenery
+        {r: 173, g: 93, b: 93}, //Dusty Cedar
+      ];
 
-    let max = (txt.length < 4) ? txt.length : 4;
-    let sum1 = 0; sum2 = 0;
+      let max = (txt.length < 4) ? txt.length : 4;
+      let sum1 = 0; sum2 = 0;
 
-    //Elige el color con las tres primeras letras y el matiz con el resto del texto
-    for (let i = 0; i < max; i += 1) sum1 += txt.charCodeAt(i);
-    for (let i = max; i < txt.length; i += 1) sum2 += txt.charCodeAt(i);
+      //Elige el color con las tres primeras letras y el matiz con el resto del texto
+      for (let i = 0; i < max; i += 1) sum1 += txt.charCodeAt(i);
+      for (let i = max; i < txt.length; i += 1) sum2 += txt.charCodeAt(i);
 
-    let i1 = sum1 % colores.length; //para elegir el color
-    let i2 = (30 - (sum2 % 60)) / 100; //para elegir el matiz
+      let i1 = sum1 % colores.length; //para elegir el color
+      let i2 = (30 - (sum2 % 60)); //para elegir el matiz
 
-    let color = shadeColor(colores[i1], i2);
+      let r = limitar( colores[i1].r + i2, 0, 255);
+      let g = limitar( colores[i1].g + i2, 0, 255);
+      let b = limitar( colores[i1].b + i2, 0, 255);
 
-    //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
-    let txtColor = colorTexto(color);
+      //Decide si el texto será oscuro o claro, dependiendo de la luminosidad
+      let lum = 0.2126*r + 0.7152*g + 0.0722*b;
+      let txtColor = (lum > 110) ? 'black' : 'white;'
 
-    return 'background-color:' + color + '; color:' + txtColor + ';';
-  }
+      let color = 'rgb(' + r + ',' + g + ',' + b + ')';
 
+      return 'background-color:' + color + '; color:' + txtColor + ';';
+    }
+
+    limitar = function(n, min, max) {
+      if (n < min) return min;
+      else if (n > max) return max;
+      return n;
+    }
 
 //------- Helpers globales
   Handlebars.registerHelper('separaConComa', function(txt) {
