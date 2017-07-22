@@ -190,8 +190,7 @@ header {
 }
 
 .desactivado, .desactivado:hover {
-  background-color: white !important;
-  color: #bbb !important;
+  opacity: 0.6;
   filter: none;
   cursor: not-allowed;
 }

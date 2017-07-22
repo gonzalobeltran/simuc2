@@ -206,6 +206,11 @@ Meteor.methods({
     Salas.remove({_id: id});
   },
 
+  'seleccionaSalas'(salas) {
+    Meteor.users.update({_id: this.userId}, {$set: {'profile.salasSeleccionadas': salas}}
+    );
+  },
+
 //------------Funciones de cámara
 
   'creaGrupo'(profesor, integrantes) {

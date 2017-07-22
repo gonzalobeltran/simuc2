@@ -15,6 +15,10 @@ Template.PorDia.onCreated(function(){
     let handle = Subs.subscribe('reservasDia', Session.get('fecha'));
     Session.set('ready', handle.ready());
 
+    if (Meteor.user()) {
+      Session.set('salasSeleccionadas', Meteor.user().profile.salasSeleccionadas);
+    }
+
   });
 });
 
@@ -36,15 +40,20 @@ Template.PorDia.rendered = function() {
 Template.PorDia.helpers({
   salas() { //Lista de salas
     let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
-    Session.set('salas', salas);
     return salas;
+  },
+  salasSeleccionadas() {
+    return Session.get('salasSeleccionadas');
+  },
+  esSala(sala) {
+    if (_.contains(Session.get('salasSeleccionadas'), sala) ) return "selected";
   },
   fecha() { //Retorna la fecha seleccionada
     return Session.get('fecha');
   },
   tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semana');
-    let salas = Session.get('salas');
+    let salas = Session.get('salasSeleccionadas');
     let modulos = Session.get('modulos');
 
     let celdas = [];
@@ -96,6 +105,10 @@ Template.PorDia.helpers({
 Template.PorDia.events({
   'change #fechaDia'(event) { //Cambio en el selector de fecha
     updateFechas(event.target.value);
+  },
+  'change #salas'(event) { //Cambia la selección de salas
+    let salas = _.pluck( _.filter(event.target.options, (i) => {return i.selected}) , 'value');
+    Meteor.call('seleccionaSalas', salas);
   },
   'click .js-editaModulo'() { //Muestra el modal para editar módulos
     if (this.actividad == 'Disponible') this.actividad = '';

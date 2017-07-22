@@ -2,10 +2,9 @@
 
   <div class="print-only"><h4>{{fecha}}</h4><br></div>
 
-  <div class="row no-print">
-    <div class="col-sm-12">
-      <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
-    </div>
+  <div class="no-print">
+    <!-- Fecha -->
+    <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
   </div>
 
   {{#if ready}}
@@ -15,10 +14,20 @@
       <li class="next"><a class="js-diaSig">Siguiente</a></li>
     </ul>
 
+    <!-- Selecciona las salas para mostrar -->
+    <div class="no-print form-group form-group-sm">
+      <label>Salas:</label>
+      <select multiple class="form-control" name="salas" id="salas">
+        {{#each sala in salas}}
+          <option selected="{{esSala sala}}">{{sala}}</option>
+        {{/each}}
+      </select>
+    </div>
+
     <div class="tabla">
       <div class="fila">
         <div class="cabeza">Módulos</div>
-        {{#each salas}}
+        {{#each salasSeleccionadas}}
           <div class="cabeza">{{this}}</div>
         {{/each}}
       </div>
