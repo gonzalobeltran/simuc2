@@ -203,6 +203,10 @@ header {
   color: #4c2;
 }
 
+.diaSel {
+  border: 1px solid blue;
+}
+
 .chkBlocks {
   display: flex;
   width: 100%;

@@ -88,7 +88,19 @@ Template.PorSala.helpers({
     return celdas;
   },
   diasSemana() { //Retorna los días de la semana
-    return Session.get('diasSemana');
+    let hoy = moment().format("dd D/M");
+    let diaSel = moment(Session.get('fecha')).format("dd D/M");
+    let dias = Session.get('diasSemana');
+    let diasSemana = [];
+    for (let d in dias) {
+      diasSemana.push({
+        dia: dias[d],
+        hoy: (dias[d] == hoy) ? 'red' : '',
+        diaSel: (dias[d] == diaSel) ? 'diaSel' : ''
+      });
+    }
+
+    return diasSemana;
   },
   modulo(index) { //Retorna los nombres y horarios de los módulos
     let modulo = Session.get('textoModulo');
