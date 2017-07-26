@@ -103,7 +103,7 @@ adminRoutes.route('/usuarios', {
   },
 });
 
-superadminRoutes.route('/log', {
+adminRoutes.route('/log', {
   name: 'log',
   action() {
     BlazeLayout.render('AppBody', { main: 'Log' });
