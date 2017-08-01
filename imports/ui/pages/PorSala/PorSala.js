@@ -72,7 +72,7 @@ Template.PorSala.helpers({
           fechas: [semana[columna]],
           estaFecha: semana[columna],
           modulos: [modulos[fila]],
-          actividad: (modulos[fila] == 'almuerzo') ? '-' : 'Disponible',
+          actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
         }];
 
         let reservas = Reservas.find({sala: sala, fechas: semana[columna], modulos: modulos[fila]}).fetch();

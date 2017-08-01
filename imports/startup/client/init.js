@@ -200,7 +200,7 @@ Meteor.startup(function(){
   });
 
   Handlebars.registerHelper('color', function() { //Cambia el color dependiendo de la reserva
-    if (!this.actividad || this.actividad == '-' || this.actividad == 'Disponible') return 'background-color: white; color: black;';
+    if (!this.actividad || this.actividad == 'A' || this.actividad == 'Disponible') return 'background-color: white; color: black;';
     if (this.prioridad == 1) return 'background-color: #e90; color: white;'
 
     return textoColor(this.actividad);

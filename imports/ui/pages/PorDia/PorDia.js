@@ -68,7 +68,7 @@ Template.PorDia.helpers({
           fechas: [Session.get('fecha')],
           estaFecha: Session.get('fecha'),
           modulos: [modulos[fila]],
-          actividad: (modulos[fila] == 'almuerzo') ? '-' : 'Disponible',
+          actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
         }];
 
         let reservas = Reservas.find({sala: salas[columna], fechas: Session.get('fecha'), modulos: modulos[fila]}).fetch();

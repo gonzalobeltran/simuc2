@@ -41,7 +41,7 @@ Template.Reservas.helpers({
 
         //Módulo vacío
         celdas[fila][columna] = [{
-          sala: (modulos[fila] == 'almuerzo') ? '.' : '-',
+          sala: (modulos[fila] == 'almuerzo') ? 'A' : '-',
           fecha: semana[columna],
           modulo: modulos[fila],
         }];
