@@ -50,8 +50,8 @@ Meteor.methods({
     check(actividad, String);
     check(integrantes, [String]);
 
-    if (!actividad) {
-      throw new Meteor.Error('Error al reservar','Reserva debe describir una actividad');
+    if (!sala || !fecha || !modulo || !actividad) {
+      throw new Meteor.Error('Error al reservar','Se produjo un error al realizar la reserva');
     }
 
     if (integrantes.length) {
