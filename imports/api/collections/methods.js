@@ -139,7 +139,8 @@ Meteor.methods({
   },
 
   'reservasSuperpuestas'() {
-    return Reservas.aggregate([
+    let hoy = moment().format('YYYY-MM-DD');
+    let superp = Reservas.aggregate([
       {$unwind: "$fechas"},
       {$unwind: "$modulos"},
       {
@@ -149,7 +150,7 @@ Meteor.methods({
         }
       }, {
         $match: {
-          count: {$gt:1}
+          count: {$gt:1},
         }
       }, {
         $sort: {
@@ -157,6 +158,8 @@ Meteor.methods({
         }
       }
     ]).map((d) => {return d._id});
+
+    return _.filter(superp, (r) => {return r.fechas >= hoy});
   },
 
   'cuantasReservas'(sala, fecha, modulo) {
