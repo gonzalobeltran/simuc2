@@ -38,6 +38,10 @@ Meteor.startup(function(){
   Session.set('err', '');
   //Para mostrar superposiciones
   Session.set('superpuestas', '');
+  //En la página Mis Reservas, alterna entre vista de semana y de día
+  Session.set('verDia', 0);
+  //Día para mostrar en la página Mis Reservas (si la vista de un sólo día está seleccionada)
+  Session.set('diaReserva', 0);
 
   let actividades = ['-',
   'Música de Cámara',

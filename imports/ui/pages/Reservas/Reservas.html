@@ -12,7 +12,13 @@
     <h4>Mis Reservas</h4>
 
     {{#if ready}}
-
+      <ul class="pager no-print">
+        <li><button class="btn btn-xs btn-primary js-verDiaFlip">{{textoVerDia}}</button></li>
+        {{#if verDia}}
+          <li class="previous"><a class="js-diaAnt">&larr;</a></li>
+          <li class="next"><a class="js-diaSig">&rarr;</a></li>
+        {{/if}}
+      </ul>
 
       <div class="tabla">
         <div class="fila">

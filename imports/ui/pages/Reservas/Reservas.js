@@ -34,13 +34,21 @@ Template.Reservas.helpers({
     let modulos = Session.get('modulos');
 
     let celdas = [];
+    let ini = 0;
+    let fin = 6;
+    let verDia = Session.get('verDia');
+
+    if (verDia) {
+      ini = fin = Session.get('diaReserva');
+    }
 
     for (let fila = 0; fila < 9; fila += 1) { //9 módulos
       celdas[fila] = [];
-      for (let columna = 0; columna < 7; columna += 1) { //7 días
+      for (let columna = ini; columna <= fin; columna += 1) { //7 días
 
+        let colCelda = verDia ? 0 : columna;
         //Módulo vacío
-        celdas[fila][columna] = [{
+        celdas[fila][colCelda] = [{
           sala: (modulos[fila] == 'almuerzo') ? 'A' : '-',
           fecha: semana[columna],
           modulo: modulos[fila],
@@ -50,7 +58,7 @@ Template.Reservas.helpers({
 
         for (let i in reservas) {
           reservas[i].estaFecha = semana[columna];
-          celdas[fila][columna][i] = reservas[i];
+          celdas[fila][colCelda][i] = reservas[i];
         }
 
       }
@@ -59,6 +67,7 @@ Template.Reservas.helpers({
     return celdas;
   },
   diasSemana() { //Retorna los días de la semana
+    if (Session.get('verDia')) return [Session.get('diasSemanaDesdeHoy')[Session.get('diaReserva')]];
     return Session.get('diasSemanaDesdeHoy');
   },
   modulo(index) { //Retorna los nombres y horarios de los módulos
@@ -98,6 +107,13 @@ Template.Reservas.helpers({
   hayMensaje() {
     config = Session.get('config');
     if (config) return config.mensaje;
+  },
+  verDia() {
+    return Session.get('verDia');
+  },
+  textoVerDia() {
+    if (Session.get('verDia')) return '1 día';
+    return '7 días';
   }
 });
 
@@ -109,4 +125,18 @@ Template.Reservas.events({
       Modal.show('EliminarReserva', this);
     }
   },
+  'click .js-diaAnt'() { //Retrocede la fecha una semana
+    let dia = Session.get('diaReserva') - 1;
+    if (dia < 0) dia = 0;
+    Session.set('diaReserva', dia);
+  },
+  'click .js-diaSig'() { //Adelanta la fecha una semana
+    let dia = Session.get('diaReserva') + 1;
+    if (dia > 6) dia = 6;
+    Session.set('diaReserva', dia);
+  },
+  'click .js-verDiaFlip'() {
+    let verDia = Session.get('verDia');
+    Session.set('verDia', !verDia);
+  }
 });
