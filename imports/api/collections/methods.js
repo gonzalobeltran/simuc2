@@ -141,7 +141,7 @@ Meteor.methods({
   'reservasSuperpuestas'() {
     let hoy = moment().format('YYYY-MM-DD');
     return Reservas.aggregate([
-      {$match: {fechas: {$gte: hoy}}},
+      {$match: {fechas: {$gte: hoy}, prioridad: {$gt: 1}}},
       {$unwind: "$fechas"},
       {$unwind: "$modulos"},
       {
