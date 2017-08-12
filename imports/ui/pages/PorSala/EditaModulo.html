@@ -5,6 +5,7 @@
       <div class="modal-content">
         <div class="modal-body">
 
+          <button type="button" class="btn btn-default btn-sm pull-right" data-dismiss="modal">Cancelar</button>
           <h5>{{sala}}</h5>
           <h5>{{estaFecha}}</h5>
           <hr>
@@ -58,22 +59,15 @@
               <!-- Botones -->
               {{#if _id}}
                 {{#if repite}}
-                  <div class="btn-group-vertical">
                     <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
-                    <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
-                  </div>
-                  <div class="btn-group-vertical pull-right">
                     <button type="button" class="js-eliminaEstaFecha btn btn-warning btn-sm">Eliminar día</button>
-                    <button type="button" class="js-eliminar btn btn-danger btn-sm">Eliminar todas</button>
-                  </div>
+                    <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar todas</button>
                 {{else}}
                   <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
-                  <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
                   <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar</button>
                 {{/if}}
               {{else}}
                 <button type="submit" class="btn btn-primary btn-sm">Reservar</button>
-                <button type="button" class="btn btn-default btn-sm" data-dismiss="modal">Cancelar</button>
               {{/if}}
 
             </form>
