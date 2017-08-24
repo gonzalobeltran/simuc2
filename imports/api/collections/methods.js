@@ -61,15 +61,15 @@ Meteor.methods({
       }
     }
 
+    let prioridad = 1;
+    if ( Salas.find({nombre: sala, prioridad: actividad}).count() ) {
+      prioridad = 2;
+    }
+
     //Verifica que no haya otra reserva en ese módulo
     let hayOtra = Reservas.find({sala: sala, fechas: fecha, modulos: modulo, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
-    }
-
-    let prioridad = 1;
-    if ( Salas.find({nombre: sala, prioridad: actividad}).count() ) {
-      prioridad = 2;
     }
 
     Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
@@ -141,7 +141,7 @@ Meteor.methods({
   'reservasSuperpuestas'() {
     let hoy = moment().format('YYYY-MM-DD');
     return Reservas.aggregate([
-      {$match: {fechas: {$gte: hoy}, prioridad: {$gt: 1}}},
+      {$match: {fechas: {$gte: hoy}, prioridad: {$gt: 0}}},
       {$unwind: "$fechas"},
       {$unwind: "$modulos"},
       {

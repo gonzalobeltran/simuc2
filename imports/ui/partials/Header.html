@@ -9,15 +9,82 @@
       <div class="menu no-print">
         <ul class="nav nav-pills nav-stacked">
 
-          {{#each menu}}
-            {{#if isInRole role}}
-              <li class="{{isActiveRoute route}}">
-                <a href="/{{route}}">
-                  <span class="glyphicon {{icon}}">&nbsp;</span>{{txt}}
-                </a>
-              </li>
-            {{/if}}
-          {{/each}}
+          <!-- Display -->
+          {{#if isInRole 'display'}}
+            <li class="{{isActiveRoute 'display'}}">
+              <a href="/display">
+                <span class="glyphicon glyphicon-facetime-video">&nbsp;</span>Display
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Mis Reservas -->
+          {{#if isInRole 'usuario'}}
+            <li class="{{isActiveRoute 'reservas'}}">
+              <a href="/reservas">
+                <span class="glyphicon glyphicon-pencil">&nbsp;</span>Mis Reservas
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Ver por sala -->
+          <li class="{{isActiveRoute 'porsala'}}">
+            <a href="/porsala">
+              <span class="glyphicon glyphicon-calendar">&nbsp;</span>Ver por sala
+            </a>
+          </li>
+
+          <!-- Ver por día -->
+          <li class="{{isActiveRoute 'pordia'}}">
+            <a href="/pordia">
+              <span class="glyphicon glyphicon-tasks">&nbsp;</span>Ver por día
+            </a>
+          </li>
+
+          <!-- Salas y prioridades -->
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'salas'}}">
+              <a href="/salas">
+                <span class="glyphicon glyphicon-list">&nbsp;</span>Salas y prioridades
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Cámara -->
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'camara'}}">
+              <a href="/camara">
+                <span class="glyphicon glyphicon-music">&nbsp;</span>Cámara
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Usuarios -->
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'usuarios'}}">
+              <a href="/usuarios">
+                <span class="glyphicon glyphicon-user">&nbsp;</span>Usuarios
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Registro -->
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'log'}}">
+              <a href="/log">
+                <span class="glyphicon glyphicon-book">&nbsp;</span>Registro
+              </a>
+            </li>
+          {{/if}}
+
+          <!-- Config -->
+          {{#if isInRole 'admin'}}
+            <li class="{{isActiveRoute 'config'}}">
+              <a href="/config">
+                <span class="glyphicon glyphicon-wrench">&nbsp;</span>Configuración
+              </a>
+            </li>
+          {{/if}}
 
           <li><hr></li>
 
