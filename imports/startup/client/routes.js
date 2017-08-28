@@ -7,6 +7,7 @@ import '/imports/ui/pages/Reservas/Reservas.js';
 import '/imports/ui/pages/PorSala/PorSala.js';
 import '/imports/ui/pages/PorDia/PorDia.js';
 import '/imports/ui/pages/Salas/Salas.js';
+import '/imports/ui/pages/Cursos/Cursos.js';
 import '/imports/ui/pages/Camara/Camara.js';
 import '/imports/ui/pages/Usuarios/Usuarios.js';
 import '/imports/ui/pages/Log/Log.js';
@@ -86,6 +87,13 @@ userRoutes.route('/salas', {
   name: 'salas',
   action() {
     BlazeLayout.render('AppBody', { main: 'Salas' });
+  },
+});
+
+adminRoutes.route('/cursos', {
+  name: 'cursos',
+  action() {
+    BlazeLayout.render('AppBody', { main: 'Cursos' });
   },
 });
 

@@ -3,6 +3,7 @@ import { check } from 'meteor/check';
 
 import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
+import { Cursos } from './collections.js';
 import { Camara } from './collections.js';
 import { Config } from './collections.js';
 import { Log } from './collections.js';

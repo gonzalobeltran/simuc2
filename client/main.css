@@ -230,6 +230,12 @@ header {
   background-color: #c42;
   color: white;
 }
+
+.chkBlock.header {
+  color: white;
+  background-color: grey;
+  border-color: #999;
+}
 /* Media */
 
 .print-only {

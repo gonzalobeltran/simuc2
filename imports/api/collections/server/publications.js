@@ -1,5 +1,6 @@
 import { Salas } from '../collections.js';
 import { Reservas } from '../collections.js';
+import { Cursos } from '../collections.js';
 import { Camara } from '../collections.js';
 import { Config } from '../collections.js';
 import { Log } from '../collections.js';
@@ -45,6 +46,11 @@ Meteor.publish('log', function(filtro, step) {
 //Publica la lista con todas las salas
 Meteor.publish('salas', function() {
   return Salas.find({});
+});
+
+//Publica la lista de cursos para un determinado semestre
+Meteor.publish('cursos', function(anio, semestre) {
+  return Cursos.find({anio: anio, semestre: semestre});
 });
 
 //Publica la lista con los grupos de música de cámara
