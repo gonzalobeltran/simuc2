@@ -155,14 +155,11 @@ Meteor.methods({
         }
       }, {
         $sort: {
-          '_id.fechas': 1
+          '_id.fechas': 1,
+          '_id.modulos': 1,
         }
       }
     ]).map((d) => {return d._id});
-  },
-
-  'cuantasReservas'(sala, fecha, modulo) {
-    return Reservas.find({sala: sala, fechas: fecha, modulos: modulo}).count();
   },
 
 //------------Funciones de salas
