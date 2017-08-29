@@ -7,6 +7,12 @@ import './EliminarReserva.js';
 import './Buscador.js';
 
 Template.Reservas.onCreated(function() {
+
+  //Guarda las reservas superpuestas
+  Meteor.call('reservasSuperpuestas', (err,res) => {
+    if (!err) Session.set('superpuestas', res);
+  });
+
   this.autorun( () => {
     let semana = Session.get('semanaDesdeHoy');
 
@@ -95,10 +101,14 @@ Template.Reservas.helpers({
   },
   hayOtra() {
     if (this.estaFecha) {
-      Meteor.call('cuantasReservas', this.sala, this.estaFecha, this.modulos[0], (err,res) => {
-        Session.set('cuantasReservas', res);
-      });
-      if (Session.get('cuantasReservas') > 1) return 'masDeUna';
+      let superp = Session.get('superpuestas');
+      let esta = {
+        sala: this.sala,
+        fechas: this.estaFecha,
+        modulos: this.modulos[0]
+      }
+
+      if (_.findWhere(superp, esta) ) return 'masDeUna';
     }
   },
   amonestado() {
