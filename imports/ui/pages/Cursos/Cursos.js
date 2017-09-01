@@ -7,26 +7,6 @@ import './Cursos.html';
 import './EditaCurso.js';
 
 Template.Cursos.onCreated(function() {
-
-  Session.set('cursoSeleccionado', null);
-
-  let mods = ['1', '2', '3', 'A', '4', '5', '6', '7', '8'];
-  let selBox = [];
-
-  for(let m = 0; m < 9; m += 1) {
-    selBox[m] = [];
-    for (let d = 0; d < 5; d += 1) {
-      selBox[m][d] = {
-        txt: mods[m],
-        marca: '',
-        dia: d,
-        modulo: m
-      }
-    }
-  }
-
-  Session.set('selBox', selBox);
-
   this.autorun( () => {
     //Se suscribe a la lista de salas
     Subs.subscribe('salas');
@@ -63,23 +43,6 @@ Template.Cursos.helpers({
   esSemestre(sem) {
     if (sem == Session.get('semestre')) return 'selected';
   },
-  cursoSeleccionado() {
-    return('cursoSeleccionado');
-  },
-  salas() { //Lista de salas
-    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
-    return salas;
-  },
-  isSelected(sala) { //Marca la sala seleccionada
-    if (sala == this.sala) return 'selected';
-  },
-  dias() {
-    let dias = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-    return dias;
-  },
-  modulos() {
-    return Session.get('selBox');
-  }
 });
 
 Template.Cursos.events({
@@ -89,15 +52,10 @@ Template.Cursos.events({
   'change #semestre'(event) {
     Session.set('semestre', event.target.value);
   },
-  'click .js-marcaModulo'() {
-    let selBox = Session.get('selBox');
-    selBox[this.modulo][this.dia].marca = (selBox[this.modulo][this.dia].marca == '') ? 'marcado' : '';
-    Session.set('selBox', selBox);
-  },
-  'click .js-creaCurso'() {
-
+  'click .js-nuevoCurso'() {
+    Modal.show('EditaCurso', '');
   },
   'click .js-editaCurso'() {
-
+    Modal.show('EditaCurso', this);
   }
 });

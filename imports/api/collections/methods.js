@@ -38,6 +38,17 @@ var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
   Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
 }
 
+hashCode = function(txt) {
+  let hash = 0, i, chr;
+  if (txt.length === 0) return hash;
+  for (i = 0; i < txt.length; i+=1) {
+    chr   = txt.charCodeAt(i);
+    hash  = ((hash << 5) - hash) + chr;
+    hash |= 0; // Convert to 32bit integer
+  }
+  return hash;
+};
+
 Meteor.methods({
 
 //------------Funciones de Reservas
@@ -157,11 +168,49 @@ Meteor.methods({
       }, {
         $sort: {
           '_id.fechas': 1,
-          '_id.modulos': 1,          
+          '_id.modulos': 1,
         }
       }
     ]).map((d) => {return d._id});
   },
+
+//------------Funciones de cursos
+
+'creaCurso'(anio, semestre, sigla, nombre, profesor, sala, horario) {
+  checkRole(this, 'admin');
+  check(anio, String);
+  check(semestre, String);
+  check(sigla, String);
+  check(nombre, String);
+  check(profesor, String);
+  check(sala, String);
+  check(horario, Array);
+
+  let hash = Cursos.insert({anio: anio, semestre: semestre, sigla: sigla, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
+},
+
+'modificaCurso'(id, anio, semestre, sigla, nombre, profesor, sala, horario) {
+  checkRole(this, 'admin');
+  check(anio, String);
+  check(semestre, String);
+  check(id, String);
+  check(sigla, String);
+  check(nombre, String);
+  check(profesor, String);
+  check(sala, String);
+  check(horario, Array);
+
+  Cursos.update({_id: id},
+    {$set: {anio: anio, semestre: semestre, sigla: sigla, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
+},
+
+'eliminaCurso'(id) {
+  checkRole(this, 'admin');
+  check(id, String);
+
+  Cursos.remove({_id: id});
+},
+
 
 //------------Funciones de salas
 

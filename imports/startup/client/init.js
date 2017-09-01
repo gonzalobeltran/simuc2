@@ -45,7 +45,7 @@ Meteor.startup(function(){
   //Año inicial en Cursos
   Session.set('anio', moment().format('YYYY'));
   //Semestre inicial en Cursos
-  Session.set('semestre', 1);
+  Session.set('semestre', '1');
 
   let actividades = ['-',
   'Música de Cámara',

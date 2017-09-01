@@ -25,50 +25,17 @@
 
     <!-- Lista de cursos -->
     <div class="form-group">
-      <label for="cursos">Cursos:</label>
-      <select name="cursos" id="cursos" class="form-control">
+      <label>Cursos {{anio}}/{{semestre}}:</label>
+      <div class="list-group">
         {{#each cursos}}
-        <option>{{titulo}}</option>
+          <a class="js-editaCurso list-group-item">
+            {{sigla}} {{nombre}} - {{profesor}} - {{sala}}
+          </a>
         {{/each}}
-      </select>
+      </div>
     </div>
 
     <button class="btn btn-primary js-nuevoCurso">Nuevo curso</button>
-
-    <hr>
-
-    {{#with cursoSeleccionado}}
-      <form name="editaCurso">
-        <div class="form-group">
-          <label>Título:</label>
-          <input type="text" class="form-control" value="{{titulo}}" name="titulo">
-        </div>
-
-        <div class="form-group">
-          <label>Sala:</label>
-          <select class="form-control" name="sala">
-            {{#each sala in salas}}
-              <option selected="{{isSelected sala}}">{{sala}}</option>
-            {{/each}}
-          </select>
-        </div>
-
-        <div class="chkBlocks">
-          {{#each dia in dias}}
-            <div class="chkBlock header">{{dia}}</div>
-          {{/each}}
-        </div>
-
-        {{#each modulo in modulos}}
-          <div class="chkBlocks">
-            {{#each modulo}}
-              <div class="chkBlock {{marca}} js-marcaModulo">{{txt}}</div>
-            {{/each}}
-          </div>
-        {{/each}}
-
-      </form>
-    {{/with}}
 
   {{/if}}
 

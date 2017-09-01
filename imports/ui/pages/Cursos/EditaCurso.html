@@ -1,3 +1,65 @@
 <template name="EditaCurso">
-  
+  <div class="modal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-body">
+
+          <button type="button" class="btn btn-default btn-sm pull-right" data-dismiss="modal">Cancelar</button>
+          <h5>Curso {{sigla}} {{nombre}}</h5>
+          <hr>
+
+          <form id="editaCursoForm">
+            <div class="form-group">
+              <label>Sigla:</label>
+              <input type="text" class="form-control" value="{{sigla}}" name="sigla">
+            </div>
+
+            <div class="form-group">
+              <label>Nombre del curso:</label>
+              <input type="text" class="form-control" value="{{nombre}}" name="nombre">
+            </div>
+
+            <div class="form-group">
+              <label>Profesor(es):</label>
+              <input type="text" class="form-control" value="{{profesor}}" name="profesor">
+            </div>
+
+            <div class="form-group">
+              <label>Sala:</label>
+              <select class="form-control" name="sala">
+                {{#each sala in salas}}
+                  <option selected="{{isSelected sala}}">{{sala}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            <div class="chkBlocks">
+              {{#each dia in dias}}
+                <div class="chkBlock header">{{dia}}</div>
+              {{/each}}
+            </div>
+
+            {{#each modulo in modulos}}
+              <div class="chkBlocks">
+                {{#each modulo}}
+                  <div class="chkBlock {{marca}} js-marcaModulo">{{txt}}</div>
+                {{/each}}
+              </div>
+            {{/each}}
+
+            <br>
+
+            {{#if this}}
+              <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+              <button type="button" class="js-eliminaCurso btn btn-danger btn-sm pull-right">Eliminar</button>
+            {{else}}
+              <button type="submit" class="btn btn-primary btn-sm">Crear curso</button>
+            {{/if}}
+
+          </form>
+
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
