@@ -22,7 +22,7 @@ Template.Camara.helpers({
   },
   txtDia() {
     let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
-    return dias[this.dia];
+    return dias[this.horario.dias];
   }
 });
 

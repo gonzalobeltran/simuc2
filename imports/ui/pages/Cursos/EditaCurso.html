@@ -28,21 +28,7 @@
               </select>
             </div>
 
-            <div class="chkBlocks">
-              {{#each dia in dias}}
-                <div class="chkBlock header">{{dia}}</div>
-              {{/each}}
-            </div>
-
-            {{#each modulo in modulos}}
-              <div class="chkBlocks">
-                {{#each modulo}}
-                  <div class="chkBlock {{marca}} js-marcaModulo">{{txt}}</div>
-                {{/each}}
-              </div>
-            {{/each}}
-
-            <br>
+            {{> SelectorDeHorario}}
 
             {{#if this}}
               <button type="submit" class="btn btn-primary btn-sm">Modificar</button>

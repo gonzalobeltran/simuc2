@@ -198,7 +198,7 @@ Meteor.methods({
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
   }
 
-  writeLog(this.userId, sala, 'Crea curso', nombre, [anio + ' Sem-' + semestre], '-');
+  writeLog(this.userId, sala, 'Crea curso', actividad, [anio + ' Sem-' + semestre], '-');
 
 },
 
@@ -227,7 +227,7 @@ Meteor.methods({
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
   }
 
-  writeLog(this.userId, sala, 'Modifica curso', nombre, [anio + ' Sem-' + semestre], '-');
+  writeLog(this.userId, sala, 'Modifica curso', actividad, [anio + ' Sem-' + semestre], '-');
 
 },
 
@@ -244,15 +244,14 @@ Meteor.methods({
 
 //------------Funciones de cámara
 
-  'creaGrupo'(profesor, integrantes, sala, dia, modulo) {
+  'creaGrupo'(profesor, integrantes, sala, horario) {
     checkRole(this, 'admin');
     check(profesor, [String]);
     check(integrantes, [String]);
     check(sala, String);
-    check(dia, String);
-    check(modulo, String);
+    check(horario, Array);
 
-    let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, dia: dia, modulo: modulo});
+    let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario});
 
     let actividad = 'Camara - ' + apellidos(profesor);
 
@@ -260,20 +259,23 @@ Meteor.methods({
     let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
     let fin = moment().year() + finSemestre;
 
-    let fechas = fechasHasta(ini, fin, [Number(dia)]);
-    Reservas.insert({sala: sala, fechas: fechas, modulos: modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: hash});
+    for (let m in horario) {
+      let fechas = fechasHasta(ini, fin, horario[m].dias);
+
+      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: hash});
+    }
+
   },
 
-  'editaGrupo'(id, profesor, integrantes, sala, dia, modulo) {
+  'editaGrupo'(id, profesor, integrantes, sala, horario) {
     checkRole(this, 'admin');
     check(id, String);
     check(profesor, [String]);
     check(integrantes, [String]);
     check(sala, String);
-    check(dia, String);
-    check(modulo, String);
+    check(horario, Array);
 
-    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, dia: dia, modulo: modulo}});
+    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, horario: horario}});
     Reservas.remove({hash: id});
 
     let actividad = 'Camara - ' + apellidos(profesor);
@@ -282,8 +284,11 @@ Meteor.methods({
     let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
     let fin = moment().year() + finSemestre;
 
-    let fechas = fechasHasta(ini, fin, [Number(dia)]);
-    Reservas.insert({sala: sala, fechas: fechas, modulos: modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: id});
+    for (let m in horario) {
+      let fechas = fechasHasta(ini, fin, horario[m].dias);
+
+      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: id});
+    }
 
   },
 
