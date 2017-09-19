@@ -190,7 +190,7 @@ Meteor.methods({
 
   let actividad = nombre + ' - ' + profesor;
   let ini = (semestre == 1) ? '-03-01' : '-08-01';
-  let fin = (semestre == 1) ? '-06-30' : '-11-30';
+  let fin = (semestre == 1) ? '-07-15' : '-12-15';
 
   for (let m in horario) {
     let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
@@ -217,7 +217,7 @@ Meteor.methods({
 
   let actividad = nombre + ' - ' + profesor;
   let ini = (semestre == 1) ? '-03-01' : '-08-01';
-  let fin = (semestre == 1) ? '-06-30' : '-11-30';
+  let fin = (semestre == 1) ? '-07-15' : '-12-15';
 
   Reservas.remove({hash: id});
 
