@@ -253,7 +253,7 @@ Meteor.methods({
 
     let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario});
 
-    let actividad = 'Camara - ' + apellidos(profesor);
+    let actividad = 'Cámara - ' + apellidos(profesor);
 
     let ini = moment().format('YYYY-MM-DD');
     let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
@@ -278,7 +278,7 @@ Meteor.methods({
     Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, horario: horario}});
     Reservas.remove({hash: id});
 
-    let actividad = 'Camara - ' + apellidos(profesor);
+    let actividad = 'Cámara - ' + apellidos(profesor);
 
     let ini = moment().format('YYYY-MM-DD');
     let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
