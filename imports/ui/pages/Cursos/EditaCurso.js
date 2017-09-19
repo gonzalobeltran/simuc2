@@ -23,9 +23,8 @@ Template.EditaCurso.onCreated(function() {
       }
     }
   }
-
-
   Session.set('selBox', selBox);
+
 });
 
 Template.EditaCurso.helpers({
@@ -60,7 +59,6 @@ Template.EditaCurso.events({
 
     let anio = Session.get('anio');
     let semestre = Session.get('semestre');
-    let sigla = event.target.sigla.value;
     let nombre = event.target.nombre.value;
     let profesor = event.target.profesor.value;
     let sala = event.target.sala.value;
@@ -75,12 +73,12 @@ Template.EditaCurso.events({
       if (dias.length) horario.push({modulo: modulos[m], dias: dias});
     }
 
-    if (!sigla || !nombre || !profesor || !sala || !horario.length) return false;
+    if (!nombre || !profesor || !sala || !horario.length) return false;
 
     if (this._id) {
-      Meteor.call('modificaCurso', this._id, anio, semestre, sigla, nombre, profesor, sala, horario);
+      Meteor.call('modificaCurso', this._id, anio, semestre, nombre, profesor, sala, horario);
     } else {
-      Meteor.call('creaCurso', anio, semestre, sigla, nombre, profesor, sala, horario);
+      Meteor.call('creaCurso', anio, semestre, nombre, profesor, sala, horario);
     }
 
     template.find("form").reset();
