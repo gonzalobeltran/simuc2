@@ -1,7 +1,13 @@
 import { Template } from 'meteor/templating';
 import { Camara } from '/imports/api/collections/collections.js';
+import { Salas } from '/imports/api/collections/collections.js';
 
 import './EditaGrupo.html';
+import '../../partials/SelectorDeHorario.js';
+
+Template.EditaGrupo.onCreated(function() {
+  Session.set('horario', this.data.horario);
+});
 
 Template.EditaGrupo.rendered = function(){
   $('#profesor').select2();
@@ -9,6 +15,13 @@ Template.EditaGrupo.rendered = function(){
 }
 
 Template.EditaGrupo.helpers({
+  salas() { //Lista de salas
+    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
+    return salas;
+  },
+  isSelected(sala) { //Marca la sala seleccionada
+    if (sala == this.sala) return 'selected';
+  },
   usuarios() {
     return Session.get('usuarios');
   },
@@ -26,13 +39,18 @@ Template.EditaGrupo.events({
 
     let profesor = _.pluck( _.filter(event.target.profesor.options, (i) => {return i.selected}) , 'value');
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
+    let sala = event.target.sala.value;
 
-    if (!profesor.length || !integrantes.length) return false;
+    //Guarda los módulos marcados en el selector
+    let selBox = Session.get('selBox');
+    let horario = Session.get('horario');
+
+    if (!profesor.length || !integrantes.length || !horario.length) return false;
 
     if (this._id) {
-      Meteor.call('editaGrupo', this._id, profesor, integrantes);
+      Meteor.call('editaGrupo', this._id, profesor, integrantes, sala, horario);
     } else {
-      Meteor.call('creaGrupo', profesor, integrantes);
+      Meteor.call('creaGrupo', profesor, integrantes, sala, horario);
     }
 
     template.find("form").reset();

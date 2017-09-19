@@ -3,6 +3,7 @@ import { check } from 'meteor/check';
 
 import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
+import { Cursos } from './collections.js';
 import { Camara } from './collections.js';
 import { Config } from './collections.js';
 import { Log } from './collections.js';
@@ -35,6 +36,18 @@ var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
   let fecha = fechas[0];
   if (fechas.length > 1) fecha = 'desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1];
   Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
+}
+
+apellidos = function(lista) {
+  let res = [];
+
+  for (let i in lista) {
+    let palabras = lista[i].split(' ');
+    let apellido = palabras[palabras.length - 1];
+    res.push(apellido);
+  }
+
+  return res.join(', ');
 }
 
 Meteor.methods({
@@ -162,71 +175,121 @@ Meteor.methods({
     ]).map((d) => {return d._id});
   },
 
-//------------Funciones de salas
+//------------Funciones de cursos
 
-  'creaSala'(nombre, prioridad, acepta, orden) {
-    checkRole(this, 'superadmin');
-    check(nombre, String);
-    check(prioridad, [String]);
-    check(acepta, [String]);
-    check(orden, Number);
+'creaCurso'(anio, semestre, nombre, profesor, sala, horario) {
+  checkRole(this, 'admin');
+  check(anio, String);
+  check(semestre, String);
+  check(nombre, String);
+  check(profesor, String);
+  check(sala, String);
+  check(horario, Array);
 
-    const existe = Salas.find({nombre: nombre}).count();
+  let hash = Cursos.insert({anio: anio, semestre: semestre, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
 
-    if (existe) {
-      throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
-    }
+  let actividad = nombre + ' - ' + profesor;
+  let ini = (semestre == 1) ? '-03-01' : '-08-01';
+  let fin = (semestre == 1) ? '-06-30' : '-11-30';
 
-    Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden});
-  },
+  for (let m in horario) {
+    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
 
-  'editaSala'(id, nombre, prioridad, acepta, orden) {
-    checkRole(this, 'superadmin');
-    check(id, String);
-    check(nombre, String);
-    check(prioridad, [String]);
-    check(acepta, [String]);
-    check(orden, Number);
+    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
+  }
 
-    let salaOld = Salas.findOne({_id: id});
+  writeLog(this.userId, sala, 'Crea curso', actividad, [anio + ' Sem-' + semestre], '-');
 
-    //Si cambia el nombre de la sala, actualiza todas las reservas hechas en esa sala
-    if (salaOld.nombre != nombre) {
-      Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
-    }
+},
 
-    Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden}});
-  },
+'modificaCurso'(id, anio, semestre, nombre, profesor, sala, horario) {
+  checkRole(this, 'admin');
+  check(anio, String);
+  check(semestre, String);
+  check(id, String);
+  check(nombre, String);
+  check(profesor, String);
+  check(sala, String);
+  check(horario, Array);
 
-  'borraSala'(id) {
-    checkRole(this, 'superadmin');
-    check(id, String);
+  Cursos.update({_id: id},
+    {$set: {anio: anio, semestre: semestre, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
 
-    Salas.remove({_id: id});
-  },
+  let actividad = nombre + ' - ' + profesor;
+  let ini = (semestre == 1) ? '-03-01' : '-08-01';
+  let fin = (semestre == 1) ? '-06-30' : '-11-30';
 
-  'seleccionaSalas'(salas) {
-    Meteor.users.update({_id: this.userId}, {$set: {'profile.salasSeleccionadas': salas}}
-    );
-  },
+  Reservas.remove({hash: id});
+
+  for (let m in horario) {
+    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
+
+    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
+  }
+
+  writeLog(this.userId, sala, 'Modifica curso', actividad, [anio + ' Sem-' + semestre], '-');
+
+},
+
+'eliminaCurso'(id) {
+  checkRole(this, 'admin');
+  check(id, String);
+
+  let old = Cursos.findOne({_id: id});
+  writeLog(this.userId, old.sala, 'Elimina curso', old.nombre, [old.anio + ' Sem-' + old.semestre], '-');
+
+  Cursos.remove({_id: id});
+  Reservas.remove({hash: id});
+},
 
 //------------Funciones de cámara
 
-  'creaGrupo'(profesor, integrantes) {
+  'creaGrupo'(profesor, integrantes, sala, horario) {
     checkRole(this, 'admin');
     check(profesor, [String]);
     check(integrantes, [String]);
+    check(sala, String);
+    check(horario, Array);
 
-    Camara.insert({profesor: profesor, integrantes: integrantes});
+    let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario});
+
+    let actividad = 'Cámara - ' + apellidos(profesor);
+
+    let ini = moment().format('YYYY-MM-DD');
+    let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
+    let fin = moment().year() + finSemestre;
+
+    for (let m in horario) {
+      let fechas = fechasHasta(ini, fin, horario[m].dias);
+
+      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: hash});
+    }
+
   },
 
-  'editaGrupo'(id, profesor, integrantes) {
+  'editaGrupo'(id, profesor, integrantes, sala, horario) {
     checkRole(this, 'admin');
     check(id, String);
     check(profesor, [String]);
     check(integrantes, [String]);
+    check(sala, String);
+    check(horario, Array);
 
-    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes}});
+    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, horario: horario}});
+    Reservas.remove({hash: id});
+
+    let actividad = 'Cámara - ' + apellidos(profesor);
+
+    let ini = moment().format('YYYY-MM-DD');
+    let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
+    let fin = moment().year() + finSemestre;
+
+    for (let m in horario) {
+      let fechas = fechasHasta(ini, fin, horario[m].dias);
+
+      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: id});
+    }
+
   },
 
   'borraGrupo'(id) {
@@ -234,8 +297,56 @@ Meteor.methods({
     check(id, String);
 
     Camara.remove({_id: id});
+    Reservas.remove({hash: id});
   },
 
+  //------------Funciones de salas
+
+    'creaSala'(nombre, prioridad, acepta, orden) {
+      checkRole(this, 'superadmin');
+      check(nombre, String);
+      check(prioridad, [String]);
+      check(acepta, [String]);
+      check(orden, Number);
+
+      const existe = Salas.find({nombre: nombre}).count();
+
+      if (existe) {
+        throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
+      }
+
+      Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden});
+    },
+
+    'editaSala'(id, nombre, prioridad, acepta, orden) {
+      checkRole(this, 'superadmin');
+      check(id, String);
+      check(nombre, String);
+      check(prioridad, [String]);
+      check(acepta, [String]);
+      check(orden, Number);
+
+      let salaOld = Salas.findOne({_id: id});
+
+      //Si cambia el nombre de la sala, actualiza todas las reservas hechas en esa sala
+      if (salaOld.nombre != nombre) {
+        Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
+      }
+
+      Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden}});
+    },
+
+    'borraSala'(id) {
+      checkRole(this, 'superadmin');
+      check(id, String);
+
+      Salas.remove({_id: id});
+    },
+
+    'seleccionaSalas'(salas) {
+      Meteor.users.update({_id: this.userId}, {$set: {'profile.salasSeleccionadas': salas}}
+      );
+    },
 
 //------------Funciones de usuario
   'creaUsuario'(nombre, email, clave, ocupacion, instrumento) {

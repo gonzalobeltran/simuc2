@@ -1,0 +1,42 @@
+<template name="Cursos">
+
+  <h4>Cursos</h4>
+
+    <!-- Selecciona año y semestre -->
+    <div class="row">
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="anio">Año:</label>
+          <input type="text" class="form-control" value="{{anio}}" id="anio">
+        </div>
+      </div>
+      <div class="col-sm-6">
+        <div class="form-group">
+          <label for="semestre">Semestre:</label>
+          <select name="semestre" id="semestre" class="form-control">
+            <option selected="{{esSemestre 1}}">1</option>
+            <option selected="{{esSemestre 2}}">2</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+  {{#if ready}}
+
+    <!-- Lista de cursos -->
+    <div class="form-group">
+      <label>Cursos {{anio}}/{{semestre}}:</label>
+      <div class="list-group">
+        {{#each cursos}}
+          <a class="js-editaCurso list-group-item">
+            {{sigla}} {{nombre}} - {{profesor}} - {{sala}}
+          </a>
+        {{/each}}
+      </div>
+    </div>
+
+    <button class="btn btn-primary js-nuevoCurso">Nuevo curso</button>
+
+  {{/if}}
+
+</template>

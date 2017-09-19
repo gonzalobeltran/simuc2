@@ -213,11 +213,12 @@ header {
 }
 
 .chkBlock {
+  flex: auto;
+  flex-basis: 0;
   border: 1px solid grey;
   background-color: white;
   color: grey;
   padding: 5px;
-  width: 11%;
   text-align: center;
 }
 
@@ -229,6 +230,12 @@ header {
   border: 1px solid #b31;
   background-color: #c42;
   color: white;
+}
+
+.chkBlock.header {
+  color: white;
+  background-color: grey;
+  border-color: #999;
 }
 /* Media */
 

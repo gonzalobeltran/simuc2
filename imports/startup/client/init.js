@@ -42,6 +42,11 @@ Meteor.startup(function(){
   Session.set('verDia', 0);
   //Día para mostrar en la página Mis Reservas (si la vista de un sólo día está seleccionada)
   Session.set('diaReserva', 0);
+  //Año inicial en Cursos
+  Session.set('anio', moment().format('YYYY'));
+  //Semestre inicial en Cursos
+  let sem = (moment().month() < 6) ? '1' : '2';
+  Session.set('semestre', sem);
 
   let actividades = ['-',
   'Música de Cámara',

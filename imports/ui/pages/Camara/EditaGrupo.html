@@ -26,6 +26,17 @@
               </select>
             </div>
 
+            <div class="form-group">
+              <label>Sala:</label>
+              <select class="form-control" name="sala">
+                {{#each sala in salas}}
+                  <option selected="{{isSelected sala}}">{{sala}}</option>
+                {{/each}}
+              </select>
+            </div>
+
+            {{> SelectorDeHorario}}
+
             {{#if this}}
               <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
               <button type="button" class="js-borraGrupo btn btn-danger btn-sm pull-right">Eliminar</button>
