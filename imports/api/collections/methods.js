@@ -38,17 +38,6 @@ var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
   Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
 }
 
-hashCode = function(txt) {
-  let hash = 0, i, chr;
-  if (txt.length === 0) return hash;
-  for (i = 0; i < txt.length; i+=1) {
-    chr   = txt.charCodeAt(i);
-    hash  = ((hash << 5) - hash) + chr;
-    hash |= 0; // Convert to 32bit integer
-  }
-  return hash;
-};
-
 Meteor.methods({
 
 //------------Funciones de Reservas
@@ -187,6 +176,19 @@ Meteor.methods({
   check(horario, Array);
 
   let hash = Cursos.insert({anio: anio, semestre: semestre, sigla: sigla, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
+
+  let actividad = sigla + ' ' + nombre + ' - ' + profesor;
+  let ini = (semestre == 1) ? '-03-01' : '-08-01';
+  let fin = (semestre == 1) ? '-06-30' : '-11-30';
+
+  for (let m in horario) {
+    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
+
+    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
+  }
+
+  writeLog(this.userId, sala, 'Crea curso', nombre, [anio + ' Sem-' + semestre], '-');
+
 },
 
 'modificaCurso'(id, anio, semestre, sigla, nombre, profesor, sala, horario) {
@@ -202,13 +204,32 @@ Meteor.methods({
 
   Cursos.update({_id: id},
     {$set: {anio: anio, semestre: semestre, sigla: sigla, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
+
+  let actividad = sigla + ' ' + nombre + ' - ' + profesor;
+  let ini = (semestre == 1) ? '-03-01' : '-08-01';
+  let fin = (semestre == 1) ? '-06-30' : '-11-30';
+
+  Reservas.remove({hash: id});
+
+  for (let m in horario) {
+    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
+
+    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
+  }
+
+  writeLog(this.userId, sala, 'Modifica curso', nombre, [anio + ' Sem-' + semestre], '-');
+
 },
 
 'eliminaCurso'(id) {
   checkRole(this, 'admin');
   check(id, String);
 
+  let old = Cursos.findOne({_id: id});
+  writeLog(this.userId, old.sala, 'Elimina curso', old.nombre, [old.anio + ' Sem-' + old.semestre], '-');
+
   Cursos.remove({_id: id});
+  Reservas.remove({hash: id});
 },
 
 
