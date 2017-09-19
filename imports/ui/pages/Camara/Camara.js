@@ -21,8 +21,16 @@ Template.Camara.helpers({
     return Camara.find({}, {sort:{profesor:1}});
   },
   txtDia() {
-    let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
-    return dias[this.horario.dias];
+    if (!this.horario) return false;
+
+    let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+    let horario = this.horario;
+
+    let txt = horario.map((m) => {
+      return m.dias.map((d) => {return dias[d]}).join(', ') + ': ' + m.modulo;
+    });
+
+    return txt.join('; ');
   }
 });
 
