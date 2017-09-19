@@ -18,7 +18,7 @@ Template.Camara.onCreated(function() {
 
 Template.Camara.helpers({
   grupos() {
-    return Camara.find({});
+    return Camara.find({}, {sort:{profesor:1}});
   },
   txtDia() {
     let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi'];
