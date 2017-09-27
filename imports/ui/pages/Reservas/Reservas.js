@@ -9,7 +9,7 @@ import './Buscador.js';
 Template.Reservas.onCreated(function() {
 
   //Guarda las reservas superpuestas
-  Meteor.call('reservasSuperpuestas', (err,res) => {
+  Meteor.call('reservasSuperpuestas', 1, (err,res) => {
     if (!err) Session.set('superpuestas', res);
   });
 

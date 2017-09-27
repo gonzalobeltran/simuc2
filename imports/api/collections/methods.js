@@ -151,10 +151,12 @@ Meteor.methods({
     writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha], old.modulos);
   },
 
-  'reservasSuperpuestas'() {
+  'reservasSuperpuestas'(prioridad) {
+    check(prioridad, Number);
+
     let hoy = moment().format('YYYY-MM-DD');
     return Reservas.aggregate([
-      {$match: {fechas: {$gte: hoy}, prioridad: {$gt: 0}}},
+      {$match: {fechas: {$gte: hoy}, prioridad: {$gte: prioridad}}},
       {$unwind: "$fechas"},
       {$unwind: "$modulos"},
       {

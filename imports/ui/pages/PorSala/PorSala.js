@@ -19,7 +19,7 @@ Template.PorSala.onCreated(function(){
 
   });
 
-  Meteor.call('reservasSuperpuestas', (err,res) => {
+  Meteor.call('reservasSuperpuestas', 2, (err,res) => {
     if (!err) Session.set('superpuestas', res);
   });
 
