@@ -258,7 +258,7 @@ Meteor.methods({
     let actividad = 'Cámara - ' + apellidos(profesor);
 
     let ini = moment().format('YYYY-MM-DD');
-    let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
+    let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
     let fin = moment().year() + finSemestre;
 
     for (let m in horario) {
@@ -283,7 +283,7 @@ Meteor.methods({
     let actividad = 'Cámara - ' + apellidos(profesor);
 
     let ini = moment().format('YYYY-MM-DD');
-    let finSemestre = (moment().month<6) ? '-06-30' : '-11-30';
+    let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
     let fin = moment().year() + finSemestre;
 
     for (let m in horario) {

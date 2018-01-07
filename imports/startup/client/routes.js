@@ -90,7 +90,7 @@ userRoutes.route('/salas', {
   },
 });
 
-superadminRoutes.route('/cursos', {
+adminRoutes.route('/cursos', {
   name: 'cursos',
   action() {
     BlazeLayout.render('AppBody', { main: 'Cursos' });
