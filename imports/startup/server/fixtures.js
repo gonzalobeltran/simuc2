@@ -47,9 +47,6 @@ Meteor.startup(() => {
     maxReservas: 1,
     maxCamaraPorSemana: 1,
     mensaje: '-',
-    fecha1: moment().format('YYYY-MM-DD'),
-    fecha2: moment().format('YYYY-MM-DD'),
-    fecha3: moment().format('YYYY-MM-DD')
   }
 
   if (Config.find().count() === 0) Config.insert(configuracion);

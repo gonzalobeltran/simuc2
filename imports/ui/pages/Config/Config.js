@@ -6,47 +6,6 @@ Template.Config.onCreated(function() {
   Session.set('ok', '');
 });
 
-Template.Config.rendered = function() {
-  $('#fecha1').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: new Date(),
-  });
-
-  $('#fecha2').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: new Date(),
-  });
-
-  $('#fecha3').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: new Date(),
-  });
-}
-
 Template.Config.helpers({
   doc() {
     return Session.get('config');
@@ -76,9 +35,6 @@ Template.Config.events({
       maxReservas: event.target.maxReservas.value,
       maxCamaraPorSemana: event.target.maxCamara.value,
       mensaje: event.target.mensaje.value,
-      fecha1: event.target.fecha1.value,
-      fecha2: event.target.fecha2.value,
-      fecha3: event.target.fecha3.value,
     }
 
     Meteor.call('cambiaConfig', config, (err, res) => {

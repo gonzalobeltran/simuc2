@@ -138,6 +138,18 @@ Template.Cursos.helpers({
   esSemestre(sem) {
     if (sem == Session.get('semestre')) return 'selected';
   },
+  txtDia() {
+    if (!this.horario) return false;
+
+    let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
+    let horario = this.horario;
+
+    let txt = horario.map((m) => {
+      return m.dias.map((d) => {return dias[d]}).join(', ') + ': ' + m.modulo;
+    });
+
+    return txt.join('; ');
+  },
 });
 
 Template.Cursos.events({

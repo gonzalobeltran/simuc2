@@ -215,7 +215,7 @@ header {
 .chkBlock {
   flex: auto;
   flex-basis: 0;
-  border: 1px solid grey;
+  border: 1px solid #ccc;
   background-color: white;
   color: grey;
   padding: 5px;

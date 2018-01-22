@@ -26,27 +26,27 @@
       <div class="col-sm-3">
         <div class="form-group">
           <label>UNIV: Inicio</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.iniUniv}}" name="fecha1" id="iniUniv">
+          <input type="text" class="form-control" value="{{fechasSemestre.iniUniv}}" id="iniUniv">
         </div>
       </div>
       <div class="col-sm-3">
         <div class="form-group">
           <label>UNIV: Fin</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.finUniv}}" name="fecha2" id="finUniv">
+          <input type="text" class="form-control" value="{{fechasSemestre.finUniv}}" id="finUniv">
         </div>
       </div>
 
       <div class="col-sm-3">
         <div class="form-group">
           <label>CE: Inicio</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.iniCE}}" name="fecha1" id="iniCE">
+          <input type="text" class="form-control" value="{{fechasSemestre.iniCE}}" id="iniCE">
         </div>
       </div>
 
       <div class="col-sm-3">
         <div class="form-group">
           <label>CE: Fin</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.finCE}}" name="fecha2" id="finCE">
+          <input type="text" class="form-control" value="{{fechasSemestre.finCE}}" id="finCE">
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
       <div class="list-group">
         {{#each cursos}}
           <a class="js-editaCurso list-group-item">
-            {{sigla}} {{nombre}} - {{profesor}} - {{sala}}
+            {{sigla}} {{nombre}} - {{profesor}} - {{sala}} - {{txtDia}}
           </a>
         {{/each}}
       </div>
