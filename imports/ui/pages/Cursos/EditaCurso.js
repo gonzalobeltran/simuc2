@@ -38,9 +38,9 @@ Template.EditaCurso.events({
     if (!nombre || !profesor || !sala || !horario.length) return false;
 
     if (this._id) {
-      Meteor.call('modificaCurso', this._id, anio, semestre, nombre, profesor, sala, horario);
+      Meteor.call('modificaCurso', this._id, anio, semestre, this.ini, this.fin, nombre, profesor, sala, horario);
     } else {
-      Meteor.call('creaCurso', anio, semestre, nombre, profesor, sala, horario);
+      Meteor.call('creaCurso', anio, semestre, this.ini, this.fin, nombre, profesor, sala, horario);
     }
 
     template.find("form").reset();

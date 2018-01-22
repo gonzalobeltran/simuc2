@@ -179,23 +179,23 @@ Meteor.methods({
 
 //------------Funciones de cursos
 
-'creaCurso'(anio, semestre, nombre, profesor, sala, horario) {
+'creaCurso'(anio, semestre, ini, fin, nombre, profesor, sala, horario) {
   checkRole(this, 'admin');
   check(anio, String);
   check(semestre, String);
+  check(ini, String);
+  check(fin, String);
   check(nombre, String);
   check(profesor, String);
   check(sala, String);
   check(horario, Array);
 
-  let hash = Cursos.insert({anio: anio, semestre: semestre, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
+  let hash = Cursos.insert({anio: anio, semestre: semestre, ini: ini, fin: fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
 
   let actividad = nombre + ' - ' + profesor;
-  let ini = (semestre == 1) ? '-03-01' : '-08-01';
-  let fin = (semestre == 1) ? '-07-15' : '-12-15';
 
   for (let m in horario) {
-    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
+    let fechas = fechasHasta(ini, fin, horario[m].dias);
 
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
   }
@@ -204,10 +204,12 @@ Meteor.methods({
 
 },
 
-'modificaCurso'(id, anio, semestre, nombre, profesor, sala, horario) {
+'modificaCurso'(id, anio, semestre, ini, fin, nombre, profesor, sala, horario) {
   checkRole(this, 'admin');
   check(anio, String);
   check(semestre, String);
+  check(ini, String);
+  check(fin, String);
   check(id, String);
   check(nombre, String);
   check(profesor, String);
@@ -215,16 +217,14 @@ Meteor.methods({
   check(horario, Array);
 
   Cursos.update({_id: id},
-    {$set: {anio: anio, semestre: semestre, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
+    {$set: {anio: anio, semestre: semestre, ini:ini, fin:fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
 
   let actividad = nombre + ' - ' + profesor;
-  let ini = (semestre == 1) ? '-03-01' : '-08-01';
-  let fin = (semestre == 1) ? '-07-15' : '-12-15';
 
   Reservas.remove({hash: id});
 
   for (let m in horario) {
-    let fechas = fechasHasta(anio + ini, anio + fin, horario[m].dias);
+    let fechas = fechasHasta(ini, fin, horario[m].dias);
 
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
   }
@@ -483,8 +483,16 @@ Meteor.methods({
   'cambiaConfig'(doc) {
     checkRole(this, 'admin');
 
+    Config.update({mensaje: {$exists: true}}, {$set: doc});
+  },
 
-    Config.update({}, {$set: doc});
+  'fechasSemestre'(anio, semestre, cual, fecha) {
+    checkRole(this, 'admin');
+
+    let cambia = {};
+    cambia[cual] = fecha;
+
+    Config.upsert({anio: anio, semestre: semestre}, {$set: cambia});
   },
 
 //------------Funciones para ver si se autoriza un usuario para reservar

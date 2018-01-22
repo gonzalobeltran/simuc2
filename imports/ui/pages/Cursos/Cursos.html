@@ -21,6 +21,38 @@
       </div>
     </div>
 
+    <!-- Fechas de inicio y fin de semestre - Universitarios-->
+    <div class="row">
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>UNIV: Inicio</label>
+          <input type="text" class="form-control" value="{{fechasSemestre.iniUniv}}" name="fecha1" id="iniUniv">
+        </div>
+      </div>
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>UNIV: Fin</label>
+          <input type="text" class="form-control" value="{{fechasSemestre.finUniv}}" name="fecha2" id="finUniv">
+        </div>
+      </div>
+
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>CE: Inicio</label>
+          <input type="text" class="form-control" value="{{fechasSemestre.iniCE}}" name="fecha1" id="iniCE">
+        </div>
+      </div>
+
+      <div class="col-sm-3">
+        <div class="form-group">
+          <label>CE: Fin</label>
+          <input type="text" class="form-control" value="{{fechasSemestre.finCE}}" name="fecha2" id="finCE">
+        </div>
+      </div>
+    </div>
+
+  <hr>
+
   {{#if ready}}
 
     <!-- Lista de cursos -->
@@ -35,7 +67,8 @@
       </div>
     </div>
 
-    <button class="btn btn-primary js-nuevoCurso">Nuevo curso</button>
+    <button class="btn btn-primary js-nuevoCursoUniv">Nuevo curso - Universitario</button>
+    <button class="btn btn-info js-nuevoCursoCE">Nuevo curso - Ciclo Elemental</button>
 
   {{/if}}
 
