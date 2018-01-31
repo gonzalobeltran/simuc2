@@ -124,7 +124,7 @@ Template.Cursos.rendered = function() {
 
 Template.Cursos.helpers({
   cursos() {
-    return Cursos.find({anio: Session.get('anio'), semestre: Session.get('semestre')});
+    return Cursos.find({anio: Session.get('anio'), semestre: Session.get('semestre')}, {sort: {nombre: 1}});
   },
   anio() {
     return Session.get('anio');
