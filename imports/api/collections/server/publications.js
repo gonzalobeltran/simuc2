@@ -49,8 +49,8 @@ Meteor.publish('salas', function() {
 });
 
 //Publica la lista de cursos para un determinado semestre
-Meteor.publish('cursos', function(anio, semestre) {
-  return Cursos.find({anio: anio, semestre: semestre});
+Meteor.publish('cursos', function(periodo) {
+  return Cursos.find({periodo: periodo});
 });
 
 //Publica la lista con los grupos de música de cámara

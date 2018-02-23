@@ -8,33 +8,23 @@ import './Cursos.html';
 import './EditaCurso.js';
 
 var nuevoSemestre = function() {
-  let anio = Session.get('anio');
-  let semestre = Session.get('semestre');
-  let fechasSemestre = Config.findOne({anio: anio, semestre: semestre});
+  let periodo = Session.get('periodo');
+  let fechasPeriodo = Config.findOne({periodo: periodo});
 
-  Session.set('fechasSemestre', fechasSemestre);
+  Session.set('fechasPeriodo', fechasPeriodo);
 }
 
 var updateDTPickers = function() {
-  let sem = Session.get('fechasSemestre');
-  if (!sem) {
-    let anio = Session.get('anio');
-    let semestre = Session.get('semestre');
-    let ini = (semestre == 1) ? '-03-01' : '-08-01';
-    let fin = (semestre == 1) ? '-07-15' : '-12-15';
-
-    sem = {
-      iniUniv: anio + ini,
-      finUniv: anio + fin,
-      iniCE: anio + ini,
-      finCE: anio + fin,
+  let fechas = Session.get('fechasPeriodo');
+  if (!fechas) {
+    fechas = {
+      ini: moment().format('YYYY'),
+      fin: moment().format('YYYY'),
     }
   }
 
-  $('#iniUniv').datepicker('update', sem.iniUniv);
-  $('#finUniv').datepicker('update', sem.finUniv);
-  $('#iniCE').datepicker('update', sem.iniCE);
-  $('#finCE').datepicker('update', sem.finCE);
+  $('#ini').datepicker('update', fechas.ini);
+  $('#fin').datepicker('update', fechas.fin);
 }
 
 Template.Cursos.onCreated(function() {
@@ -42,11 +32,9 @@ Template.Cursos.onCreated(function() {
     //Se suscribe a la lista de salas
     Subs.subscribe('salas');
     Subs.subscribe('config');
-    let anio = Session.get('anio');
-    let semestre = Session.get('semestre');
 
-    //Se suscribe a los cursos de un determinado semestre
-    let handle = Subs.subscribe('cursos', anio, semestre);
+    //Se suscribe a los cursos de un determinado periodo
+    let handle = Subs.subscribe('cursos', Session.get('periodo'));
     Session.set('ready', handle.ready());
 
     //Carga las fechas de inicio y fin para el semestre seleccionado
@@ -55,21 +43,10 @@ Template.Cursos.onCreated(function() {
 });
 
 Template.Cursos.rendered = function() {
-  let fechasSemestre = Session.get('fechasSemestre');
+  let fechasPeriodo = Session.get('fechasPeriodo');
 
-  //Inicializa el selectores de fecha
-  $('#anio').datepicker({
-    format: 'yyyy',
-    viewMode: 2,
-    minViewMode: 2,
-    maxViewMode: 2,
-    autoclose: true,
-    disableTouchKeyboard: true,
-    language: "es",
-    setDate: Session.get('fecha'),
-  });
-
-  $('#iniUniv').datepicker({
+  //Inicializa los selectores de fecha
+  $('#ini').datepicker({
     format: 'yyyy-mm-dd',
     autoclose: true,
     todayBtn: "linked",
@@ -79,10 +56,10 @@ Template.Cursos.rendered = function() {
     maxViewMode: 2,
     language: "es",
     startDate: new Date(),
-    setDate: fechasSemestre.iniUniv,
+    setDate: fechasPeriodo.ini,
   });
 
-  $('#finUniv').datepicker({
+  $('#fin').datepicker({
     format: 'yyyy-mm-dd',
     autoclose: true,
     todayBtn: "linked",
@@ -92,51 +69,37 @@ Template.Cursos.rendered = function() {
     maxViewMode: 2,
     language: "es",
     startDate: new Date(),
-    setDate: fechasSemestre.finUniv,
-  });
-
-  $('#iniCE').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: fechasSemestre.iniCE,
-  });
-
-  $('#finCE').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: fechasSemestre.finCE,
+    setDate: fechasPeriodo.fin,
   });
 }
 
 Template.Cursos.helpers({
   cursos() {
-    return Cursos.find({anio: Session.get('anio'), semestre: Session.get('semestre')}, {sort: {nombre: 1}});
+    return Cursos.find({periodo: Session.get('periodo')}, {sort: {nombre: 1}});
   },
-  anio() {
-    return Session.get('anio');
+  periodo() {
+    return Session.get('periodo');
   },
-  semestre() {
-    return Session.get('semestre');
+  periodos() {
+    let thisYear = moment().format('YYYY');
+    let nextYear = moment().add(1, 'year').format('YYYY');
+
+    let lista = [
+      thisYear + ' - Anual',
+      thisYear + ' - 1er Sem',
+      thisYear + ' - 2o Sem',
+      nextYear + ' - Anual',
+      nextYear + ' - 1er Sem',
+      nextYear + ' - 2o Sem'
+    ];
+
+    return lista;
   },
-  fechasSemestre() {
-    return Session.get('fechasSemestre');
+  fechasPeriodo() {
+    return Session.get('fechasPeriodo');
   },
-  esSemestre(sem) {
-    if (sem == Session.get('semestre')) return 'selected';
+  esPeriodo(periodo) {
+    if (periodo == Session.get('periodo')) return 'selected';
   },
   txtDia() {
     if (!this.horario) return false;
@@ -153,35 +116,20 @@ Template.Cursos.helpers({
 });
 
 Template.Cursos.events({
-  'change #anio'(event) {
-    Session.set('anio', event.target.value);
+  'change #periodo'(event) {
+    Session.set('periodo', event.target.value);
     nuevoSemestre();
     updateDTPickers();
   },
-  'change #semestre'(event) {
-    Session.set('semestre', event.target.value);
-    nuevoSemestre();
-    updateDTPickers();
+  'change #ini'(event) {
+    Meteor.call('fechasPeriodo', Session.get('periodo'), 'ini', event.target.value);
   },
-  'change #iniUniv'(event) {
-    Meteor.call('fechasSemestre', Session.get('anio'), Session.get('semestre'), 'iniUniv', event.target.value);
+  'change #fin'(event) {
+    Meteor.call('fechasPeriodo', Session.get('periodo'), 'fin', event.target.value);
   },
-  'change #finUniv'(event) {
-    Meteor.call('fechasSemestre', Session.get('anio'), Session.get('semestre'), 'finUniv', event.target.value);
-  },
-  'change #iniCE'(event) {
-    Meteor.call('fechasSemestre', Session.get('anio'), Session.get('semestre'), 'iniCE', event.target.value);
-  },
-  'change #finCE'(event) {
-    Meteor.call('fechasSemestre', Session.get('anio'), Session.get('semestre'), 'finCE', event.target.value);
-  },
-  'click .js-nuevoCursoUniv'() {
-    let sem = Session.get('fechasSemestre');
-    Modal.show('EditaCurso', {ini: sem.iniUniv, fin: sem.finUniv});
-  },
-  'click .js-nuevoCursoCE'() {
-    let sem = Session.get('fechasSemestre');
-    Modal.show('EditaCurso', {ini: sem.iniCE, fin: sem.finCE});
+  'click .js-nuevoCurso'() {
+    let fechas = Session.get('fechasPeriodo');
+    Modal.show('EditaCurso', {ini: fechas.ini, fin: fechas.fin});
   },
   'click .js-editaCurso'() {
     Modal.show('EditaCurso', this);

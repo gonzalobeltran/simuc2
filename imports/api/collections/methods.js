@@ -179,10 +179,9 @@ Meteor.methods({
 
 //------------Funciones de cursos
 
-'creaCurso'(anio, semestre, ini, fin, nombre, profesor, sala, horario) {
+'creaCurso'(periodo, ini, fin, nombre, profesor, sala, horario) {
   checkRole(this, 'admin');
-  check(anio, String);
-  check(semestre, String);
+  check(periodo, String);
   check(ini, String);
   check(fin, String);
   check(nombre, String);
@@ -190,7 +189,7 @@ Meteor.methods({
   check(sala, String);
   check(horario, Array);
 
-  let hash = Cursos.insert({anio: anio, semestre: semestre, ini: ini, fin: fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
+  let hash = Cursos.insert({periodo: periodo, ini: ini, fin: fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
 
   let actividad = nombre + ' - ' + profesor;
 
@@ -200,14 +199,13 @@ Meteor.methods({
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
   }
 
-  writeLog(this.userId, sala, 'Crea curso', actividad, [anio + ' Sem-' + semestre], '-');
+  writeLog(this.userId, sala, 'Crea curso', actividad, [periodo], '-');
 
 },
 
-'modificaCurso'(id, anio, semestre, ini, fin, nombre, profesor, sala, horario) {
+'modificaCurso'(id, periodo, ini, fin, nombre, profesor, sala, horario) {
   checkRole(this, 'admin');
-  check(anio, String);
-  check(semestre, String);
+  check(periodo, String);
   check(ini, String);
   check(fin, String);
   check(id, String);
@@ -217,7 +215,7 @@ Meteor.methods({
   check(horario, Array);
 
   Cursos.update({_id: id},
-    {$set: {anio: anio, semestre: semestre, ini:ini, fin:fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
+    {$set: {periodo: periodo, ini:ini, fin:fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
 
   let actividad = nombre + ' - ' + profesor;
 
@@ -229,7 +227,7 @@ Meteor.methods({
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
   }
 
-  writeLog(this.userId, sala, 'Modifica curso', actividad, [anio + ' Sem-' + semestre], '-');
+  writeLog(this.userId, sala, 'Modifica curso', actividad, [periodo], '-');
 
 },
 
@@ -238,7 +236,7 @@ Meteor.methods({
   check(id, String);
 
   let old = Cursos.findOne({_id: id});
-  writeLog(this.userId, old.sala, 'Elimina curso', old.nombre, [old.anio + ' Sem-' + old.semestre], '-');
+  writeLog(this.userId, old.sala, 'Elimina curso', old.nombre, [old.periodo], '-');
 
   Cursos.remove({_id: id});
   Reservas.remove({hash: id});
@@ -486,13 +484,13 @@ Meteor.methods({
     Config.update({mensaje: {$exists: true}}, {$set: doc});
   },
 
-  'fechasSemestre'(anio, semestre, cual, fecha) {
+  'fechasPeriodo'(periodo, cual, fecha) {
     checkRole(this, 'admin');
 
     let cambia = {};
     cambia[cual] = fecha;
 
-    Config.upsert({anio: anio, semestre: semestre}, {$set: cambia});
+    Config.upsert({periodo: periodo}, {$set: cambia});
   },
 
 //------------Funciones para ver si se autoriza un usuario para reservar

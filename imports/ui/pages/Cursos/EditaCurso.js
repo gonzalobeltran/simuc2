@@ -28,8 +28,7 @@ Template.EditaCurso.events({
   'submit #editaCursoForm'(event, template) {
     event.preventDefault();
 
-    let anio = Session.get('anio');
-    let semestre = Session.get('semestre');
+    let periodo = Session.get('periodo');
     let nombre = event.target.nombre.value;
     let profesor = event.target.profesor.value;
     let sala = event.target.sala.value;
@@ -38,9 +37,9 @@ Template.EditaCurso.events({
     if (!nombre || !profesor || !sala || !horario.length) return false;
 
     if (this._id) {
-      Meteor.call('modificaCurso', this._id, anio, semestre, this.ini, this.fin, nombre, profesor, sala, horario);
+      Meteor.call('modificaCurso', this._id, periodo, this.ini, this.fin, nombre, profesor, sala, horario);
     } else {
-      Meteor.call('creaCurso', anio, semestre, this.ini, this.fin, nombre, profesor, sala, horario);
+      Meteor.call('creaCurso', periodo, this.ini, this.fin, nombre, profesor, sala, horario);
     }
 
     template.find("form").reset();

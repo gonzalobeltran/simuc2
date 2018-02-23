@@ -2,53 +2,34 @@
 
   <h4>Cursos</h4>
 
-    <!-- Selecciona año y semestre -->
+    <!-- Periodo y fechas de inicio y fin -->
     <div class="row">
-      <div class="col-sm-6">
+
+      <div class="col-sm-4">
         <div class="form-group">
-          <label for="anio">Año:</label>
-          <input type="text" class="form-control" value="{{anio}}" id="anio">
-        </div>
-      </div>
-      <div class="col-sm-6">
-        <div class="form-group">
-          <label for="semestre">Semestre:</label>
-          <select name="semestre" id="semestre" class="form-control">
-            <option selected="{{esSemestre 1}}">1</option>
-            <option selected="{{esSemestre 2}}">2</option>
+          <label for="semestre">Periodo:</label>
+          <select name="periodo" id="periodo" class="form-control">
+            {{#each periodos}}
+              <option selected="{{esPeriodo this}}">{{this}}</option>
+            {{/each}}
           </select>
         </div>
       </div>
-    </div>
 
-    <!-- Fechas de inicio y fin de semestre - Universitarios-->
-    <div class="row">
-      <div class="col-sm-3">
+      <div class="col-sm-4">
         <div class="form-group">
-          <label>UNIV: Inicio</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.iniUniv}}" id="iniUniv">
-        </div>
-      </div>
-      <div class="col-sm-3">
-        <div class="form-group">
-          <label>UNIV: Fin</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.finUniv}}" id="finUniv">
+          <label>Inicio</label>
+          <input type="text" class="form-control" value="{{fechasPeriodo.ini}}" id="ini">
         </div>
       </div>
 
-      <div class="col-sm-3">
+      <div class="col-sm-4">
         <div class="form-group">
-          <label>CE: Inicio</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.iniCE}}" id="iniCE">
+          <label>Fin</label>
+          <input type="text" class="form-control" value="{{fechasPeriodo.fin}}" id="fin">
         </div>
       </div>
 
-      <div class="col-sm-3">
-        <div class="form-group">
-          <label>CE: Fin</label>
-          <input type="text" class="form-control" value="{{fechasSemestre.finCE}}" id="finCE">
-        </div>
-      </div>
     </div>
 
   <hr>
@@ -57,7 +38,7 @@
 
     <!-- Lista de cursos -->
     <div class="form-group">
-      <label>Cursos {{anio}}/{{semestre}}:</label>
+      <label>Cursos {{periodo}}:</label>
       <div class="list-group">
         {{#each cursos}}
           <a class="js-editaCurso list-group-item">
@@ -67,8 +48,7 @@
       </div>
     </div>
 
-    <button class="btn btn-primary js-nuevoCursoUniv">Nuevo curso - Universitario</button>
-    <button class="btn btn-info js-nuevoCursoCE">Nuevo curso - Ciclo Elemental</button>
+    <button class="btn btn-primary js-nuevoCurso">Nuevo curso</button>
 
   {{/if}}
 
