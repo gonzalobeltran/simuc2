@@ -389,7 +389,7 @@ Meteor.methods({
     for (let d in data) {
       let u = data[d];
       if (!Meteor.users.findOne({'emails.0.address': u.email}) ) {
-        Meteor.call('creaUsuario',u.nombre, u.email, u.clave, u.ocupacion, u.instrumento);
+        Meteor.call('creaUsuario',u.nombre, u.email, u.clave, u.ocupacion, [u.instrumento]);
       }
     }
   },
