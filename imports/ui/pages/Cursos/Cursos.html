@@ -1,8 +1,9 @@
 <template name="Cursos">
 
   <h4>Cursos</h4>
+  <!-- Periodo y fechas de inicio y fin -->
+  <form id="fechasPeriodoForm">
 
-    <!-- Periodo y fechas de inicio y fin -->
     <div class="row">
 
       <div class="col-sm-4">
@@ -19,18 +20,21 @@
       <div class="col-sm-4">
         <div class="form-group">
           <label>Inicio</label>
-          <input type="text" class="form-control" value="{{fechasPeriodo.ini}}" id="ini">
+          <input type="text" class="form-control" value="{{fechasPeriodo.ini}}" id="ini" name="fechaIni">
         </div>
       </div>
 
       <div class="col-sm-4">
         <div class="form-group">
           <label>Fin</label>
-          <input type="text" class="form-control" value="{{fechasPeriodo.fin}}" id="fin">
+          <input type="text" class="form-control" value="{{fechasPeriodo.fin}}" id="fin" name="fechaFin">
         </div>
       </div>
 
     </div>
+
+    <button type="submit" class="btn btn-primary">Modificar fechas</button>
+  </form>
 
   <hr>
 
@@ -38,7 +42,7 @@
 
     <!-- Lista de cursos -->
     <div class="form-group">
-      <label>Cursos {{periodo}}:</label>
+      <label>{{periodo}} / {{fechasPeriodo.ini}} a {{fechasPeriodo.fin}}</label>
       <div class="list-group">
         {{#each cursos}}
           <a class="js-editaCurso list-group-item">

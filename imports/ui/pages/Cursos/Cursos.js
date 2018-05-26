@@ -75,23 +75,13 @@ Template.Cursos.rendered = function() {
 
 Template.Cursos.helpers({
   cursos() {
-    return Cursos.find({periodo: Session.get('periodo')}, {sort: {nombre: 1}});
+    return Cursos.find({periodo: Session.get('periodo')}, {sort: {nombre: 1, profesor: 1}});
   },
   periodo() {
     return Session.get('periodo');
   },
   periodos() {
-    let thisYear = moment().format('YYYY');
-    let nextYear = moment().add(1, 'year').format('YYYY');
-
-    let lista = [
-      thisYear + ' - Anual',
-      thisYear + ' - 1er Sem',
-      thisYear + ' - 2o Sem',
-      nextYear + ' - Anual',
-      nextYear + ' - 1er Sem',
-      nextYear + ' - 2o Sem'
-    ];
+    let lista = ['Anual', '1er Sem', '2o Sem', 'Conjuntos estables'];
 
     return lista;
   },
@@ -121,17 +111,19 @@ Template.Cursos.events({
     nuevoSemestre();
     updateDTPickers();
   },
-  'change #ini'(event) {
-    Meteor.call('fechasPeriodo', Session.get('periodo'), 'ini', event.target.value);
-  },
-  'change #fin'(event) {
-    Meteor.call('fechasPeriodo', Session.get('periodo'), 'fin', event.target.value);
-  },
   'click .js-nuevoCurso'() {
     let fechas = Session.get('fechasPeriodo');
     Modal.show('EditaCurso', {ini: fechas.ini, fin: fechas.fin});
   },
   'click .js-editaCurso'() {
     Modal.show('EditaCurso', this);
-  }
+  },
+  'submit #fechasPeriodoForm'(event, template) {
+    event.preventDefault();
+    let periodo = event.target.periodo.value;
+    let fechaIni = event.target.fechaIni.value;
+    let fechaFin = event.target.fechaFin.value;
+
+    Meteor.call('fechasPeriodo', periodo, fechaIni, fechaFin)
+  },
 });

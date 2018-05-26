@@ -43,7 +43,7 @@ Meteor.startup(function(){
   //Día para mostrar en la página Mis Reservas (si la vista de un sólo día está seleccionada)
   Session.set('diaReserva', 0);
   //Periodo inicial en Cursos
-  Session.set('periodo', moment().format('YYYY') + ' - Anual');
+  Session.set('periodo', 'Anual');
 
   let actividades = ['-',
   'Música de Cámara',

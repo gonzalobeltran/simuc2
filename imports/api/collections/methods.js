@@ -484,13 +484,14 @@ Meteor.methods({
     Config.update({mensaje: {$exists: true}}, {$set: doc});
   },
 
-  'fechasPeriodo'(periodo, cual, fecha) {
+  'fechasPeriodo'(periodo, fechaIni, fechaFin) {
     checkRole(this, 'admin');
 
-    let cambia = {};
-    cambia[cual] = fecha;
+    Config.upsert({periodo: periodo}, {$set: {ini: fechaIni, fin: fechaFin}});
 
-    Config.upsert({periodo: periodo}, {$set: cambia});
+    Cursos.find({periodo: periodo}).map( (d) => {
+      Meteor.call('modificaCurso', d._id, periodo, fechaIni, fechaFin, d.nombre, d.profesor, d.sala, d.horario);
+    });
   },
 
 //------------Funciones para ver si se autoriza un usuario para reservar
