@@ -192,6 +192,7 @@ Meteor.methods({
   let hash = Cursos.insert({periodo: periodo, ini: ini, fin: fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
 
   let actividad = nombre + ' - ' + profesor;
+  if (profesor == '-') actividad = nombre;
 
   for (let m in horario) {
     let fechas = fechasHasta(ini, fin, horario[m].dias);
@@ -218,6 +219,7 @@ Meteor.methods({
     {$set: {periodo: periodo, ini:ini, fin:fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
 
   let actividad = nombre + ' - ' + profesor;
+  if (profesor == '-') actividad = nombre;
 
   Reservas.remove({hash: id});
 
