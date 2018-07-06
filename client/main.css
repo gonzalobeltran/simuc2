@@ -50,7 +50,7 @@ header {
 
 .titulo {
   color: #febe10;
-  font-size: 1.2em;
+  font-size: 1em;
   font-weight: bold;
   padding: 6px 10px 6px 10px;
 }
@@ -63,6 +63,7 @@ header {
   padding: 6px 10px 6px 10px;
   border-radius: 5px;
   height: 100%;
+  font-size: 0.8em;
 }
 
 .menu-bkg {
@@ -102,10 +103,10 @@ header {
   left: calc(100% - 250px);
 }
 
-.nav li a {
+.nav-link {
   padding-top: 5px;
   padding-bottom: 5px;
-  border-radius: 0px;
+  border-radius: 0px !important;
 }
 /* Contenido */
 
@@ -154,7 +155,8 @@ header {
 }
 
 .masDeUna {
-  filter: drop-shadow(0px 0px 5px red);
+  border: 5px solid black;
+  border-radius: 4px;
 }
 
 .reserva{

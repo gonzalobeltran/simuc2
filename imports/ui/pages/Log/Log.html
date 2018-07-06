@@ -4,11 +4,12 @@
     <input type="text" class="form-control" placeholder="Buscar..." value="{{logFiltro}}" id="filtro">
   </div>
 
-  <ul class="pager no-print">
-    <li class="previous"><a class="js-Ant">Anterior</a></li>
-    <li><a class="js-Reset">{{logStep}}</a></li>
-    <li class="next"><a class="js-Sig">Siguiente</a></li>
-  </ul>
+  <div class="d-flex justify-content-between">
+    <button type="button" class="btn btn-light js-Ant"><i class="fa fa-angle-left"></i></button>
+    <button type="button" class="btn btn-light js-Reset">{{logStep}}</button>
+    <button type="button" class="btn btn-light js-Sig"><i class="fa fa-angle-right"></i></button>
+  </div>
+
 
   {{#if ready}}
     <div class="tabla">

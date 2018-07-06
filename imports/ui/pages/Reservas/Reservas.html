@@ -9,16 +9,16 @@
     <h1>Usuario amonestado hasta {{amonestado}}</h1>
   {{else}}
 
+    <button class="btn btn-sm btn-primary js-verDiaFlip float-right">{{textoVerDia}}</button>
     <h4>Mis Reservas</h4>
 
+    <br>
+
     {{#if ready}}
-      <ul class="pager no-print">
-        <li><button class="btn btn-xs btn-primary js-verDiaFlip">{{textoVerDia}}</button></li>
-        {{#if verDia}}
-          <li class="previous"><a class="js-diaAnt">&larr;</a></li>
-          <li class="next"><a class="js-diaSig">&rarr;</a></li>
-        {{/if}}
-      </ul>
+      {{#if verDia}}
+        <button type="button" class="btn btn-light js-diaAnt"><i class="fa fa-angle-left"></i></button>
+        <button type="button" class="btn btn-light float-right js-diaSig"><i class="fa fa-angle-right"></i></button>
+      {{/if}}
 
       <div class="tabla">
         <div class="fila">

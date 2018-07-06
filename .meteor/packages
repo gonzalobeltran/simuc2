@@ -22,7 +22,8 @@ kadira:blaze-layout     # Layout manager for blaze (works well with FlowRouter)
 underscore@1.0.10
 
 session@1.1.7
-twbs:bootstrap
+alexwine:bootstrap-4
+fortawesome:fontawesome
 rajit:bootstrap3-datepicker-es
 jasny:bootstrap
 natestrauser:select2

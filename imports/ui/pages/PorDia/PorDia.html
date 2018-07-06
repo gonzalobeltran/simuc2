@@ -2,17 +2,8 @@
 
   <div class="print-only"><h4>{{fecha}}</h4><br></div>
 
-  <div class="no-print">
-    <!-- Fecha -->
-    <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
-  </div>
-
   {{#if ready}}
-    <!-- Avanzar o retroceder la fecha -->
-    <ul class="pager no-print">
-      <li class="previous"><a class="js-diaAnt">Anterior</a></li>
-      <li class="next"><a class="js-diaSig">Siguiente</a></li>
-    </ul>
+
 
     <!-- Selecciona las salas para mostrar -->
     <div class="no-print form-group form-group-sm">
@@ -23,6 +14,16 @@
         {{/each}}
       </select>
     </div>
+
+    <div class="no-print">
+      <!-- Fecha -->
+      <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
+    </div>
+
+    <!-- Avanzar o retroceder la fecha -->
+    <br>
+    <button type="button" class="btn btn-light js-diaAnt"><i class="fa fa-angle-left"></i></button>
+    <button type="button" class="btn btn-light float-right js-diaSig"><i class="fa fa-angle-right"></i></button>
 
     <div class="tabla">
       <div class="fila">

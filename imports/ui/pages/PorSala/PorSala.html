@@ -16,11 +16,41 @@
   </div>
 
   {{#if ready}}
+  <br>
     <!-- Avanzar o retroceder la fecha -->
-    <ul class="pager no-print">
-      <li class="previous"><a class="js-semanaAnt">Anterior</a></li>
-      <li class="next"><a class="js-semanaSig">Siguiente</a></li>
-    </ul>
+    <button type="button" class="btn btn-light js-semanaAnt"><i class="fa fa-angle-left"></i></button>
+    <button type="button" class="btn btn-light float-right js-semanaSig"><i class="fa fa-angle-right"></i></button>
+
+    <!-- <div class="tabla">
+      <div class="fila">
+        <div class="cabeza">Módulos</div>
+        {{#each diasSemana}}
+          <div class="cabeza {{diaSel}} {{hoy}}">{{dia}}</div>
+        {{/each}}
+      </div>
+
+      {{#each fila in tablaReservas}}
+        <div class="fila">
+          <div class="cabeza">{{modulo @index}}</div>
+          {{#each celda in fila}}
+            <div class="cell">
+              <div class="contenedor {{masDeUna celda}}">
+                {{#each celda}}
+                  <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
+                    {{actividad}}
+                    {{#if repite}}
+                      <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
+                    {{/if}}
+                  </div>
+                {{/each}}
+              </div>
+            </div>
+          {{/each}}
+        </div>
+      {{/each}}
+
+    </div> -->
+
 
     <div class="tabla">
       <div class="fila">
@@ -52,11 +82,14 @@
 
     </div>
 
+
+
+
   {{#if isInRole 'admin'}}
     <div class="cuadroSuperpuestas">
       <p><strong>Reservas superpuestas: </strong></p>
       {{#each superpuestas}}
-        <a class="js-verReserva">{{sala}} / {{fechas}} / Módulo {{modulos}}</a><br>
+        <a class="js-verReserva" href="#">{{sala}} / {{fechas}} / Módulo {{modulos}}</a><br>
       {{else}}
         <p>No hay ninguna superposición de reservas</p>
       {{/each}}

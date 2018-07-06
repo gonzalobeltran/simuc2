@@ -1,108 +1,88 @@
 <template name="Header">
   <header class="no-print">
 
-    <button class="btn menu-btn pull-right"><span class="glyphicon glyphicon-menu-hamburger"></span></button>
+    <button class="btn menu-btn float-right"><i class="fa fa-bars"></i></button>
     <div class="titulo">SalasIMUC</div>
 
     {{#if currentUser}}
       <div class="menu-bkg"></div>
       <div class="menu no-print">
-        <ul class="nav nav-pills nav-stacked">
+        <nav class="nav nav-pills flex-column">
 
           <!-- Display -->
           {{#if isInRole 'display'}}
-            <li class="{{isActiveRoute 'display'}}">
-              <a href="/display">
-                <span class="glyphicon glyphicon-facetime-video">&nbsp;</span>Display
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'display'}}" href="/display">
+              <span class="glyphicon glyphicon-facetime-video">&nbsp;</span>Display
+            </a>
           {{/if}}
 
           <!-- Mis Reservas -->
           {{#if isInRole 'usuario'}}
-            <li class="{{isActiveRoute 'reservas'}}">
-              <a href="/reservas">
-                <span class="glyphicon glyphicon-pencil">&nbsp;</span>Mis Reservas
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'reservas'}}" href="/reservas">
+              <i class="fa fa-edit"></i>&nbsp;Mis Reservas
+            </a>
           {{/if}}
 
           <!-- Ver por sala -->
-          <li class="{{isActiveRoute 'porsala'}}">
-            <a href="/porsala">
-              <span class="glyphicon glyphicon-calendar">&nbsp;</span>Ver por sala
-            </a>
-          </li>
+          <a class="nav-item nav-link {{isActiveRoute 'porsala'}}" href="/porsala">
+            <i class="fa fa-building"></i>&nbsp;Ver por sala
+          </a>
 
           <!-- Ver por día -->
-          <li class="{{isActiveRoute 'pordia'}}">
-            <a href="/pordia">
-              <span class="glyphicon glyphicon-tasks">&nbsp;</span>Ver por día
-            </a>
-          </li>
+          <a class="nav-item nav-link {{isActiveRoute 'pordia'}}" href="/pordia">
+            <i class="fa fa-calendar"></i>&nbsp;Ver por día
+          </a>
 
           <!-- Salas y prioridades -->
           {{#if isInRole 'admin'}}
-            <li class="{{isActiveRoute 'salas'}}">
-              <a href="/salas">
-                <span class="glyphicon glyphicon-list">&nbsp;</span>Salas y prioridades
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'salas'}}" href="/salas">
+              <i class="fa fa-list"></i>&nbsp;Salas y prioridades
+            </a>
           {{/if}}
 
           <!-- Cursos -->
           {{#if isInRole 'admin'}}
-            <li class="{{isActiveRoute 'cursos'}}">
-              <a href="/cursos">
-                <span class="glyphicon glyphicon-blackboard">&nbsp;</span>Cursos
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'cursos'}}" href="/cursos">
+              <i class="fa fa-graduation-cap"></i>&nbsp;Cursos
+            </a>
           {{/if}}
 
           <!-- Cámara -->
           {{#if isInRole 'admin'}}
-            <li class="{{isActiveRoute 'camara'}}">
-              <a href="/camara">
-                <span class="glyphicon glyphicon-music">&nbsp;</span>Cámara
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'camara'}}" href="/camara">
+              <i class="fa fa-music"></i>&nbsp;Cámara
+            </a>
           {{/if}}
 
           <!-- Usuarios -->
           {{#if isInRole 'admin'}}
-            <li class="{{isActiveRoute 'usuarios'}}">
-              <a href="/usuarios">
-                <span class="glyphicon glyphicon-user">&nbsp;</span>Usuarios
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'usuarios'}}" href="/usuarios">
+              <i class="fa fa-address-book"></i>&nbsp;Usuarios
+            </a>
           {{/if}}
 
           <!-- Registro -->
           {{#if isInRole 'admin'}}
-            <li class="{{isActiveRoute 'log'}}">
-              <a href="/log">
-                <span class="glyphicon glyphicon-book">&nbsp;</span>Registro
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'log'}}" href="/log">
+              <i class="fa fa-book"></i>&nbsp;Registro
+            </a>
           {{/if}}
 
           <!-- Config -->
           {{#if isInRole 'superadmin'}}
-            <li class="{{isActiveRoute 'config'}}">
-              <a href="/config">
-                <span class="glyphicon glyphicon-wrench">&nbsp;</span>Configuración
-              </a>
-            </li>
+            <a class="nav-item nav-link {{isActiveRoute 'config'}}" href="/config">
+              <i class="fa fa-wrench"></i>&nbsp;Configuración
+            </a>
           {{/if}}
 
-          <li><hr></li>
+          <hr>
 
-          <li><a class="js-ayuda"><span class="glyphicon glyphicon-question-sign">&nbsp;</span>Ayuda</a></li>
-          <li><a class="js-reglamento"><span class="glyphicon glyphicon-list-alt">&nbsp;</span>Reglamento</a></li>
-          <li><a href="/change-password"><span class="glyphicon glyphicon-lock">&nbsp;</span>Cambiar clave</a></li>
-          <li><a class="js-signOut"><span class="glyphicon glyphicon-log-out">&nbsp;</span>Salir</a></li>
+          <a class="nav-item nav-link js-ayuda" href="#"><i class="fa fa-question-circle"></i>&nbsp;Ayuda</a>
+          <a class="nav-item nav-link js-reglamento" href="#"><i class="fa fa-info-circle"></i>&nbsp;Reglamento</a>
+          <a class="nav-item nav-link" href="/change-password"><i class="fa fa-key"></i>&nbsp;Cambiar clave</a>
+          <a class="nav-item nav-link js-signOut" href="#"><i class="fa fa-sign-out"></i>&nbsp;Salir</a>
 
-        </ul>
+        </nav>
       </div>
     {{/if}}
 
