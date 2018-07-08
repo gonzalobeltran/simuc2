@@ -115,57 +115,59 @@ header {
   min-height: 700px;
 }
 
-.tabla {
-  border-radius: 5px;
-  background-color: #eee;
-  overflow-x: auto;
+:root {
+  --colNum: 7;
 }
 
-.fila {
-  display: table;
-  width: 100%;
-  table-layout: fixed;
+.main-table {
+  margin-top: 5px;
+  display: grid;
+  grid-template-columns: 100px 1fr;
+  grid-gap: 1px;
+}
+
+.columna1 {
+  display: grid;
+  grid-gap: 1px;
+  grid-template-rows: 30px repeat(9, 55px);
+  font-size: 0.8em;
+}
+
+.gtable {
+  display: grid;
+  grid-template-columns: repeat(var(--colNum), 1fr);
+  grid-template-rows: 30px repeat(9, 55px);
+  overflow-x: scroll;
+  -webkit-overflow-scrolling: touch;
+  grid-gap: 1px;
+}
+
+.columna1>div, .gtable>div {
+  text-align: center;
+  border: 1px solid #ccc;
+  min-width: 100px;
+  font-size: 0.8em;
+  border-radius: 0px;
 }
 
 .cabeza {
-  display: table-cell;
   background-color: #eee;
-  border-radius: 4px;
-  border: 1px solid #e8e8e8;
-  font-size: 0.9em;
-  width: 140px;
-  text-align: center;
-  padding: 10px;
+  padding: 5px;
   font-weight: bold;
-}
-
-.cell {
-  display: table-cell;
-  background-color: white;
-  border: 1px solid #f9f9f9;
-  font-size: 0.9em;
-  width: 140px;
-  height: 100%;
-}
-
-.contenedor {
-  display: table;
-  width: 100%;
-  height: 100%;
+  overflow-y: scroll;
 }
 
 .masDeUna {
-  border: 5px solid black;
-  border-radius: 4px;
+  border: 4px solid black !important;
+  border-radius: 4px !important;
 }
 
-.reserva{
-  background-color: white;
-  display: table-cell;
-  text-align: center;
-  padding: 10px;
+.reserva {
+  padding: 0px 3px 0px 3px;
   cursor: copy;
-  border-radius: 4px;
+  width: 100%;
+  overflow-y: scroll;
+  border-radius: 0px;
 }
 
 .reserva:hover {
@@ -192,7 +194,7 @@ header {
 }
 
 .desactivado, .desactivado:hover {
-  opacity: 0.6;
+  opacity: 0.7;
   filter: none;
   cursor: not-allowed;
 }
@@ -206,7 +208,8 @@ header {
 }
 
 .diaSel {
-  border: 1px solid blue;
+  border: 2px solid blue !important;
+  border-radius: 4px !important;
 }
 
 .chkBlocks {

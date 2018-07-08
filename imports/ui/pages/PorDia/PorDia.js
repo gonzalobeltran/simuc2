@@ -17,6 +17,7 @@ Template.PorDia.onCreated(function(){
 
     if (Meteor.user()) {
       Session.set('salasSeleccionadas', Meteor.user().profile.salasSeleccionadas);
+      document.documentElement.style.setProperty("--colNum", Meteor.user().profile.salasSeleccionadas.length);
     }
 
   });
@@ -83,9 +84,8 @@ Template.PorDia.helpers({
 
     return celdas;
   },
-  modulo(index) { //Retorna los nombres y horarios de los módulos
-    let modulo = Session.get('textoModulo');
-    return modulo[index];
+  modulos() { //Retorna los nombres y horarios de los módulos
+    return Session.get('textoModulo');
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
     if (this.estaFecha < Session.get('hoy')) return 'desactivado';
@@ -114,11 +114,11 @@ Template.PorDia.events({
     if (this.actividad == 'Disponible') this.actividad = '';
     Modal.show('EditaModulo', this);
   },
-  'click .js-diaAnt'() { //Retrocede la fecha una semana
+  'click .js-diaAnt'() { //Retrocede la fecha un día
     cambiaFecha(-1);
     $('#fechaDia').datepicker('update', Session.get('fecha'));
   },
-  'click .js-diaSig'() { //Adelanta la fecha una semana
+  'click .js-diaSig'() { //Adelanta la fecha un día
     cambiaFecha(1);
     $('#fechaDia').datepicker('update', Session.get('fecha'));
   },

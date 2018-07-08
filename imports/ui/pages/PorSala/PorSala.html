@@ -21,75 +21,42 @@
     <button type="button" class="btn btn-light js-semanaAnt"><i class="fa fa-angle-left"></i></button>
     <button type="button" class="btn btn-light float-right js-semanaSig"><i class="fa fa-angle-right"></i></button>
 
-    <!-- <div class="tabla">
-      <div class="fila">
-        <div class="cabeza">Módulos</div>
-        {{#each diasSemana}}
-          <div class="cabeza {{diaSel}} {{hoy}}">{{dia}}</div>
+    <div class="main-table">
+      <div class="columna1">
+        {{#each modulos}}
+          <div class="cabeza">{{this}}</div>
         {{/each}}
       </div>
 
-      {{#each fila in tablaReservas}}
-        <div class="fila">
-          <div class="cabeza">{{modulo @index}}</div>
-          {{#each celda in fila}}
-            <div class="cell">
-              <div class="contenedor {{masDeUna celda}}">
-                {{#each celda}}
-                  <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
-                    {{actividad}}
-                    {{#if repite}}
-                      <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
-                    {{/if}}
-                  </div>
-                {{/each}}
-              </div>
-            </div>
-          {{/each}}
-        </div>
-      {{/each}}
-
-    </div> -->
-
-
-    <div class="tabla">
-      <div class="fila">
-        <div class="cabeza">Módulos</div>
+      <div class="gtable">
         {{#each diasSemana}}
           <div class="cabeza {{diaSel}} {{hoy}}">{{dia}}</div>
         {{/each}}
-      </div>
 
-      {{#each fila in tablaReservas}}
-        <div class="fila">
-          <div class="cabeza">{{modulo @index}}</div>
+        {{#each fila in tablaReservas}}
           {{#each celda in fila}}
-            <div class="cell">
-              <div class="contenedor {{masDeUna celda}}">
-                {{#each celda}}
-                  <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
-                    {{actividad}}
-                    {{#if repite}}
-                      <div class="pin"><span class="glyphicon glyphicon-pushpin"></span></div>
-                    {{/if}}
-                  </div>
-                {{/each}}
-              </div>
+            <div class="d-flex {{masDeUna celda}}">
+              {{#each celda}}
+                <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
+                  {{actividad}}
+                  {{#if repite}}
+                    <div class="pin"><i class="fa fa-map-pin"></i></div>
+                  {{/if}}
+                </div>
+              {{/each}}
             </div>
           {{/each}}
-        </div>
-      {{/each}}
+        {{/each}}
+      </div>
 
     </div>
-
-
 
 
   {{#if isInRole 'admin'}}
     <div class="cuadroSuperpuestas">
       <p><strong>Reservas superpuestas: </strong></p>
       {{#each superpuestas}}
-        <a class="js-verReserva" href="#">{{sala}} / {{fechas}} / Módulo {{modulos}}</a><br>
+        <a class="js-verReserva" href="#">{{sala}} / {{fechas}}</a><br>
       {{else}}
         <p>No hay ninguna superposición de reservas</p>
       {{/each}}

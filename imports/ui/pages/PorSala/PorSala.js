@@ -16,7 +16,7 @@ Template.PorSala.onCreated(function(){
     //Se suscribe a las reservas de la sala activa y la semana activa, de lunes a domingo
     let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
-
+    document.documentElement.style.setProperty("--colNum", 7);
   });
 
   Meteor.call('reservasSuperpuestas', 2, (err,res) => {
@@ -102,9 +102,8 @@ Template.PorSala.helpers({
 
     return diasSemana;
   },
-  modulo(index) { //Retorna los nombres y horarios de los módulos
-    let modulo = Session.get('textoModulo');
-    return modulo[index];
+  modulos() { //Retorna los nombres y horarios de los módulos
+    return Session.get('textoModulo');
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
     if (this.estaFecha < Session.get('hoy')) return 'desactivado';
@@ -120,7 +119,18 @@ Template.PorSala.helpers({
     return '';
   },
   superpuestas() {
-    return Session.get('superpuestas');
+    let superp = Session.get('superpuestas');
+    let mix = [];
+    let strip = [];
+
+    superp.forEach((e) => {
+      if ($.inArray(e.sala+e.fechas, mix) === -1) {
+        mix.push(e.sala+e.fechas);
+        strip.push({sala: e.sala, fechas: e.fechas});
+      }
+    });
+
+    return strip;
   }
 });
 

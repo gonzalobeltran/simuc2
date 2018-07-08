@@ -16,7 +16,7 @@ Template.Display.onCreated(function(){
 
     let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
     Session.set('salas', salas);
-
+    document.documentElement.style.setProperty("--colNum", 10);
   });
 });
 
@@ -71,9 +71,8 @@ Template.Display.helpers({
 
     return celdas;
   },
-  modulo(index) { //Retorna los nombres y horarios de los módulos
-    let modulo = Session.get('textoModulo');
-    return modulo[index];
+  modulos() { //Retorna los nombres y horarios de los módulos
+    return Session.get('textoModulo');
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
     if (this.estaFecha < Session.get('hoy')) return 'desactivado';

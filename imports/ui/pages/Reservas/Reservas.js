@@ -15,6 +15,7 @@ Template.Reservas.onCreated(function() {
 
   this.autorun( () => {
     let semana = Session.get('semanaDesdeHoy');
+    document.documentElement.style.setProperty("--colNum", 1 + 6 * !Session.get('verDia'));
 
     if (Meteor.user()) {
       //Revisa si el usuario está amonestado
@@ -76,9 +77,8 @@ Template.Reservas.helpers({
     if (Session.get('verDia')) return [Session.get('diasSemanaDesdeHoy')[Session.get('diaReserva')]];
     return Session.get('diasSemanaDesdeHoy');
   },
-  modulo(index) { //Retorna los nombres y horarios de los módulos
-    let modulo = Session.get('textoModulo');
-    return modulo[index];
+  modulos() { //Retorna los nombres y horarios de los módulos
+    return Session.get('textoModulo');
   },
   repite() { //Agrega un pin si es una reserva con repetición
     if (this.fechas && this.fechas.length > 1) return true;
@@ -120,6 +120,10 @@ Template.Reservas.helpers({
   },
   verDia() {
     return Session.get('verDia');
+  },
+  tipoTabla() {
+    if (Session.get('verDia')) return 'gtableUnDia'
+    return 'gtable';
   },
   textoVerDia() {
     if (Session.get('verDia')) return '1 día';

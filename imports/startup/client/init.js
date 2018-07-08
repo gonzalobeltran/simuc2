@@ -74,6 +74,7 @@ Meteor.startup(function(){
   Session.set('actividades', actividades);
 
   let textoModulo = [
+    'Modulos',
     '1 (08:30-09:50)',
     '2 (10:00-11:20)',
     '3 (11:30-12:50)',
