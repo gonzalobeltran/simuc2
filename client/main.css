@@ -13,6 +13,11 @@ select.form-control {
 .table tbody>tr>td{
   vertical-align: middle;
 }
+
+.modal {
+  -webkit-overflow-scrolling: touch;
+}
+
 /* Header */
 
 header {
