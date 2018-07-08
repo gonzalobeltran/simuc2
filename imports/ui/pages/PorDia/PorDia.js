@@ -15,10 +15,15 @@ Template.PorDia.onCreated(function(){
     let handle = Subs.subscribe('reservasDia', Session.get('fecha'));
     Session.set('ready', handle.ready());
 
-    if (Meteor.user()) {
+    if (Meteor.user() && Meteor.user().profile.salasSeleccionadas) {
       Session.set('salasSeleccionadas', Meteor.user().profile.salasSeleccionadas);
-      document.documentElement.style.setProperty("--colNum", Meteor.user().profile.salasSeleccionadas.length);
     }
+    else {
+      Session.set('salasSeleccionadas', '');
+    }
+
+    document.documentElement.style.setProperty('--colNum', Session.get('salasSeleccionadas').length);
+    document.documentElement.style.setProperty('--primFila', '65px');
 
   });
 });

@@ -117,6 +117,7 @@ header {
 
 :root {
   --colNum: 7;
+  --primFila: 30px;
 }
 
 .main-table {
@@ -129,14 +130,14 @@ header {
 .columna1 {
   display: grid;
   grid-gap: 1px;
-  grid-template-rows: 30px repeat(9, 55px);
+  grid-template-rows: var(--primFila) repeat(9, 55px);
   font-size: 0.8em;
 }
 
 .gtable {
   display: grid;
   grid-template-columns: repeat(var(--colNum), 1fr);
-  grid-template-rows: 30px repeat(9, 55px);
+  grid-template-rows: var(--primFila) repeat(9, 55px);
   overflow-x: scroll;
   -webkit-overflow-scrolling: touch;
   grid-gap: 1px;

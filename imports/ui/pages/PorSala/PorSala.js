@@ -17,6 +17,7 @@ Template.PorSala.onCreated(function(){
     let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
     document.documentElement.style.setProperty("--colNum", 7);
+    document.documentElement.style.setProperty('--primFila', '30px');
   });
 
   Meteor.call('reservasSuperpuestas', 2, (err,res) => {

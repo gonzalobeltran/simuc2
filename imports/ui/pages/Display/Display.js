@@ -16,7 +16,8 @@ Template.Display.onCreated(function(){
 
     let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
     Session.set('salas', salas);
-    document.documentElement.style.setProperty("--colNum", 10);
+    document.documentElement.style.setProperty("--colNum", 10);ç
+    document.documentElement.style.setProperty('--primFila', '65px');
   });
 });
 

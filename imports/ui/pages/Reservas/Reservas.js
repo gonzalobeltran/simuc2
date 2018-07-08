@@ -16,6 +16,7 @@ Template.Reservas.onCreated(function() {
   this.autorun( () => {
     let semana = Session.get('semanaDesdeHoy');
     document.documentElement.style.setProperty("--colNum", 1 + 6 * !Session.get('verDia'));
+    document.documentElement.style.setProperty('--primFila', '30px');
 
     if (Meteor.user()) {
       //Revisa si el usuario está amonestado
