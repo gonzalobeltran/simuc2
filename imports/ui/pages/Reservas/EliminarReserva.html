@@ -4,7 +4,7 @@
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-body">
-
+            <button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Cancelar</button>
             <h4>{{sala}}</h4>
             <h5>{{separaConComa fechas}} | {{separaConComa modulos}}</h5>
             <hr>
@@ -13,7 +13,6 @@
               <button type="button" class="btn btn-info btn-sm" data-dismiss="modal">Solo un admin puede eliminar una reserva recurrente</button>
             {{else}}
               <button type="button" class="btn btn-danger btn-sm js-eliminaReserva">Eliminar reserva</button>
-              <button type="button" class="btn btn-secondary btn-sm" data-dismiss="modal">Cancelar</button>
             {{/if}}
 
           </div>
