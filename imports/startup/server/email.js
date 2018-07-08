@@ -22,3 +22,20 @@ Gracias!
 `
   }
 };
+
+Accounts.emailTemplates.enrollAccount = {
+  subject(user) {
+    return "Cuenta creada";
+  },
+  text(user, url) {
+    url = url.replace('#/', '');
+    return `Hola!
+
+Se ha creado una cuenta para ti en salasimuc.cl
+Haz click en el siguiente link para crear una clave:
+${url}
+
+Gracias!
+`
+  }
+};

@@ -34,12 +34,8 @@ Template.CreaUsuario.events({
     let email = event.target.email.value;
     let ocupacion = event.target.ocupacion.value;
     let instrumento = _.pluck( _.filter(event.target.instrumento.options, (i) => {return i.selected}) , 'value');
-    let clave1 = event.target.clave1.value;
-    let clave2 = event.target.clave2.value;
 
-    if (clave1 != clave2) return false;
-
-    Meteor.call('creaUsuario', nombre, email, clave1, ocupacion, instrumento);
+    Meteor.call('creaUsuario', nombre, email, ocupacion, instrumento);
 
     template.find("form").reset();
     Modal.hide();

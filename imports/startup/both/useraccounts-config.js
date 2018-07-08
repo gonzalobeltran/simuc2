@@ -14,6 +14,7 @@ AccountsTemplates.configure({
 AccountsTemplates.configureRoute('signIn');
 AccountsTemplates.configureRoute('changePwd');
 AccountsTemplates.configureRoute('resetPwd');
+AccountsTemplates.configureRoute('enrollAccount');
 
 var pwd = AccountsTemplates.removeField('password');
 AccountsTemplates.removeField('email');

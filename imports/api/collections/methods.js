@@ -351,11 +351,10 @@ Meteor.methods({
     },
 
 //------------Funciones de usuario
-  'creaUsuario'(nombre, email, clave, ocupacion, instrumento) {
+  'creaUsuario'(nombre, email, ocupacion, instrumento) {
     checkRole(this, 'admin');
     check(nombre, String);
     check(email, String);
-    check(clave, String);
     check(ocupacion, String);
     check(instrumento, [String]);
 
@@ -369,7 +368,6 @@ Meteor.methods({
     let id = Accounts.createUser({
       email: email,
       username: username,
-      password: clave,
       profile: {
         nombre: nombre,
         instrumento: instrumento,
@@ -383,6 +381,8 @@ Meteor.methods({
         Roles.addUsersToRoles(id, ['usuario']);
     }
 
+    Accounts.sendEnrollmentEmail(id);
+
   },
 
   'creaUsuariosDesdeArchivo'(data) {
@@ -391,7 +391,7 @@ Meteor.methods({
     for (let d in data) {
       let u = data[d];
       if (!Meteor.users.findOne({'emails.0.address': u.email}) ) {
-        Meteor.call('creaUsuario',u.nombre, u.email, u.clave, u.ocupacion, [u.instrumento]);
+        Meteor.call('creaUsuario',u.nombre, u.email, u.ocupacion, [u.instrumento]);
       }
     }
   },
