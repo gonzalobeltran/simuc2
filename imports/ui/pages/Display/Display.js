@@ -37,7 +37,7 @@ Template.Display.helpers({
     return salas;
   },
   fecha() { //Retorna la fecha seleccionada
-    return moment().format('LLLL');
+    return moment.utc().format('LLLL');
   },
   tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semana');

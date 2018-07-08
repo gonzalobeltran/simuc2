@@ -29,7 +29,7 @@ Template.Buscador.onCreated(function() {
     //Agrega los grupos de cámara del usuario al menú de actividades
     Camara.find({integrantes: Session.get('usuario')}).forEach((grupo) => {
       let cuenta = Reservas.find({integrantes: grupo.integrantes,
-            fechas: {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
+            fechas: {$gte: moment.utc(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment.utc(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
       //Solo puede reservar si no ha superado el máximo de reservas en la semana
       if (cuenta < Session.get('config').maxCamaraPorSemana) {
         actividades.push({

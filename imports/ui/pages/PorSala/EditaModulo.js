@@ -25,7 +25,7 @@ Template.EditaModulo.onCreated(function() {
     chkDias.push( {sv: 'chkDias', index: i, val: i, txt: dias[i], marca: ''} );
   }
   for (let d in this.data.fechas) {
-    let dia = moment(this.data.fechas[d]).weekday();
+    let dia = moment.utc(this.data.fechas[d]).weekday();
     chkDias[dia].marca = 'marcado';
   }
 

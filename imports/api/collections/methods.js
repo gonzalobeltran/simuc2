@@ -22,9 +22,9 @@ var fechasHasta = function(inicio, fin, dias) {
   var i = 0;
 
   do {
-    if ( _.contains(dias, moment(f).weekday()) ) fechas.push(f);
+    if ( _.contains(dias, moment.utc(f).weekday()) ) fechas.push(f);
     i += 1;
-    f = moment(inicio).add( i , 'days').format('YYYY-MM-DD');
+    f = moment.utc(inicio).add( i , 'days').format('YYYY-MM-DD');
   } while (f <= fin);
 
   return fechas;
@@ -35,7 +35,7 @@ var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
   let usuario = Meteor.users.find({_id: userId}).map((d) => {return d.profile.nombre})[0];
   let fecha = fechas[0];
   if (fechas.length > 1) fecha = 'desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1];
-  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
+  Log.insert({ts: moment.utc().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
 }
 
 apellidos = function(lista) {
@@ -128,7 +128,7 @@ Meteor.methods({
     let old = Reservas.findOne({_id: id});
     let fechas = fechasHasta(old.fechas[0], repiteHasta, dias);
 
-    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
+    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment.utc().format('YYYY-MM-DD HH:mm:ss')}});
     writeLog(this.userId, old.sala, 'Modifica', actividad, fechas, modulos);
   },
 
@@ -154,7 +154,7 @@ Meteor.methods({
   'reservasSuperpuestas'(prioridad) {
     check(prioridad, Number);
 
-    let hoy = moment().format('YYYY-MM-DD');
+    let hoy = moment.utc().format('YYYY-MM-DD');
     return Reservas.aggregate([
       {$match: {fechas: {$gte: hoy}, prioridad: {$gte: prioridad}}},
       {$unwind: "$fechas"},
@@ -257,9 +257,9 @@ Meteor.methods({
 
     let actividad = 'Cámara - ' + apellidos(profesor);
 
-    let ini = moment().format('YYYY-MM-DD');
-    let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
-    let fin = moment().year() + finSemestre;
+    let ini = moment.utc().format('YYYY-MM-DD');
+    let finSemestre = (moment.utc().month()<6) ? '-06-30' : '-11-30';
+    let fin = moment.utc().year() + finSemestre;
 
     for (let m in horario) {
       let fechas = fechasHasta(ini, fin, horario[m].dias);
@@ -282,9 +282,9 @@ Meteor.methods({
 
     let actividad = 'Cámara - ' + apellidos(profesor);
 
-    let ini = moment().format('YYYY-MM-DD');
-    let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
-    let fin = moment().year() + finSemestre;
+    let ini = moment.utc().format('YYYY-MM-DD');
+    let finSemestre = (moment.utc().month()<6) ? '-06-30' : '-11-30';
+    let fin = moment.utc().year() + finSemestre;
 
     for (let m in horario) {
       let fechas = fechasHasta(ini, fin, horario[m].dias);
@@ -426,7 +426,7 @@ Meteor.methods({
     }});
 
     //Guarda la fecha de amonestación, o borra el campo si no está amonestado
-    if (!amonestado || amonestado == moment().format('YYYY-MM-DD')) {
+    if (!amonestado || amonestado == moment.utc().format('YYYY-MM-DD')) {
       Meteor.users.update(
         {_id: id},
         {$unset: {'profile.amonestado': ''}}
@@ -509,7 +509,7 @@ Meteor.methods({
 
   'revisaAmonestacion'() {
     let usuario = Meteor.users.findOne(this.userId);
-    if (moment().format('YYYY-MM-DD') >= usuario.profile.amonestado)
+    if (moment.utc().format('YYYY-MM-DD') >= usuario.profile.amonestado)
       Meteor.users.update(this.userId, {$unset: {'profile.amonestado': ''}});
   },
 

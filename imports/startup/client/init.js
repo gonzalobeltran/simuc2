@@ -102,14 +102,14 @@ Meteor.startup(function(){
   Session.set('textoModulo', textoModulo);
 
   // La fecha de hoy, en formato largo y corto
-  Session.set('hoy', moment().format('YYYY-MM-DD'));
-  Session.set('hoyCorto', moment(Session.get('hoy')).format('dd D/M'));
+  Session.set('hoy', moment.utc().format('YYYY-MM-DD'));
+  Session.set('hoyCorto', moment.utc(Session.get('hoy')).format('dd D/M'));
   var semanaDesdeHoy = [];
   var diasSemanaDesdeHoy = [];
   for (let d = 0; d < 7; d+=1) {
     // Guarda las fechas de una semana a partir de hoy
-    semanaDesdeHoy.push( moment(Session.get('hoy')).add(d, 'day').format("YYYY-MM-DD") );
-    diasSemanaDesdeHoy.push( moment(Session.get('hoy')).add(d, 'day').format("dd D/M") );
+    semanaDesdeHoy.push( moment.utc(Session.get('hoy')).add(d, 'day').format("YYYY-MM-DD") );
+    diasSemanaDesdeHoy.push( moment.utc(Session.get('hoy')).add(d, 'day').format("dd D/M") );
   }
   Session.set('semanaDesdeHoy', semanaDesdeHoy);
   Session.set('diasSemanaDesdeHoy', diasSemanaDesdeHoy);
@@ -120,19 +120,19 @@ Meteor.startup(function(){
     var diasSemana = [];
     for (let d = 0; d < 7; d+=1) {
       // Guarda las fechas de esta semana
-      semana.push( moment(fecha).weekday(d).format("YYYY-MM-DD") );
-      diasSemana.push( moment(fecha).weekday(d).format("dd D/M") );
+      semana.push( moment.utc(fecha).weekday(d).format("YYYY-MM-DD") );
+      diasSemana.push( moment.utc(fecha).weekday(d).format("dd D/M") );
     }
-    Session.set('fecha', moment(fecha).format('YYYY-MM-DD'));
+    Session.set('fecha', moment.utc(fecha).format('YYYY-MM-DD'));
     Session.set('semana', semana);
     Session.set('diasSemana', diasSemana);
-    Session.set('fechaCorta', moment(fecha).format('dd D/M'));
+    Session.set('fechaCorta', moment.utc(fecha).format('dd D/M'));
   }
 
-  updateFechas(moment());
+  updateFechas(moment.utc());
 
   cambiaFecha = function(dias) {
-    let fecha = moment(Session.get('fecha')).add(dias, 'day').format('YYYY-MM-DD');
+    let fecha = moment.utc(Session.get('fecha')).add(dias, 'day').format('YYYY-MM-DD');
     updateFechas(fecha);
   }
 
