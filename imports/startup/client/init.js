@@ -116,8 +116,9 @@ Meteor.startup(function(){
 
   // Cambia las variables de sesión de fecha en función de la fecha seleccionada
   updateFechas = function(fecha) {
-    var semana = [];
-    var diasSemana = [];
+    fecha = fecha + ' 12:00';
+    let semana = [];
+    let diasSemana = [];
     for (let d = 0; d < 7; d+=1) {
       // Guarda las fechas de esta semana
       semana.push( moment(fecha).weekday(d).format("YYYY-MM-DD") );
@@ -129,10 +130,10 @@ Meteor.startup(function(){
     Session.set('fechaCorta', moment(fecha).format('dd D/M'));
   }
 
-  updateFechas(moment());
+  updateFechas(moment().format('YYYY-MM-DD'));
 
   cambiaFecha = function(dias) {
-    let fecha = moment(Session.get('fecha')).add(dias, 'day').format('YYYY-MM-DD');
+    let fecha = moment(Session.get('fecha')+' 12:00').add(dias, 'days').format('YYYY-MM-DD');
     updateFechas(fecha);
   }
 
