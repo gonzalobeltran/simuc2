@@ -18,8 +18,8 @@ var updateDTPickers = function() {
   let fechas = Session.get('fechasPeriodo');
   if (!fechas) {
     fechas = {
-      ini: moment.utc().format('YYYY'),
-      fin: moment.utc().format('YYYY'),
+      ini: moment().format('YYYY'),
+      fin: moment().format('YYYY'),
     }
   }
 

@@ -91,7 +91,7 @@ Template.Reservas.helpers({
       //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
       if (this.fecha <= Session.get('hoy')
         || this.modulo == 'almuerzo'
-        || moment.utc(this.fecha).weekday() > 4) return 'desactivado';
+        || moment(this.fecha).weekday() > 4) return 'desactivado';
     } else if (this.fechas) {
       //No puede eliminar una reserva recurrente o una reserva pasada
       if (this.fechas.length > 1
