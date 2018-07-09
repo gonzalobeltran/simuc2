@@ -107,6 +107,8 @@ Meteor.methods({
 
     let nuevasFechas = fechasHasta(fechas[0], repiteHasta, dias);
 
+    if (nuevasFechas == '') return false;
+
     Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
     writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas, modulos);
   },
