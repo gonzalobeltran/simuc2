@@ -90,7 +90,7 @@ Template.PorSala.helpers({
   },
   diasSemana() { //Retorna los días de la semana
     let hoy = moment().format("dd D/M");
-    let diaSel = moment(Session.get('fecha')).format("dd D/M");
+    let diaSel = moment(Session.get('fecha') + ' 12:00').format("dd D/M");
     let dias = Session.get('diasSemana');
     let diasSemana = [];
     for (let d in dias) {

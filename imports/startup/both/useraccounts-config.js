@@ -46,7 +46,7 @@ AccountsTemplates.addFields([
     type: 'password',
     displayName: "Contraseña",
     placeholder: {
-      signIn: "Primer ingreso: RUT sin puntos ni dígito verificador"
+      signIn: "Contraseña"
     },
     required: true
   }
