@@ -45,7 +45,7 @@ Template.EditaGrupo.events({
     let selBox = Session.get('selBox');
     let horario = Session.get('horario');
 
-    if (!profesor.length || !integrantes.length || !horario.length) return false;
+    if (!profesor.length || !integrantes.length) return false;
 
     if (this._id) {
       Meteor.call('editaGrupo', this._id, profesor, integrantes, sala, horario);

@@ -253,9 +253,11 @@ Meteor.methods({
     check(profesor, [String]);
     check(integrantes, [String]);
     check(sala, String);
-    check(horario, Array);
 
     let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario});
+
+    if (!horario) return false;
+    check(horario, Array);
 
     let actividad = 'Cámara - ' + apellidos(profesor);
 
@@ -277,10 +279,12 @@ Meteor.methods({
     check(profesor, [String]);
     check(integrantes, [String]);
     check(sala, String);
-    check(horario, Array);
 
     Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, horario: horario}});
     Reservas.remove({hash: id});
+
+    if (!horario) return false;
+    check(horario, Array);
 
     let actividad = 'Cámara - ' + apellidos(profesor);
 
