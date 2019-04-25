@@ -6,6 +6,7 @@ import { Config } from '/imports/api/collections/collections.js';
 
 import './Cursos.html';
 import './EditaCurso.js';
+import './ModificaFechas';
 
 var nuevoSemestre = function() {
   let periodo = Session.get('periodo');
@@ -14,18 +15,6 @@ var nuevoSemestre = function() {
   Session.set('fechasPeriodo', fechasPeriodo);
 }
 
-var updateDTPickers = function() {
-  let fechas = Session.get('fechasPeriodo');
-  if (!fechas) {
-    fechas = {
-      ini: moment().format('YYYY'),
-      fin: moment().format('YYYY'),
-    }
-  }
-
-  $('#ini').datepicker('update', fechas.ini);
-  $('#fin').datepicker('update', fechas.fin);
-}
 
 Template.Cursos.onCreated(function() {
   this.autorun( () => {
@@ -42,36 +31,6 @@ Template.Cursos.onCreated(function() {
   });
 });
 
-Template.Cursos.rendered = function() {
-  let fechasPeriodo = Session.get('fechasPeriodo');
-
-  //Inicializa los selectores de fecha
-  $('#ini').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: fechasPeriodo.ini,
-  });
-
-  $('#fin').datepicker({
-    format: 'yyyy-mm-dd',
-    autoclose: true,
-    todayBtn: "linked",
-    todayHighlight: true,
-    weekStart: 1,
-    disableTouchKeyboard: true,
-    maxViewMode: 2,
-    language: "es",
-    startDate: new Date(),
-    setDate: fechasPeriodo.fin,
-  });
-}
 
 Template.Cursos.helpers({
   cursos() {
@@ -106,10 +65,12 @@ Template.Cursos.helpers({
 });
 
 Template.Cursos.events({
-  'change #periodo'(event) {
+  'change .js-periodo'(event) { //Selector de sala
     Session.set('periodo', event.target.value);
-    nuevoSemestre();
-    updateDTPickers();
+  },
+  'click .js-modificaFechas'() {
+    let fechas = Session.get('fechasPeriodo');
+    Modal.show('ModificaFechas');
   },
   'click .js-nuevoCurso'() {
     let fechas = Session.get('fechasPeriodo');
@@ -117,13 +78,5 @@ Template.Cursos.events({
   },
   'click .js-editaCurso'() {
     Modal.show('EditaCurso', this);
-  },
-  'submit #fechasPeriodoForm'(event, template) {
-    event.preventDefault();
-    let periodo = event.target.periodo.value;
-    let fechaIni = event.target.fechaIni.value;
-    let fechaFin = event.target.fechaFin.value;
-
-    Meteor.call('fechasPeriodo', periodo, fechaIni, fechaFin)
   },
 });

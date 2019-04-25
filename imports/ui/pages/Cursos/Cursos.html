@@ -2,39 +2,16 @@
 
   <h4>Cursos</h4>
   <!-- Periodo y fechas de inicio y fin -->
-  <form id="fechasPeriodoForm">
 
-    <div class="row">
-
-      <div class="col-sm-4">
-        <div class="form-group">
-          <label for="semestre">Periodo:</label>
-          <select name="periodo" id="periodo" class="form-control">
-            {{#each periodos}}
-              <option selected="{{esPeriodo this}}">{{this}}</option>
-            {{/each}}
-          </select>
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="form-group">
-          <label>Inicio</label>
-          <input type="text" class="form-control" value="{{fechasPeriodo.ini}}" id="ini" name="fechaIni">
-        </div>
-      </div>
-
-      <div class="col-sm-4">
-        <div class="form-group">
-          <label>Fin</label>
-          <input type="text" class="form-control" value="{{fechasPeriodo.fin}}" id="fin" name="fechaFin">
-        </div>
-      </div>
-
+    <div class="form-group">
+      <label for="semestre">Periodo:</label>
+      <select name="periodo" id="periodo" class="js-periodo form-control">
+        {{#each periodos}}
+          <option selected="{{esPeriodo this}}">{{this}}</option>
+        {{/each}}
+      </select>
     </div>
-
-    <button type="submit" class="btn btn-primary">Modificar fechas</button>
-  </form>
+    <button class="btn btn-primary js-modificaFechas">Modificar fechas</button>
 
   <hr>
 
