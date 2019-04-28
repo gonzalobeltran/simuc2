@@ -69,7 +69,6 @@ Template.Cursos.events({
     Session.set('periodo', event.target.value);
   },
   'click .js-modificaFechas'() {
-    let fechas = Session.get('fechasPeriodo');
     Modal.show('ModificaFechas');
   },
   'click .js-nuevoCurso'() {
