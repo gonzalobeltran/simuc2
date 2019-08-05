@@ -46,6 +46,7 @@ Meteor.startup(() => {
   configuracion = {
     maxReservas: 1,
     maxCamaraPorSemana: 1,
+    maxDCPorSemana: 1,
     mensaje: '-',
   }
 

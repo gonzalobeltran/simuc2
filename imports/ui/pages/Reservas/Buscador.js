@@ -10,12 +10,27 @@ Template.Buscador.onCreated(function() {
     Session.set('actividad', 0); //El primer instrumento del usuario será la actividad por defecto
     let actividades = [];
     let index = 0;
+    let cuenta = 0;
 
     //Agrega los instrumentos del usuario al menú de actividades
     Meteor.user().profile.instrumento.forEach( (instrumento) => {
-      let cuenta = Reservas.find({fechas: this.data.fecha, integrantes: Session.get('usuario'), actividad: instrumento}).count();
+      if (instrumento == 'Dirección Coral') {
+        cuenta = Reservas.find({actividad: instrumento, integrantes: Session.get('usuario'), fechas: {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
+      } else {
+        cuenta = Reservas.find({fechas: this.data.fecha, integrantes: Session.get('usuario'), actividad: instrumento}).count();
+      }
       //Solo puede reservar si no ha superado el máximo de reservas por día
-      if (cuenta < Session.get('config').maxReservas) {
+      if ((instrumento != 'Dirección Coral') && (cuenta < Session.get('config').maxReservas)) {
+        actividades.push({
+          index: index,
+          menu: instrumento + ' - ' + Session.get('usuario'),
+          actividad: instrumento,
+          integrantes: [Session.get('usuario')],
+        });
+        index += 1;
+      }
+
+      if ((instrumento == 'Dirección Coral') && (cuenta < Session.get('config').maxDCPorSemana)) {
         actividades.push({
           index: index,
           menu: instrumento + ' - ' + Session.get('usuario'),

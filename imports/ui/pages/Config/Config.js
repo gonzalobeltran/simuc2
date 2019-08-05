@@ -22,6 +22,10 @@ Template.Config.helpers({
     let config = Session.get('config');
     if (config.maxCamaraPorSemana == index + 1) return "selected";
   },
+  maxDCSelected(index) {
+    let config = Session.get('config');
+    if (config.maxDCPorSemana == index + 1) return "selected";
+  },
   ok() {
     return Session.get('ok');
   }
@@ -34,6 +38,7 @@ Template.Config.events({
     let config = {
       maxReservas: event.target.maxReservas.value,
       maxCamaraPorSemana: event.target.maxCamara.value,
+      maxDCPorSemana: event.target.maxDC.value,
       mensaje: event.target.mensaje.value,
     }
 
