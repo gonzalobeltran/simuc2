@@ -90,12 +90,6 @@ userRoutes.route('/salas', {
   },
 });
 
-adminRoutes.route('/cursos', {
-  name: 'cursos',
-  action() {
-    BlazeLayout.render('AppBody', { main: 'Cursos' });
-  },
-});
 
 adminRoutes.route('/camara', {
   name: 'camara',
