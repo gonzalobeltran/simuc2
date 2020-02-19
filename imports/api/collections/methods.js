@@ -16,13 +16,13 @@ var checkRole = function(t, role) {
 }
 
 //Retorna un array con todas las fechas entre dos fechas dadas
-var fechasHasta = function(inicio, fin, dias) {
+var fechasHasta = function(inicio, fin, horario) {
   var fechas = [];
   var f = inicio;
   var i = 0;
 
   do {
-    if ( _.contains(dias, moment(f).weekday()) ) fechas.push(f);
+    if (horario[moment(f).weekday()]) fechas.push({ fecha: f, modulos: horario[moment(f).weekday()] });
     i += 1;
     f = moment(inicio).add( i , 'days').format('YYYY-MM-DD');
   } while (f <= fin);
@@ -31,11 +31,11 @@ var fechasHasta = function(inicio, fin, dias) {
 }
 
 //Guarda un registro de las acciones
-var writeLog = function(userId, sala, accion, actividad, fechas, modulos) {
+var writeLog = function(userId, sala, accion, actividad, dias) {
   let usuario = Meteor.users.find({_id: userId}).map((d) => {return d.profile.nombre})[0];
-  let fecha = fechas[0];
-  if (fechas.length > 1) fecha = 'desde ' + fechas[0] + ' hasta ' + fechas[fechas.length - 1];
-  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha, modulos: modulos});
+  let fecha = dias[0].fecha;
+  if (dias.length > 1) fecha = 'desde ' + dias[0].fecha + ' hasta ' + dias[dias.length - 1].fecha;
+  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha});
 }
 
 apellidos = function(lista) {
@@ -89,28 +89,29 @@ Meteor.methods({
     writeLog(this.userId, sala, 'Reserva', actividad, [fecha], modulo);
   },
 
-  'nuevaReservaAdmin'(sala, fechas, modulos, prioridad, actividad, integrantes, repiteHasta, dias) {
+  'nuevaReservaAdmin'(sala, dias, horario, actividad, integrantes, repiteHasta, prioridad) {
     checkRole(this, 'admin');
 
     check(sala, String);
-    check(fechas, [String]);
-    check(modulos, [String]);
-    check(prioridad, Number);
+    check(dias, Array);
+    check(horario, [Number]);
     check(actividad, String);
     check(integrantes, [String]);
     check(repiteHasta, String);
-    check(dias, [Number]);
+    check(prioridad, Number);
 
-    if (!sala || !fechas.length || !modulos.length || !actividad || !repiteHasta || !dias) {
+    let hayHorario = horario.reduce((a,b) => a+b);
+
+    if (!sala || !dias.length || !hayHorario || !actividad || !repiteHasta) {
       throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    let nuevasFechas = fechasHasta(fechas[0], repiteHasta, dias);
+    let nuevasFechas = fechasHasta(dias[0].fecha, repiteHasta, horario);
 
     if (nuevasFechas == '') return false;
 
-    Reservas.insert({sala: sala, fechas: nuevasFechas, modulos: modulos, prioridad: prioridad, actividad: actividad, integrantes: integrantes});
-    writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas, modulos);
+    Reservas.insert({sala: sala, dias: nuevasFechas, horario: horario, actividad: actividad, integrantes: integrantes, prioridad: prioridad});
+    writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas);
   },
 
   'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta, dias) {

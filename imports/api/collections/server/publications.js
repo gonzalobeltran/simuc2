@@ -9,7 +9,7 @@ config = Config.findOne();
 
 //Publica las reservas de una determinada sala en un rango de fechas
 Meteor.publish('reservasSala', function(sala, ini, fin) {
-  return Reservas.find({sala: sala, fechas: {$gte: ini, $lte: fin}});
+  return Reservas.find({sala: sala, 'dias.fecha': {$gte: ini, $lte: fin}});
 });
 
 //Publica las reservas de un usuario en un rango de fechas

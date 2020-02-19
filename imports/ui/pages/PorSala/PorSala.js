@@ -60,6 +60,7 @@ Template.PorSala.helpers({
     let semana = Session.get('semana');
     let sala = Session.get('sala');
     let modulos = Session.get('modulos');
+    let binModulos = Session.get('binModulos');
 
     let celdas = [];
 
@@ -70,13 +71,13 @@ Template.PorSala.helpers({
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: sala,
-          fechas: [semana[columna]],
+          dias: [{fecha: semana[columna], modulos: binModulos[fila]}],
           estaFecha: semana[columna],
-          modulos: [modulos[fila]],
           actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
+          horario: [0, 0, 0, 0, 0, 0, 0]
         }];
 
-        let reservas = Reservas.find({sala: sala, fechas: semana[columna], modulos: modulos[fila]}).fetch();
+        let reservas = Reservas.find({sala: sala, dias: { $elemMatch: {fecha: semana[columna], modulos: {$bitsAllSet: binModulos[fila]}} } }).fetch();
 
         for (let i in reservas) {
           reservas[i].estaFecha = semana[columna];
@@ -112,7 +113,7 @@ Template.PorSala.helpers({
     return 'desactivado';
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.fechas.length > 1) return true;
+    if (this.dias.length > 1) return true;
     return false;
   },
   masDeUna(celda) {

@@ -98,8 +98,22 @@ Meteor.startup(function(){
     '8'
   ];
 
+  let binModulos = [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32,
+    64,
+    128,
+    256
+  ];
+
+
   Session.set('modulos', modulos);
   Session.set('textoModulo', textoModulo);
+  Session.set('binModulos', binModulos);
 
   // La fecha de hoy, en formato largo y corto
   Session.set('hoy', moment().format('YYYY-MM-DD'));
