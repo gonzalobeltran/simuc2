@@ -16,15 +16,15 @@ var checkRole = function(t, role) {
 }
 
 //Retorna un array con todas las fechas entre dos fechas dadas
-var fechasHasta = function(inicio, fin, horario) {
+var listaDeDias = function(ini, fin, horario) {
   var fechas = [];
-  var f = inicio;
+  var f = ini;
   var i = 0;
 
   do {
     if (horario[moment(f).weekday()]) fechas.push({ fecha: f, modulos: horario[moment(f).weekday()] });
     i += 1;
-    f = moment(inicio).add( i , 'days').format('YYYY-MM-DD');
+    f = moment(ini).add( i , 'days').format('YYYY-MM-DD');
   } while (f <= fin);
 
   return fechas;
@@ -35,7 +35,7 @@ var writeLog = function(userId, sala, accion, actividad, dias) {
   let usuario = Meteor.users.find({_id: userId}).map((d) => {return d.profile.nombre})[0];
   let fecha = dias[0].fecha;
   if (dias.length > 1) fecha = 'desde ' + dias[0].fecha + ' hasta ' + dias[dias.length - 1].fecha;
-  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fechas: fecha});
+  Log.insert({ts: moment().format('YYYY-MM-DD HH:mm:ss'), usuario: usuario, sala: sala, accion: accion, actividad: actividad, fecha: fecha});
 }
 
 apellidos = function(lista) {
@@ -54,21 +54,28 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'nuevaReservaUsuario'(sala, fecha, modulo, actividad, integrantes) {
+  'nuevaReservaUsuario'(sala, actividad, integrantes, fecha, modulo) {
     checkRole(this, 'usuario');
 
     check(sala, String);
-    check(fecha, String);
-    check(modulo, String);
     check(actividad, String);
     check(integrantes, [String]);
+    check(fecha, String);
+    check(modulo, Number);
 
-    if (!sala || !fecha || !modulo || !actividad) {
+    console.log(sala, fecha, actividad);
+
+    if (!sala || !fecha || !actividad) {
       throw new Meteor.Error('Error al reservar','Se produjo un error al realizar la reserva');
     }
 
+    let bitModulo = Math.pow(2, modulo); console.log(bitModulo);
+    let dia = [{fecha: fecha, modulos: bitModulo}]; console.log(dia);
+    let horario = [0, 0, 0, 0, 0, 0, 0,];
+    horario[moment(fecha).weekday()] = bitModulo;
+
     if (integrantes.length) {
-      let duplicado = Reservas.find({fechas: fecha, modulos: modulo, integrantes: integrantes}).count();
+      let duplicado = Reservas.find({dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} } }, integrantes: integrantes}).count();
       if (duplicado) {
         throw new Meteor.Error('Error al reservar','Usuario ya tiene reservada otra sala en ese módulo');
       }
@@ -80,59 +87,61 @@ Meteor.methods({
     }
 
     //Verifica que no haya otra reserva en ese módulo
-    let hayOtra = Reservas.find({sala: sala, fechas: fecha, modulos: modulo, prioridad: {$gte: prioridad}}).count();
+    let hayOtra = Reservas.find({sala: sala, dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} }}, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
-    Reservas.insert({sala: sala, fechas: [fecha], modulos: [modulo], prioridad: prioridad, actividad: actividad, integrantes: integrantes});
-    writeLog(this.userId, sala, 'Reserva', actividad, [fecha], modulo);
+    Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dia, horario: horario});
+    writeLog(this.userId, sala, 'Reserva', actividad, dia);
   },
 
-  'nuevaReservaAdmin'(sala, dias, horario, actividad, integrantes, repiteHasta, prioridad) {
+  'nuevaReservaAdmin'(sala, actividad, integrantes, prioridad, ini, fin, horario) {
     checkRole(this, 'admin');
 
     check(sala, String);
-    check(dias, Array);
+    check(ini, String);
+    check(fin, String);
     check(horario, [Number]);
     check(actividad, String);
     check(integrantes, [String]);
-    check(repiteHasta, String);
     check(prioridad, Number);
 
     let hayHorario = horario.reduce((a,b) => a+b);
 
-    if (!sala || !dias.length || !hayHorario || !actividad || !repiteHasta) {
+    if (!sala || !ini || !fin || !hayHorario || !actividad) {
       throw new Meteor.Error('Error al reservar','Faltan datos para realizar la reserva');
     }
 
-    let nuevasFechas = fechasHasta(dias[0].fecha, repiteHasta, horario);
+    let dias = listaDeDias(ini, fin, horario);
 
-    if (nuevasFechas == '') return false;
+    if (dias == '') return false;
 
-    Reservas.insert({sala: sala, dias: nuevasFechas, horario: horario, actividad: actividad, integrantes: integrantes, prioridad: prioridad});
-    writeLog(this.userId, sala, 'Reserva', actividad, nuevasFechas);
+    Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dias, horario: horario});
+    writeLog(this.userId, sala, 'Reserva', actividad, dias);
   },
 
-  'modificaReserva'(id, actividad, integrantes, modulos, repiteHasta, dias) {
+  'modificaReserva'(id, sala, actividad, integrantes, ini, fin, horario) {
     checkRole(this, 'admin');
 
-    check(id, String);
+    check(sala, String);
+    check(ini, String);
+    check(fin, String);
+    check(horario, [Number]);
     check(actividad, String);
     check(integrantes, [String]);
-    check(modulos, [String]);
-    check(repiteHasta, String);
-    check(dias, [Number]);
 
-    if (!actividad || !modulos.length || !repiteHasta || !dias) {
+    let hayHorario = horario.reduce((a,b) => a+b);
+
+    if (!sala || !ini || !fin || !hayHorario || !actividad) {
       throw new Meteor.Error('Error al reservar','Faltan datos para modificar la reserva');
     }
 
     let old = Reservas.findOne({_id: id});
-    let fechas = fechasHasta(old.fechas[0], repiteHasta, dias);
+    let dias = listaDeDias(ini, fin, horario);
 
-    Reservas.update({_id: id}, {$set: {actividad: actividad, integrantes: integrantes, fechas: fechas, modulos: modulos, timestamp: moment().format('YYYY-MM-DD HH:mm:ss')}});
-    writeLog(this.userId, old.sala, 'Modifica', actividad, fechas, modulos);
+    Reservas.update({_id: id}, {$set: {sala: sala, actividad: actividad, integrantes: integrantes, dias: dias, horario: horario}});
+    writeLog(this.userId, sala, 'Modifica', actividad, dias);
   },
 
   'eliminaReserva'(id) {
@@ -141,17 +150,17 @@ Meteor.methods({
 
     let old = Reservas.findOne({_id: id});
     Reservas.remove({_id: id});
-    writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.fechas, old.modulos);
+    writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.dias);
   },
 
-  'eliminaEstaFecha'(id, fecha) {
+  'eliminaFechaSelect'(id, fecha) {
     checkRole(this, 'admin');
     check(id, String);
     check(fecha, String);
 
     let old = Reservas.findOne({_id: id});
-    Reservas.update({_id: id}, {$pull: {fechas: fecha}});
-    writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha], old.modulos);
+    Reservas.update({_id: id}, { $pull: {dias: {fecha: fecha}} });
+    writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha]);
   },
 
   'reservasSuperpuestas'(prioridad) {
@@ -198,7 +207,7 @@ Meteor.methods({
   if (profesor == '-') actividad = nombre;
 
   for (let m in horario) {
-    let fechas = fechasHasta(ini, fin, horario[m].dias);
+    let fechas = listaDeDias(ini, fin, horario[m].dias);
 
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
   }
@@ -227,7 +236,7 @@ Meteor.methods({
   Reservas.remove({hash: id});
 
   for (let m in horario) {
-    let fechas = fechasHasta(ini, fin, horario[m].dias);
+    let fechas = listaDeDias(ini, fin, horario[m].dias);
 
     Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
   }
@@ -267,7 +276,7 @@ Meteor.methods({
     let fin = moment().year() + finSemestre;
 
     for (let m in horario) {
-      let fechas = fechasHasta(ini, fin, horario[m].dias);
+      let fechas = listaDeDias(ini, fin, horario[m].dias);
 
       Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: hash});
     }
@@ -294,7 +303,7 @@ Meteor.methods({
     let fin = moment().year() + finSemestre;
 
     for (let m in horario) {
-      let fechas = fechasHasta(ini, fin, horario[m].dias);
+      let fechas = listaDeDias(ini, fin, horario[m].dias);
 
       Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: id});
     }

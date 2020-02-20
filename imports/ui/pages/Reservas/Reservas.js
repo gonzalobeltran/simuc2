@@ -55,17 +55,21 @@ Template.Reservas.helpers({
       for (let columna = ini; columna <= fin; columna += 1) { //7 días
 
         let colCelda = verDia ? 0 : columna;
+        let bitModulo = Math.pow(2, fila);
         //Módulo vacío
         celdas[fila][colCelda] = [{
           sala: (modulos[fila] == 'almuerzo') ? 'A' : '-',
           fecha: semana[columna],
-          modulo: modulos[fila],
+          modulo: fila,
+          nombreModulo: modulos[fila],
+          dias: {fecha: semana[columna], modulos: bitModulo}
         }];
 
-        let reservas = Reservas.find({fechas: semana[columna], modulos: modulos[fila], integrantes: Session.get('usuario')}).fetch();
+        let reservas = Reservas.find({dias: {$elemMatch: {fecha: semana[columna], modulos: {$bitsAllSet: bitModulo}} }, integrantes: Session.get('usuario')}).fetch();
 
         for (let i in reservas) {
-          reservas[i].estaFecha = semana[columna];
+          reservas[i].fecha = semana[columna];
+          reservas[i].nombreModulo = modulos[fila];
           celdas[fila][colCelda][i] = reservas[i];
         }
 
@@ -90,7 +94,7 @@ Template.Reservas.helpers({
     if (this.fecha) {
       //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
       if (this.fecha <= Session.get('hoy')
-        || this.modulo == 'almuerzo'
+        || this.modulo == 3
         || moment(this.fecha).weekday() > 4) return 'desactivado';
     } else if (this.fechas) {
       //No puede eliminar una reserva recurrente o una reserva pasada
@@ -101,11 +105,11 @@ Template.Reservas.helpers({
     return 'js-editaModulo';
   },
   hayOtra() {
-    if (this.estaFecha) {
+    if (this.fechaSelect) {
       let superp = Session.get('superpuestas');
       let esta = {
         sala: this.sala,
-        fechas: this.estaFecha,
+        fechas: this.fechaSelect,
         modulos: this.modulos[0]
       }
 

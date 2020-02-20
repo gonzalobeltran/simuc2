@@ -6,12 +6,16 @@ import './EditaModulo.html';
 import '../../partials/SelectorDeHorario.js';
 
 Template.EditaModulo.onCreated(function() {
-  Session.set('horario', this.data.horario);
+  let binModulos = Session.get('binModulos');
+  let horario = this.data.horario;
+  if (!horario.reduce((a,b) => a+b)) horario[moment(this.data.fechaSelect).weekday()] = binModulos[this.data.moduloSelect];
+
+  Session.set('horario', horario);
 });
 
 Template.EditaModulo.rendered = function(){
   $('#integrantes').select2();
-  $('#repiteHasta').datepicker({
+  $('#ini').datepicker({
     format: 'yyyy-mm-dd',
     autoclose: true,
     todayBtn: "linked",
@@ -21,11 +25,27 @@ Template.EditaModulo.rendered = function(){
     maxViewMode: 2,
     language: "es",
     startDate: new Date(),
-    setDate: this.data.dias[this.data.dias.length - 1].fecha,
+    setDate: this.data.ini,
+  });
+  $('#fin').datepicker({
+    format: 'yyyy-mm-dd',
+    autoclose: true,
+    todayBtn: "linked",
+    todayHighlight: true,
+    weekStart: 1,
+    disableTouchKeyboard: true,
+    maxViewMode: 2,
+    language: "es",
+    startDate: new Date(),
+    setDate: this.data.fin,
   });
 }
 
 Template.EditaModulo.helpers({
+  fechaSeleccionada() {
+    let modulos = Session.get('modulos');
+    return( moment(this.fechaSelect).format('dd DD MMM YYYY') + ' - Módulo ' + modulos[this.moduloSelect]);
+  },
   usuarios() {
     return Session.get('usuarios');
   },
@@ -36,8 +56,11 @@ Template.EditaModulo.helpers({
     if (this.dias.length > 1) return true;
     return false;
   },
-  repiteHasta() { //Retorna la última fecha de la reserva
-    return this.dias[this.dias.length - 1].fecha;
+  ini() { //Retorna la primera fecha de la reserva
+    return this.ini;
+  },
+  fin() { //Retorna la última fecha de la reserva
+    return this.fin;
   },
 });
 
@@ -46,25 +69,24 @@ Template.EditaModulo.events({
     event.preventDefault();
 
     let id = this._id;
-    let sala = this.sala;
-    let dias = this.dias;
-    let actividad = event.target.actividad.value;
-    let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
-    let repiteHasta = event.target.repiteHasta.value;
+    let sala = Session.get('sala');
+    let ini = event.target.ini.value;
+    let fin = event.target.fin.value;
     let horario = Session.get('horario');
     let hayHorario = horario.reduce((a,b) => a+b);
+    let actividad = event.target.actividad.value;
+    let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
 
-    console.log(hayHorario);
-    if (!repiteHasta || !actividad || !hayHorario) return false;
+    if (!ini || !fin || !actividad || !hayHorario) return false;
 
     if (!id) { //Si es una nueva reserva
-      Meteor.call('nuevaReservaAdmin', sala, dias, horario, actividad, integrantes, repiteHasta, 2, (err,res) => {
+      Meteor.call('nuevaReservaAdmin', sala, actividad, integrantes, 2, ini, fin, horario, (err,res) => {
         if (err) Session.set('err', err.reason);
       });
     } else { //Si modifica una reserva existente
-      // Meteor.call('modificaReserva', id, actividad, integrantes, modulos, repiteHasta, dias, (err,res) => {
-      //   if (err) Session.set('err', err.reason);
-      // });
+      Meteor.call('modificaReserva', id, sala, actividad, integrantes, ini, fin, horario, (err,res) => {
+        if (err) Session.set('err', err.reason);
+      });
     }
 
     //Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
@@ -75,8 +97,8 @@ Template.EditaModulo.events({
     Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   },
-  'click .js-eliminaEstaFecha'() {
-    Meteor.call('eliminaEstaFecha', this._id, this.estaFecha);
+  'click .js-eliminaFechaSelect'() {
+    Meteor.call('eliminaFechaSelect', this._id, this.fechaSelect);
     Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   }

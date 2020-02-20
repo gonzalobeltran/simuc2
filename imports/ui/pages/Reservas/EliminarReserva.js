@@ -6,7 +6,7 @@ import './EliminarReserva.html';
 
 Template.EliminarReserva.helpers({
   repite() {
-    if (this.fechas.length > 1) return true;
+    if (this.dias.length > 1) return true;
     return false;
   }
 });

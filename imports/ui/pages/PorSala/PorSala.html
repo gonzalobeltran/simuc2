@@ -4,14 +4,10 @@
 
   <div class="row no-print">
     <div class="col-sm-6">
-      <select name="sala" class="js-salaSelect form-control">
-        {{#each sala in salas}}
-          <option selected={{isSelected sala}}>{{sala}}</option>
-        {{/each}}
-      </select>
+      {{> SelectorDeSala}}
     </div>
     <div class="col-sm-6">
-      <input type="text" class="form-control" value="{{fecha}}" id="fecha">
+      <input type="text" class="form-control form-control-sm" value="{{fecha}}" id="fecha">
     </div>
   </div>
 

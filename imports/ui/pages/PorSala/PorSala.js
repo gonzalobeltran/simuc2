@@ -2,17 +2,15 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { Reservas } from '/imports/api/collections/collections.js';
-import { Salas } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
+import '../../partials/SelectorDeSala.js';
 
 Template.PorSala.onCreated(function(){
   this.autorun( () => {
     let semana = Session.get('semana');
 
-    //Se suscribe a la lista de salas
-    Subs.subscribe('salas');
     //Se suscribe a las reservas de la sala activa y la semana activa, de lunes a domingo
     let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
@@ -45,14 +43,6 @@ Template.PorSala.helpers({
   salaActiva() {
     return Session.get('sala');
   },
-  salas() { //Lista de salas
-    let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
-    if (!Session.get('sala')) Session.set('sala', salas[0]);
-    return salas;
-  },
-  isSelected(sala) { //Marca la sala seleccionada
-    if (sala == Session.get('sala')) return 'selected';
-  },
   fecha() { //Retorna la fecha seleccionada
     return Session.get('fecha');
   },
@@ -71,16 +61,22 @@ Template.PorSala.helpers({
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: sala,
+          ini: semana[columna],
+          fin: semana[columna],
           dias: [{fecha: semana[columna], modulos: binModulos[fila]}],
-          estaFecha: semana[columna],
+          fechaSelect: semana[columna],
+          moduloSelect: fila,
+          horario: [0, 0, 0, 0, 0, 0, 0],
           actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
-          horario: [0, 0, 0, 0, 0, 0, 0]
         }];
 
         let reservas = Reservas.find({sala: sala, dias: { $elemMatch: {fecha: semana[columna], modulos: {$bitsAllSet: binModulos[fila]}} } }).fetch();
 
         for (let i in reservas) {
-          reservas[i].estaFecha = semana[columna];
+          reservas[i].fechaSelect = semana[columna];
+          reservas[i].moduloSelect = fila;
+          reservas[i].ini = reservas[i].dias[0].fecha;
+          reservas[i].fin = reservas[i].dias[reservas[i].dias.length - 1].fecha;          
           celdas[fila][columna][i] = reservas[i];
         }
 
@@ -108,7 +104,7 @@ Template.PorSala.helpers({
     return Session.get('textoModulo');
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
-    if (this.estaFecha < Session.get('hoy')) return 'desactivado';
+    if (this.fechaSelect < Session.get('hoy')) return 'desactivado';
     if (Roles.userIsInRole(Meteor.userId(), 'admin')) return 'js-editaModulo';
     return 'desactivado';
   },
@@ -137,9 +133,6 @@ Template.PorSala.helpers({
 });
 
 Template.PorSala.events({
-  'change .js-salaSelect'(event) { //Selector de sala
-    Session.set('sala', event.target.value);
-  },
   'change #fecha'(event) { //Cambio en el selector de fecha
     updateFechas(event.target.value);
   },

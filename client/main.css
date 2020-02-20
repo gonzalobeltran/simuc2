@@ -1,15 +1,6 @@
 
 /* Controles */
 
-select.form-control {
-  -webkit-appearance: none;
-  -moz-appearance: none;
-  background-image: url('select.svg');
-  background-position: 100% 50%;
-  background-repeat: no-repeat;
-  padding-right: 20px;
-}
-
 .table tbody>tr>td{
   vertical-align: middle;
 }
@@ -160,7 +151,7 @@ header {
   background-color: #eee;
   padding: 5px;
   font-weight: bold;
-  overflow-y: scroll;
+  overflow-y: hidden;
 }
 
 .masDeUna {
@@ -172,7 +163,7 @@ header {
   padding: 0px 3px 0px 3px;
   cursor: copy;
   width: 100%;
-  overflow-y: scroll;
+  overflow-y: hidden;
   border-radius: 0px;
 }
 
@@ -231,6 +222,7 @@ header {
   color: grey;
   padding: 5px;
   text-align: center;
+  font-size: 0.8em;
 }
 
 .chkBlock:hover {

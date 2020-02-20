@@ -72,7 +72,7 @@ Template.PorDia.helpers({
         celdas[fila][columna] = [{
           sala: salas[columna],
           fechas: [Session.get('fecha')],
-          estaFecha: Session.get('fecha'),
+          fechaSelect: Session.get('fecha'),
           modulos: [modulos[fila]],
           actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
         }];
@@ -80,7 +80,7 @@ Template.PorDia.helpers({
         let reservas = Reservas.find({sala: salas[columna], fechas: Session.get('fecha'), modulos: modulos[fila]}).fetch();
 
         for (let i in reservas) {
-          reservas[i].estaFecha = Session.get('fecha');
+          reservas[i].fechaSelect = Session.get('fecha');
           celdas[fila][columna][i] = reservas[i];
         }
 
@@ -93,7 +93,7 @@ Template.PorDia.helpers({
     return Session.get('textoModulo');
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y del rol del usuario
-    if (this.estaFecha < Session.get('hoy')) return 'desactivado';
+    if (this.fechaSelect < Session.get('hoy')) return 'desactivado';
     if (Roles.userIsInRole(Meteor.userId(), 'admin')) return 'js-editaModulo';
     return 'desactivado';
   },

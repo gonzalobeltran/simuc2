@@ -6,32 +6,49 @@
         <div class="modal-body">
 
           <button type="button" class="btn btn-secondary btn-sm pull-right" data-dismiss="modal">Cancelar</button>
-          <h5>{{sala}}</h5>
-          <h5>{{estaFecha}}</h5>
+          <h5>{{fechaSeleccionada}}</h5>
           <hr>
 
             <form id="reservaForm">
+              <!-- Sala -->
+              <div class="form-group">
+                <label>Sala:</label>
+                {{> SelectorDeSala}}
+              </div>
+
               <!-- Actividad -->
               <div class="form-group">
                 <label>Actividad:</label>
-                <input name="actividad" type="text" class="form-control" value="{{actividad}}">
+                <input name="actividad" type="text" class="form-control form-control-sm" value="{{actividad}}">
               </div>
 
               <!-- Integrantes -->
               <div class="form-group">
                 <label>Integrantes:</label>
-                <select multiple class="form-control" name="integrantes" id="integrantes">
+                <select multiple class="form-control form-control-sm" name="integrantes" id="integrantes">
                   {{#each usuario in usuarios}}
                     <option selected="{{esIntegrante usuario}}">{{usuario}}</option>
                   {{/each}}
                 </select>
               </div>
 
-              <!-- Fecha hasta la que se repite la reserva -->
-              <div class="form-group">
-                <label>Fécha de término:</label>
-                <input type="text" class="form-control" value="{{repiteHasta}}" name="repiteHasta" id="repiteHasta">
+              <div class="row">
+                <div class="col-md-6">
+                  <!-- Fecha de inicio -->
+                  <div class="form-group">
+                    <label>Fécha de inicio:</label>
+                    <input type="text" class="form-control form-control-sm" value="{{ini}}" name="ini" id="ini">
+                  </div>
+                </div>
+                <div class="col-md-6">
+                  <!-- Fecha final -->
+                  <div class="form-group">
+                    <label>Fécha de término:</label>
+                    <input type="text" class="form-control form-control-sm" value="{{fin}}" name="fin" id="fin">
+                  </div>
+                </div>
               </div>
+
 
             {{> SelectorDeHorario}}
 
@@ -39,7 +56,7 @@
               {{#if _id}}
                 {{#if repite}}
                     <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
-                    <button type="button" class="js-eliminaEstaFecha btn btn-warning btn-sm">Eliminar día</button>
+                    <button type="button" class="js-eliminaFechaSelect btn btn-warning btn-sm">Eliminar día</button>
                     <button type="button" class="js-eliminar btn btn-danger btn-sm pull-right">Eliminar todas</button>
                 {{else}}
                   <button type="submit" class="btn btn-primary btn-sm">Modificar</button>

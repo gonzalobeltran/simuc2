@@ -11,26 +11,19 @@ Template.Buscador.onCreated(function() {
     let actividades = [];
     let index = 0;
     let cuenta = 0;
+    let tope = 0;
 
     //Agrega los instrumentos del usuario al menú de actividades
     Meteor.user().profile.instrumento.forEach( (instrumento) => {
       if (instrumento == 'Dirección Coral') {
-        cuenta = Reservas.find({actividad: instrumento, integrantes: Session.get('usuario'), fechas: {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
+        cuenta = Reservas.find({actividad: instrumento, integrantes: Session.get('usuario'), 'dias.fecha': {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
+        if (cuenta >= Session.get('config').maxDCPorSemana) tope = 1;
       } else {
-        cuenta = Reservas.find({fechas: this.data.fecha, integrantes: Session.get('usuario'), actividad: instrumento}).count();
+        cuenta = Reservas.find({'dias.fecha': this.data.fecha, integrantes: Session.get('usuario'), actividad: instrumento}).count();
+        if (cuenta >= Session.get('config').maxReservas) tope = 1;
       }
-      //Solo puede reservar si no ha superado el máximo de reservas por día
-      if ((instrumento != 'Dirección Coral') && (cuenta < Session.get('config').maxReservas)) {
-        actividades.push({
-          index: index,
-          menu: instrumento + ' - ' + Session.get('usuario'),
-          actividad: instrumento,
-          integrantes: [Session.get('usuario')],
-        });
-        index += 1;
-      }
-
-      if ((instrumento == 'Dirección Coral') && (cuenta < Session.get('config').maxDCPorSemana)) {
+      //Solo puede reservar si no ha superado el máximo de reservas
+      if (!tope) {
         actividades.push({
           index: index,
           menu: instrumento + ' - ' + Session.get('usuario'),
@@ -44,7 +37,7 @@ Template.Buscador.onCreated(function() {
     //Agrega los grupos de cámara del usuario al menú de actividades
     Camara.find({integrantes: Session.get('usuario')}).forEach((grupo) => {
       let cuenta = Reservas.find({integrantes: grupo.integrantes,
-            fechas: {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
+            'dias.fecha': {$gte: moment(this.data.fecha).weekday(0).format('YYYY-MM-DD'), $lte: moment(this.data.fecha).weekday(6).format('YYYY-MM-DD')}}).count();
       //Solo puede reservar si no ha superado el máximo de reservas en la semana
       if (cuenta < Session.get('config').maxCamaraPorSemana) {
         actividades.push({
@@ -76,9 +69,10 @@ Template.Buscador.helpers({
   salasConPrioridad() { //Lista de salas disponibles
     let actividades = Session.get('menuActividades');
     let menu = actividades[Session.get('actividad')];
+    let bitModulo = Math.pow(2, this.modulo);
 
     //Busca las salas que tengan reservas con prioridad
-    let salasConReserva = Reservas.find({fechas: this.fecha, modulos: this.modulo, prioridad: {$gte: 2}}).map( (d) => {return d.sala} );
+    let salasConReserva = Reservas.find({dias: {$elemMatch: {fecha: this.fecha, modulos: {$bitsAllSet: bitModulo}}}, prioridad: {$gte: 2}}).map( (d) => {return d.sala} );
     //Busca las salas en las que la actividad tenga prioridad y no estén reservadas
     let salasDisponibles = Salas.find({prioridad: menu.actividad, nombre: {$nin: salasConReserva}}, {sort: {orden: 1}}).map( (d) => {return d.nombre} );
 
@@ -87,9 +81,10 @@ Template.Buscador.helpers({
   salasSinPrioridad() { //Lista de salas disponibles
     let actividades = Session.get('menuActividades');
     let menu = actividades[Session.get('actividad')];
+    let bitModulo = Math.pow(2, this.modulo);
 
     //Busca las salas que tengan reservas de cualquier tipo
-    let salasConReserva = Reservas.find({fechas: this.fecha, modulos: this.modulo}).map( (d) => {return d.sala} );
+    let salasConReserva = Reservas.find({dias: {$elemMatch: {fecha: this.fecha, modulos: {$bitsAllSet: bitModulo}}}}).map( (d) => {return d.sala} );
     //Busca las salas en que la actividad sea aceptada pero no prioridad, y no estén reservadas
     let salasDisponibles = Salas.find({acepta: menu.actividad, prioridad: {$ne: menu.actividad}, nombre: {$nin: salasConReserva}}, {sort: {orden: 1}}).map( (d) => {return d.nombre} );
 
@@ -112,7 +107,7 @@ Template.Buscador.events({
 
     if (!sala || !actividad || !integrantes) return false;
 
-    Meteor.call('nuevaReservaUsuario', sala, this.fecha, this.modulo, actividad, integrantes, (err, res) => {
+    Meteor.call('nuevaReservaUsuario', sala, actividad, integrantes, this.fecha, this.modulo, (err, res) => {
       if (err) Session.set('err', err.reason);
     });
 

@@ -14,17 +14,18 @@ Meteor.publish('reservasSala', function(sala, ini, fin) {
 
 //Publica las reservas de un usuario en un rango de fechas
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
-  return Reservas.find({fechas: {$gte: ini, $lte: fin}, integrantes: usuario});
+  return Reservas.find({'dias.fecha': {$gte: ini, $lte: fin}, integrantes: usuario});
 });
 
 //Publica las reservas de un módulo y fecha determinados
 Meteor.publish('reservasModulo', function(fecha, modulo) {
-  return Reservas.find({fechas: fecha, modulos: modulo});
+  let bitModulo = Math.pow(2, modulo);
+  return Reservas.find({ dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} }} });
 });
 
 //Publica las reservas de todas las salas en una fecha determinada
 Meteor.publish('reservasDia', function(fecha) {
-  return Reservas.find({fechas: fecha});
+  return Reservas.find({'dias.fecha': fecha});
 });
 
 //Publica el log con un filtro determinado
@@ -46,11 +47,6 @@ Meteor.publish('log', function(filtro, step) {
 //Publica la lista con todas las salas
 Meteor.publish('salas', function() {
   return Salas.find({});
-});
-
-//Publica la lista de cursos para un determinado semestre
-Meteor.publish('cursos', function(periodo) {
-  return Cursos.find({periodo: periodo});
 });
 
 //Publica la lista con los grupos de música de cámara

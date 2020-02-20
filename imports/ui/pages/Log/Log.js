@@ -25,8 +25,7 @@ Template.Log.helpers({
       {sala: {$regex: rxp}},
       {accion: {$regex: rxp}},
       {actividad: {$regex: rxp}},
-      {fechas: {$regex: rxp}},
-      {modulos: {$regex: rxp}},
+      {fecha: {$regex: rxp}},
     ]}, {sort: {ts: -1}, limit: 30}).fetch();
 
     return res;
