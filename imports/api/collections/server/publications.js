@@ -1,5 +1,6 @@
 import { Salas } from '../collections.js';
 import { Reservas } from '../collections.js';
+import { Calendario } from '../collections.js';
 import { Cursos } from '../collections.js';
 import { Camara } from '../collections.js';
 import { Config } from '../collections.js';
@@ -9,23 +10,33 @@ config = Config.findOne();
 
 //Publica las reservas de una determinada sala en un rango de fechas
 Meteor.publish('reservasSala', function(sala, ini, fin) {
-  return Reservas.find({sala: sala, 'dias.fecha': {$gte: ini, $lte: fin}});
+  return [
+    Reservas.find({sala: sala, 'dias.fecha': {$gte: ini, $lte: fin}}),
+    Calendario.find({sala: sala, fecha: {$gte: ini, $lte: fin}})
+  ];
 });
 
 //Publica las reservas de un usuario en un rango de fechas
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
-  return Reservas.find({'dias.fecha': {$gte: ini, $lte: fin}, integrantes: usuario});
+  return [
+    Reservas.find({'dias.fecha': {$gte: ini, $lte: fin}, integrantes: usuario}),
+    Calendario.find({fecha: {$gte: ini, $lte: fin}, integrantes: usuario})
+  ];
 });
 
 //Publica las reservas de un módulo y fecha determinados
 Meteor.publish('reservasModulo', function(fecha, modulo) {
-  let bitModulo = Math.pow(2, modulo);
-  return Reservas.find({ dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} }} });
+  return Reservas.find({ dias: {$elemMatch: {fecha: fecha, modulo: modulo}} });
 });
 
 //Publica las reservas de todas las salas en una fecha determinada
 Meteor.publish('reservasDia', function(fecha) {
   return Reservas.find({'dias.fecha': fecha});
+});
+
+//Publica los modulos con más de una reserva
+Meteor.publish('reservasSuperpuestas', function() {
+  return Calendario.find({ cuenta: {$gt: 2} });
 });
 
 //Publica el log con un filtro determinado

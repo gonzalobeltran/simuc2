@@ -12,7 +12,6 @@ import '/imports/ui/pages/Camara/Camara.js';
 import '/imports/ui/pages/Usuarios/Usuarios.js';
 import '/imports/ui/pages/Log/Log.js';
 import '/imports/ui/pages/Config/Config.js';
-import '/imports/ui/pages/Display/Display.js';
 
 var userRoutes = FlowRouter.group({
   name: 'user',
@@ -48,16 +47,6 @@ FlowRouter.route('/', {
       FlowRouter.go('/sign-in');
     }
   }
-});
-
-FlowRouter.route('/display', {
-  name: 'display',
-  triggersEnter: [function(context, redirect) {
-    if (!Roles.userIsInRole(Meteor.userId(), 'display')) redirect('/');
-  }],
-  action() {
-    BlazeLayout.render('AppBody', { main: 'Display' });
-  },
 });
 
 userRoutes.route('/reservas', {

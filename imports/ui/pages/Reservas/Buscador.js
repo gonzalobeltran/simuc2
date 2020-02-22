@@ -107,7 +107,7 @@ Template.Buscador.events({
 
     if (!sala || !actividad || !integrantes) return false;
 
-    Meteor.call('nuevaReservaUsuario', sala, actividad, integrantes, this.fecha, this.modulo, (err, res) => {
+    Meteor.call('ReservaUsuario', sala, actividad, integrantes, this.fecha, this.modulo, (err, res) => {
       if (err) Session.set('err', err.reason);
     });
 

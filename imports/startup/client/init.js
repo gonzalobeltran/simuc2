@@ -36,8 +36,6 @@ Meteor.startup(function(){
   Session.set('logFiltro', '');
   //Para mostrar errores
   Session.set('err', '');
-  //Para mostrar superposiciones
-  Session.set('superpuestas', '');
   //En la página Mis Reservas, alterna entre vista de semana y de día
   Session.set('verDia', 0);
   //Día para mostrar en la página Mis Reservas (si la vista de un sólo día está seleccionada)
@@ -98,22 +96,8 @@ Meteor.startup(function(){
     '8'
   ];
 
-  let binModulos = [
-    1,
-    2,
-    4,
-    8,
-    16,
-    32,
-    64,
-    128,
-    256
-  ];
-
-
   Session.set('modulos', modulos);
   Session.set('textoModulo', textoModulo);
-  Session.set('binModulos', binModulos);
 
   // La fecha de hoy, en formato largo y corto
   Session.set('hoy', moment().format('YYYY-MM-DD'));

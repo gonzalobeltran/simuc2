@@ -6,9 +6,8 @@ import './EditaModulo.html';
 import '../../partials/SelectorDeHorario.js';
 
 Template.EditaModulo.onCreated(function() {
-  let binModulos = Session.get('binModulos');
   let horario = this.data.horario;
-  if (!horario.reduce((a,b) => a+b)) horario[moment(this.data.fechaSelect).weekday()] = binModulos[this.data.moduloSelect];
+  if (!horario.reduce((a,b) => a+b)) horario[moment(this.data.fechaSelect).weekday()] = Math.pow(2, this.data.moduloSelect);
 
   Session.set('horario', horario);
 });
@@ -79,27 +78,18 @@ Template.EditaModulo.events({
 
     if (!ini || !fin || !actividad || !hayHorario) return false;
 
-    if (!id) { //Si es una nueva reserva
-      Meteor.call('nuevaReservaAdmin', sala, actividad, integrantes, 2, ini, fin, horario, (err,res) => {
-        if (err) Session.set('err', err.reason);
-      });
-    } else { //Si modifica una reserva existente
-      Meteor.call('modificaReserva', id, sala, actividad, integrantes, ini, fin, horario, (err,res) => {
-        if (err) Session.set('err', err.reason);
-      });
-    }
+    Meteor.call('ReservaAdmin', id, sala, actividad, integrantes, 2, ini, fin, horario, (err,res) => {
+      if (err) Session.set('err', err.reason);
+    });
 
-    //Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   },
   'click .js-eliminar'() {
     Meteor.call('eliminaReserva', this._id);
-    Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   },
   'click .js-eliminaFechaSelect'() {
     Meteor.call('eliminaFechaSelect', this._id, this.fechaSelect);
-    Meteor.call('reservasSuperpuestas', 2, (err,res) => { Session.set('superpuestas', res); });
     Modal.hide();
   }
 });

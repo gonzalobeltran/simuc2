@@ -3,6 +3,7 @@ import { check } from 'meteor/check';
 
 import { Salas } from './collections.js';
 import { Reservas } from './collections.js';
+import { Calendario } from './collections.js';
 import { Cursos } from './collections.js';
 import { Camara } from './collections.js';
 import { Config } from './collections.js';
@@ -22,7 +23,12 @@ var listaDeDias = function(ini, fin, horario) {
   var i = 0;
 
   do {
-    if (horario[moment(f).weekday()]) fechas.push({ fecha: f, modulos: horario[moment(f).weekday()] });
+    if (horario[moment(f).weekday()]) {
+      for (let n = 0; n < 9; n += 1) {
+        if (horario[moment(f).weekday()] & Math.pow(2, n))
+          fechas.push({ fecha: f, modulo: n });
+      }
+    }
     i += 1;
     f = moment(ini).add( i , 'days').format('YYYY-MM-DD');
   } while (f <= fin);
@@ -54,7 +60,7 @@ Meteor.methods({
 
 //------------Funciones de Reservas
 
-  'nuevaReservaUsuario'(sala, actividad, integrantes, fecha, modulo) {
+  'ReservaUsuario'(sala, actividad, integrantes, fecha, modulo) {
     checkRole(this, 'usuario');
 
     check(sala, String);
@@ -63,40 +69,37 @@ Meteor.methods({
     check(fecha, String);
     check(modulo, Number);
 
-    console.log(sala, fecha, actividad);
-
     if (!sala || !fecha || !actividad) {
       throw new Meteor.Error('Error al reservar','Se produjo un error al realizar la reserva');
     }
 
-    let bitModulo = Math.pow(2, modulo); console.log(bitModulo);
-    let dia = [{fecha: fecha, modulos: bitModulo}]; console.log(dia);
+    let bitModulo = Math.pow(2, modulo);
+    let dia = [{fecha: fecha, modulo: modulo}];
     let horario = [0, 0, 0, 0, 0, 0, 0,];
     horario[moment(fecha).weekday()] = bitModulo;
 
     if (integrantes.length) {
-      let duplicado = Reservas.find({dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} } }, integrantes: integrantes}).count();
+      let duplicado = Reservas.find({dias: {$elemMatch: {fecha: fecha, modulo: modulo } }, integrantes: integrantes}).count();
       if (duplicado) {
         throw new Meteor.Error('Error al reservar','Usuario ya tiene reservada otra sala en ese módulo');
       }
     }
 
-    let prioridad = 1;
-    if ( Salas.find({nombre: sala, prioridad: actividad}).count() ) {
-      prioridad = 2;
-    }
+    let prioridad = Salas.find({nombre: sala, prioridad: actividad}).count() ? 2: 1;
+    console.log(prioridad);
 
     //Verifica que no haya otra reserva en ese módulo
-    let hayOtra = Reservas.find({sala: sala, dias: {$elemMatch: {fecha: fecha, modulos: {$bitsAllSet: bitModulo} }}, prioridad: {$gte: prioridad}}).count();
+    let hayOtra = Reservas.find({sala: sala, dias: {$elemMatch: {fecha: fecha, modulo: modulo }}, prioridad: {$gte: prioridad}}).count();
     if (hayOtra) {
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
-    Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dia, horario: horario});
+    let hash = Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dia, horario: horario});
+    Calendario.update({sala:sala, fecha: fecha, modulo: modulo}, {$push: {reservas: {hash: hash}}, $inc: {cuenta: prioridad} }, {upsert: true});
     writeLog(this.userId, sala, 'Reserva', actividad, dia);
   },
 
-  'nuevaReservaAdmin'(sala, actividad, integrantes, prioridad, ini, fin, horario) {
+  'ReservaAdmin'(id, sala, actividad, integrantes, prioridad, ini, fin, horario) {
     checkRole(this, 'admin');
 
     check(sala, String);
@@ -106,6 +109,12 @@ Meteor.methods({
     check(actividad, String);
     check(integrantes, [String]);
     check(prioridad, Number);
+
+    if (id) {
+      Reservas.remove({_id: id});
+      Calendario.update({reservas: {hash: id} }, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -prioridad}}, {multi: true});
+      Calendario.remove({cuenta: 0});
+    }
 
     let hayHorario = horario.reduce((a,b) => a+b);
 
@@ -117,31 +126,12 @@ Meteor.methods({
 
     if (dias == '') return false;
 
-    Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dias, horario: horario});
-    writeLog(this.userId, sala, 'Reserva', actividad, dias);
-  },
-
-  'modificaReserva'(id, sala, actividad, integrantes, ini, fin, horario) {
-    checkRole(this, 'admin');
-
-    check(sala, String);
-    check(ini, String);
-    check(fin, String);
-    check(horario, [Number]);
-    check(actividad, String);
-    check(integrantes, [String]);
-
-    let hayHorario = horario.reduce((a,b) => a+b);
-
-    if (!sala || !ini || !fin || !hayHorario || !actividad) {
-      throw new Meteor.Error('Error al reservar','Faltan datos para modificar la reserva');
+    let hash = Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dias, horario: horario});
+    for (n in dias) {
+      Calendario.update({sala:sala, fecha: dias[n].fecha, modulo: dias[n].modulo}, {$push: {reservas: {hash: hash}}, $inc: {cuenta: prioridad} }, {upsert: true});
     }
 
-    let old = Reservas.findOne({_id: id});
-    let dias = listaDeDias(ini, fin, horario);
-
-    Reservas.update({_id: id}, {$set: {sala: sala, actividad: actividad, integrantes: integrantes, dias: dias, horario: horario}});
-    writeLog(this.userId, sala, 'Modifica', actividad, dias);
+    writeLog(this.userId, sala, 'Reserva', actividad, dias);
   },
 
   'eliminaReserva'(id) {
@@ -150,6 +140,8 @@ Meteor.methods({
 
     let old = Reservas.findOne({_id: id});
     Reservas.remove({_id: id});
+    Calendario.update({reservas: {hash: id} }, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -old.prioridad}}, {multi: true});
+    Calendario.remove({cuenta: 0});
     writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.dias);
   },
 
@@ -160,101 +152,10 @@ Meteor.methods({
 
     let old = Reservas.findOne({_id: id});
     Reservas.update({_id: id}, { $pull: {dias: {fecha: fecha}} });
+    Calendario.update({fecha: fecha}, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -old.prioridad}}, {multi: true});
+    Calendario.remove({cuenta: 0});
     writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha]);
   },
-
-  'reservasSuperpuestas'(prioridad) {
-    check(prioridad, Number);
-
-    let hoy = moment().format('YYYY-MM-DD');
-    return Reservas.aggregate([
-      {$match: {fechas: {$gte: hoy}, prioridad: {$gte: prioridad}}},
-      {$unwind: "$fechas"},
-      {$unwind: "$modulos"},
-      {
-        $group: {
-          _id: {sala: "$sala", fechas: "$fechas", modulos:"$modulos"},
-          count: {$sum:1}
-        }
-      }, {
-        $match: {
-          count: {$gt:1},
-        }
-      }, {
-        $sort: {
-          '_id.fechas': 1,
-          '_id.modulos': 1,
-        }
-      }
-    ]).map((d) => {return d._id});
-  },
-
-//------------Funciones de cursos
-
-'creaCurso'(periodo, ini, fin, nombre, profesor, sala, horario) {
-  checkRole(this, 'admin');
-  check(periodo, String);
-  check(ini, String);
-  check(fin, String);
-  check(nombre, String);
-  check(profesor, String);
-  check(sala, String);
-  check(horario, Array);
-
-  let hash = Cursos.insert({periodo: periodo, ini: ini, fin: fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario});
-
-  let actividad = nombre + ' - ' + profesor;
-  if (profesor == '-') actividad = nombre;
-
-  for (let m in horario) {
-    let fechas = listaDeDias(ini, fin, horario[m].dias);
-
-    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: hash});
-  }
-
-  writeLog(this.userId, sala, 'Crea curso', actividad, [periodo], '-');
-
-},
-
-'modificaCurso'(id, periodo, ini, fin, nombre, profesor, sala, horario) {
-  checkRole(this, 'admin');
-  check(periodo, String);
-  check(ini, String);
-  check(fin, String);
-  check(id, String);
-  check(nombre, String);
-  check(profesor, String);
-  check(sala, String);
-  check(horario, Array);
-
-  Cursos.update({_id: id},
-    {$set: {periodo: periodo, ini:ini, fin:fin, nombre: nombre, profesor: profesor, sala: sala, horario: horario}});
-
-  let actividad = nombre + ' - ' + profesor;
-  if (profesor == '-') actividad = nombre;
-
-  Reservas.remove({hash: id});
-
-  for (let m in horario) {
-    let fechas = listaDeDias(ini, fin, horario[m].dias);
-
-    Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, hash: id});
-  }
-
-  writeLog(this.userId, sala, 'Modifica curso', actividad, [periodo], '-');
-
-},
-
-'eliminaCurso'(id) {
-  checkRole(this, 'admin');
-  check(id, String);
-
-  let old = Cursos.findOne({_id: id});
-  writeLog(this.userId, old.sala, 'Elimina curso', old.nombre, [old.periodo], '-');
-
-  Cursos.remove({_id: id});
-  Reservas.remove({hash: id});
-},
 
 //------------Funciones de cámara
 

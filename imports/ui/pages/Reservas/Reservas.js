@@ -7,12 +7,6 @@ import './EliminarReserva.js';
 import './Buscador.js';
 
 Template.Reservas.onCreated(function() {
-
-  //Guarda las reservas superpuestas
-  Meteor.call('reservasSuperpuestas', 1, (err,res) => {
-    if (!err) Session.set('superpuestas', res);
-  });
-
   this.autorun( () => {
     let semana = Session.get('semanaDesdeHoy');
     document.documentElement.style.setProperty("--colNum", 1 + 6 * !Session.get('verDia'));
@@ -55,17 +49,16 @@ Template.Reservas.helpers({
       for (let columna = ini; columna <= fin; columna += 1) { //7 días
 
         let colCelda = verDia ? 0 : columna;
-        let bitModulo = Math.pow(2, fila);
         //Módulo vacío
         celdas[fila][colCelda] = [{
           sala: (modulos[fila] == 'almuerzo') ? 'A' : '-',
           fecha: semana[columna],
           modulo: fila,
           nombreModulo: modulos[fila],
-          dias: {fecha: semana[columna], modulos: bitModulo}
+          dias: {fecha: semana[columna], modulo: fila}
         }];
 
-        let reservas = Reservas.find({dias: {$elemMatch: {fecha: semana[columna], modulos: {$bitsAllSet: bitModulo}} }, integrantes: Session.get('usuario')}).fetch();
+        let reservas = Reservas.find({dias: {$elemMatch: {fecha: semana[columna], modulo: fila} }, integrantes: Session.get('usuario')}).fetch();
 
         for (let i in reservas) {
           reservas[i].fecha = semana[columna];

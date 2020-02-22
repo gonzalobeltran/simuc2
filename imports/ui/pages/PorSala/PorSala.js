@@ -2,6 +2,7 @@ import { Meteor } from 'meteor/meteor';
 import { Template } from 'meteor/templating';
 
 import { Reservas } from '/imports/api/collections/collections.js';
+import { Calendario } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
@@ -12,14 +13,11 @@ Template.PorSala.onCreated(function(){
     let semana = Session.get('semana');
 
     //Se suscribe a las reservas de la sala activa y la semana activa, de lunes a domingo
+    Subs.subscribe('reservasSuperpuestas');
     let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
     document.documentElement.style.setProperty("--colNum", 7);
     document.documentElement.style.setProperty('--primFila', '30px');
-  });
-
-  Meteor.call('reservasSuperpuestas', 2, (err,res) => {
-    if (!err) Session.set('superpuestas', res);
   });
 
 });
@@ -50,7 +48,6 @@ Template.PorSala.helpers({
     let semana = Session.get('semana');
     let sala = Session.get('sala');
     let modulos = Session.get('modulos');
-    let binModulos = Session.get('binModulos');
 
     let celdas = [];
 
@@ -63,20 +60,20 @@ Template.PorSala.helpers({
           sala: sala,
           ini: semana[columna],
           fin: semana[columna],
-          dias: [{fecha: semana[columna], modulos: binModulos[fila]}],
+          dias: [{fecha: semana[columna], modulo: fila}],
           fechaSelect: semana[columna],
           moduloSelect: fila,
           horario: [0, 0, 0, 0, 0, 0, 0],
           actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
         }];
 
-        let reservas = Reservas.find({sala: sala, dias: { $elemMatch: {fecha: semana[columna], modulos: {$bitsAllSet: binModulos[fila]}} } }).fetch();
+        let reservas = Reservas.find({ sala: sala, dias: {$elemMatch: {fecha: semana[columna], modulo: fila}} }).fetch();
 
         for (let i in reservas) {
           reservas[i].fechaSelect = semana[columna];
           reservas[i].moduloSelect = fila;
           reservas[i].ini = reservas[i].dias[0].fecha;
-          reservas[i].fin = reservas[i].dias[reservas[i].dias.length - 1].fecha;          
+          reservas[i].fin = reservas[i].dias[reservas[i].dias.length - 1].fecha;
           celdas[fila][columna][i] = reservas[i];
         }
 
@@ -117,18 +114,12 @@ Template.PorSala.helpers({
     return '';
   },
   superpuestas() {
-    let superp = Session.get('superpuestas');
-    let mix = [];
-    let strip = [];
-
-    superp.forEach((e) => {
-      if ($.inArray(e.sala+e.fechas, mix) === -1) {
-        mix.push(e.sala+e.fechas);
-        strip.push({sala: e.sala, fechas: e.fechas});
-      }
-    });
-
-    return strip;
+    let modulos = Session.get('modulos');
+    let superpuestas = Calendario.find({ cuenta: {$gt: 3} }).fetch();
+    for (let i in superpuestas) {
+      superpuestas[i].modulo = modulos[superpuestas[i].modulo];
+    }
+    return superpuestas;
   }
 });
 
@@ -152,7 +143,7 @@ Template.PorSala.events({
     $('#fecha').datepicker('update', Session.get('fecha'));
   },
   'click .js-verReserva'() {
-    updateFechas(this.fechas);
+    updateFechas(this.fecha);
     Session.set('sala', this.sala);
   },
 });
