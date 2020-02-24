@@ -405,4 +405,53 @@ Meteor.methods({
       Meteor.users.update(this.userId, {$unset: {'profile.amonestado': ''}});
   },
 
+  'actualizaDB'() {
+    let reservas = Reservas.find({"fechas.0": {$gt: "2020-02-24"}}).fetch();
+
+    Reservas.remove({});
+    Log.remove({});
+    Config.remove({});
+    Calendario.remove({});
+    configuracion = {
+      maxReservas: 2,
+      maxCamaraPorSemana: 1,
+      maxDCPorSemana: 1,
+      mensaje: '',
+    }
+
+    Config.insert(configuracion);
+
+    for (let i in reservas) {
+      let sala = reservas[i].sala;
+      let actividad = reservas[i].actividad;
+      let integrantes = reservas[i].integrantes;
+      let prioridad = reservas[i].prioridad;
+      let ini = reservas[i].fechas[0];
+      let fin = reservas[i].fechas[reservas[i].fechas.length - 1];
+
+      let modulosBit = 0;
+      for (let n in reservas[i].modulos) {
+        let md = reservas[i].modulos[n];
+        if (md == '1') modulosBit += 1;
+        if (md == '2') modulosBit += 2;
+        if (md == '3') modulosBit += 4;
+        if (md == 'almuerzo') modulosBit += 8;
+        if (md == '4') modulosBit += 16;
+        if (md == '5') modulosBit += 32;
+        if (md == '6') modulosBit += 64;
+        if (md == '7') modulosBit += 128;
+        if (md == '8') modulosBit += 256;
+      }
+
+      let horario = [0, 0, 0, 0, 0, 0, 0];
+      for (let d in reservas[i].fechas) {
+        let fecha = reservas[i].fechas[d];
+        horario[moment(fecha).weekday()] = modulosBit;
+      }
+
+      Meteor.call('ReservaAdmin', null, sala, actividad, integrantes, prioridad, ini, fin, horario, 0);
+    }
+
+  },
+
 });

@@ -116,7 +116,7 @@ Template.PorSala.helpers({
     let modulos = Session.get('modulos');
     let superpuestas = Calendario.find({ cuenta: {$gt: 3} }).fetch();
     for (let i in superpuestas) {
-      superpuestas[i].modulo = modulos[superpuestas[i].modulo];
+      superpuestas[i].txt = superpuestas[i].sala + " / " + superpuestas[i].fecha + " - Módulo: " + modulos[superpuestas[i].modulo];
     }
     return superpuestas;
   }

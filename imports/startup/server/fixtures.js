@@ -44,7 +44,7 @@ Meteor.startup(() => {
 
   //Crea la configuración si no existe
   configuracion = {
-    maxReservas: 1,
+    maxReservas: 2,
     maxCamaraPorSemana: 1,
     maxDCPorSemana: 1,
     mensaje: '-',

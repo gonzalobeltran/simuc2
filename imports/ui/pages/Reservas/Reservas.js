@@ -95,7 +95,9 @@ Template.Reservas.helpers({
     return 'js-editaModulo';
   },
   hayOtra() {
-    if (this.cuenta > 2) return 'masDeUna';
+    if (this.cuenta > 2 && this.prioridad == 1) return 'masDeUna';
+    if (this.cuenta == 3 && this.prioridad == 2) return 'quitado';
+    if (this.cuenta > 3) return 'masDeUna';
   },
   amonestado() {
     return Session.get('amonestado');
