@@ -20,17 +20,21 @@ Template.Camara.helpers({
   grupos() {
     return Camara.find({}, {sort:{profesor:1}});
   },
-  txtDia() {
-    if (!this.horario) return false;
+  txtHorario() {
+    let horario = this.horario;
+    if (!horario) return false;
+
+    let hayHorario = horario.reduce((a,b) => a+b);
+    if (!hayHorario) return ('Sin sala asignada');
 
     let dias = ['Lu', 'Ma', 'Mi', 'Ju', 'Vi', 'Sá', 'Do'];
-    let horario = this.horario;
+    let modulos = Session.get('modulos');
 
-    let txt = horario.map((m) => {
-      return m.dias.map((d) => {return dias[d]}).join(', ') + ': ' + m.modulo;
-    });
+    for (let dia in horario) {
+      if (horario[dia]) txt = this.sala + ' - ' + dias[dia] + ': ' + modulos[Math.log2(horario[dia])];
+    }
 
-    return txt.join('; ');
+    return txt;
   }
 });
 

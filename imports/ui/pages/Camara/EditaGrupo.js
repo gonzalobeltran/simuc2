@@ -6,7 +6,9 @@ import './EditaGrupo.html';
 import '../../partials/SelectorDeHorario.js';
 
 Template.EditaGrupo.onCreated(function() {
-  Session.set('horario', this.data.horario);
+  let horario = this.data.horario;
+  if (!horario) horario = [0, 0, 0, 0, 0, 0, 0];
+  Session.set('horario', horario);
 });
 
 Template.EditaGrupo.rendered = function(){
@@ -37,6 +39,7 @@ Template.EditaGrupo.events({
   'submit #camaraForm'(event, template) {
     event.preventDefault();
 
+    let id = this._id;
     let profesor = _.pluck( _.filter(event.target.profesor.options, (i) => {return i.selected}) , 'value');
     let integrantes = _.pluck( _.filter(event.target.integrantes.options, (i) => {return i.selected}) , 'value');
     let sala = event.target.sala.value;
@@ -47,11 +50,7 @@ Template.EditaGrupo.events({
 
     if (!profesor.length || !integrantes.length) return false;
 
-    if (this._id) {
-      Meteor.call('editaGrupo', this._id, profesor, integrantes, sala, horario);
-    } else {
-      Meteor.call('creaGrupo', profesor, integrantes, sala, horario);
-    }
+    Meteor.call('grupoCamara', this._id, profesor, integrantes, sala, horario);
 
     template.find("form").reset();
     Modal.hide();

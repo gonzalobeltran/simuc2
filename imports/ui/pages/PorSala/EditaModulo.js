@@ -78,14 +78,14 @@ Template.EditaModulo.events({
 
     if (!ini || !fin || !actividad || !hayHorario) return false;
 
-    Meteor.call('ReservaAdmin', id, sala, actividad, integrantes, 2, ini, fin, horario, (err,res) => {
+    Meteor.call('ReservaAdmin', id, sala, actividad, integrantes, 2, ini, fin, horario, 1, (err,res) => {
       if (err) Session.set('err', err.reason);
     });
 
     Modal.hide();
   },
   'click .js-eliminar'() {
-    Meteor.call('eliminaReserva', this._id);
+    Meteor.call('eliminaReserva', this._id, 1);
     Modal.hide();
   },
   'click .js-eliminaFechaSelect'() {

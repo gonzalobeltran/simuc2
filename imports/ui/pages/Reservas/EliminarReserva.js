@@ -13,7 +13,7 @@ Template.EliminarReserva.helpers({
 
 Template.EliminarReserva.events({
   'click .js-eliminaReserva'() { //Elimina la reserva
-    Meteor.call('eliminaReserva', this._id);
+    Meteor.call('eliminaReserva', this._id, 1);
     Modal.hide();
   },
 });

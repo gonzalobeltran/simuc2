@@ -106,7 +106,7 @@ Template.PorSala.helpers({
     return 'desactivado';
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.dias.length > 1) return true;
+    if (this.dias[0].fecha != this.dias[this.dias.length - 1].fecha) return true;
     return false;
   },
   masDeUna(celda) {

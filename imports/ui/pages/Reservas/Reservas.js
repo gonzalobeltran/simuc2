@@ -1,6 +1,7 @@
 import { Meteor } from 'meteor/meteor';
 
 import { Reservas } from '/imports/api/collections/collections.js';
+import { Calendario } from '/imports/api/collections/collections.js';
 
 import './Reservas.html';
 import './EliminarReserva.js';
@@ -55,12 +56,14 @@ Template.Reservas.helpers({
           fecha: semana[columna],
           modulo: fila,
           nombreModulo: modulos[fila],
-          dias: {fecha: semana[columna], modulo: fila}
+          dias: [{fecha: semana[columna], modulo: fila}]
         }];
 
         let reservas = Reservas.find({dias: {$elemMatch: {fecha: semana[columna], modulo: fila} }, integrantes: Session.get('usuario')}).fetch();
 
         for (let i in reservas) {
+          let dia = Calendario.findOne({sala: reservas[i].sala, fecha: semana[columna], modulo: fila});
+          if (dia) reservas[i].cuenta = dia.cuenta;
           reservas[i].fecha = semana[columna];
           reservas[i].nombreModulo = modulos[fila];
           celdas[fila][colCelda][i] = reservas[i];
@@ -79,35 +82,20 @@ Template.Reservas.helpers({
     return Session.get('textoModulo');
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.fechas && this.fechas.length > 1) return true;
+    if (this.dias[0].fecha != this.dias[this.dias.length - 1].fecha) return true;
     return false;
   },
-  accion() {
-    //Cambia la acción del click dependiendo de la fecha y el módulo
-    if (this.fecha) {
-      //No puede reservar antes de 24 horas, en el módulo de almuerzo y los fines de semana
-      if (this.fecha <= Session.get('hoy')
-        || this.modulo == 3
-        || moment(this.fecha).weekday() > 4) return 'desactivado';
-    } else if (this.fechas) {
-      //No puede eliminar una reserva recurrente o una reserva pasada
-      if (this.fechas.length > 1
-        || this.fechas[0] < Session.get('hoy')) return 'desactivado';
-    }
+  accion() { //Cambia la acción del click dependiendo de la fecha y el módulo
+    //No puede reservar el mismo día, en el módulo de almuerzo y los fines de semana
+    if (this.fecha <= Session.get('hoy') || this.nombreModulo == 'almuerzo' || moment(this.fecha).weekday() > 4) return 'desactivado';
+
+    //No puede eliminar una reserva recurrente
+    if (this.dias[0].fecha != this.dias[this.dias.length - 1].fecha) return 'desactivado';
 
     return 'js-editaModulo';
   },
   hayOtra() {
-    if (this.fechaSelect) {
-      let superp = Session.get('superpuestas');
-      let esta = {
-        sala: this.sala,
-        fechas: this.fechaSelect,
-        modulos: this.modulos[0]
-      }
-
-      if (_.findWhere(superp, esta) ) return 'masDeUna';
-    }
+    if (this.cuenta > 2) return 'masDeUna';
   },
   amonestado() {
     return Session.get('amonestado');

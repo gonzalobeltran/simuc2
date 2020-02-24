@@ -73,10 +73,9 @@ Meteor.methods({
       throw new Meteor.Error('Error al reservar','Se produjo un error al realizar la reserva');
     }
 
-    let bitModulo = Math.pow(2, modulo);
     let dia = [{fecha: fecha, modulo: modulo}];
     let horario = [0, 0, 0, 0, 0, 0, 0,];
-    horario[moment(fecha).weekday()] = bitModulo;
+    horario[moment(fecha).weekday()] = Math.pow(2, modulo);
 
     if (integrantes.length) {
       let duplicado = Reservas.find({dias: {$elemMatch: {fecha: fecha, modulo: modulo } }, integrantes: integrantes}).count();
@@ -86,11 +85,9 @@ Meteor.methods({
     }
 
     let prioridad = Salas.find({nombre: sala, prioridad: actividad}).count() ? 2: 1;
-    console.log(prioridad);
 
     //Verifica que no haya otra reserva en ese módulo
-    let hayOtra = Reservas.find({sala: sala, dias: {$elemMatch: {fecha: fecha, modulo: modulo }}, prioridad: {$gte: prioridad}}).count();
-    if (hayOtra) {
+    if (Reservas.find({sala: sala, dias: {$elemMatch: {fecha: fecha, modulo: modulo }}, prioridad: {$gte: prioridad}}).count()) {
       throw new Meteor.Error('Error al reservar','Ya existe una reserva en ese módulo');
     }
 
@@ -99,21 +96,22 @@ Meteor.methods({
     writeLog(this.userId, sala, 'Reserva', actividad, dia);
   },
 
-  'ReservaAdmin'(id, sala, actividad, integrantes, prioridad, ini, fin, horario) {
+  'ReservaAdmin'(id, sala, actividad, integrantes, prioridad, ini, fin, horario, log) {
     checkRole(this, 'admin');
 
     check(sala, String);
-    check(ini, String);
-    check(fin, String);
-    check(horario, [Number]);
     check(actividad, String);
     check(integrantes, [String]);
     check(prioridad, Number);
+    check(ini, String);
+    check(fin, String);
+    check(horario, [Number]);
+    check(log, Number);
 
+    let accionLog = 'Reserva';
     if (id) {
-      Reservas.remove({_id: id});
-      Calendario.update({reservas: {hash: id} }, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -prioridad}}, {multi: true});
-      Calendario.remove({cuenta: 0});
+      accionLog = 'Modifica reserva';
+      Meteor.call('eliminaReserva', id, 0);
     }
 
     let hayHorario = horario.reduce((a,b) => a+b);
@@ -123,7 +121,6 @@ Meteor.methods({
     }
 
     let dias = listaDeDias(ini, fin, horario);
-
     if (dias == '') return false;
 
     let hash = Reservas.insert({sala: sala, actividad: actividad, integrantes: integrantes, prioridad: prioridad, dias: dias, horario: horario});
@@ -131,18 +128,21 @@ Meteor.methods({
       Calendario.update({sala:sala, fecha: dias[n].fecha, modulo: dias[n].modulo}, {$push: {reservas: {hash: hash}}, $inc: {cuenta: prioridad} }, {upsert: true});
     }
 
-    writeLog(this.userId, sala, 'Reserva', actividad, dias);
+    if (log) writeLog(this.userId, sala, accionLog, actividad, dias);
+    return (hash);
   },
 
-  'eliminaReserva'(id) {
+  'eliminaReserva'(id, log) {
     checkRole(this, 'usuario');
     check(id, String);
+    check(log, Number);
 
+    if (!id) return false;
     let old = Reservas.findOne({_id: id});
     Reservas.remove({_id: id});
     Calendario.update({reservas: {hash: id} }, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -old.prioridad}}, {multi: true});
     Calendario.remove({cuenta: 0});
-    writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.dias);
+    if (log) writeLog(this.userId, old.sala, 'Elimina reserva', old.actividad, old.dias);
   },
 
   'eliminaFechaSelect'(id, fecha) {
@@ -152,23 +152,26 @@ Meteor.methods({
 
     let old = Reservas.findOne({_id: id});
     Reservas.update({_id: id}, { $pull: {dias: {fecha: fecha}} });
+    Reservas.remove({dias: {$size: 0}});
     Calendario.update({fecha: fecha}, {$pull: {reservas: {hash: id}}, $inc: {cuenta: -old.prioridad}}, {multi: true});
     Calendario.remove({cuenta: 0});
-    writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [fecha]);
+    writeLog(this.userId, old.sala, 'Elimina una fecha', old.actividad, [{fecha: fecha}]);
   },
 
 //------------Funciones de cámara
 
-  'creaGrupo'(profesor, integrantes, sala, horario) {
+  'grupoCamara'(id, profesor, integrantes, sala, horario) {
     checkRole(this, 'admin');
     check(profesor, [String]);
     check(integrantes, [String]);
     check(sala, String);
 
-    let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario});
+    if (id) Meteor.call('borraGrupo', id);
 
-    if (!horario) return false;
-    check(horario, Array);
+    let hash = Camara.insert({profesor: profesor, integrantes: integrantes, sala: sala, horario: horario, idGrupo: ''});
+
+    let hayHorario = horario.reduce((a,b) => a+b);
+    if (!hayHorario) return false;
 
     let actividad = 'Cámara - ' + apellidos(profesor);
 
@@ -176,96 +179,68 @@ Meteor.methods({
     let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
     let fin = moment().year() + finSemestre;
 
-    for (let m in horario) {
-      let fechas = listaDeDias(ini, fin, horario[m].dias);
-
-      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: hash});
-    }
-
-  },
-
-  'editaGrupo'(id, profesor, integrantes, sala, horario) {
-    checkRole(this, 'admin');
-    check(id, String);
-    check(profesor, [String]);
-    check(integrantes, [String]);
-    check(sala, String);
-
-    Camara.update({_id: id}, {$set: {profesor: profesor, integrantes: integrantes, sala: sala, horario: horario}});
-    Reservas.remove({hash: id});
-
-    if (!horario) return false;
-    check(horario, Array);
-
-    let actividad = 'Cámara - ' + apellidos(profesor);
-
-    let ini = moment().format('YYYY-MM-DD');
-    let finSemestre = (moment().month()<6) ? '-06-30' : '-11-30';
-    let fin = moment().year() + finSemestre;
-
-    for (let m in horario) {
-      let fechas = listaDeDias(ini, fin, horario[m].dias);
-
-      Reservas.insert({sala: sala, fechas: fechas, modulos: horario[m].modulo, prioridad: 2, actividad: actividad, integrantes: profesor.concat(integrantes), hash: id});
-    }
-
+    Meteor.call('ReservaAdmin', null, sala, actividad, profesor.concat(integrantes), 2, ini, fin, horario, 0, (err,res) => {
+      Camara.update({_id: hash}, {$set: {idGrupo: res}});
+    });
   },
 
   'borraGrupo'(id) {
     checkRole(this, 'admin');
     check(id, String);
 
+    grupo = Camara.findOne({_id: id});
     Camara.remove({_id: id});
-    Reservas.remove({hash: id});
+    Meteor.call('eliminaReserva', grupo.idGrupo, 0);
   },
 
-  //------------Funciones de salas
+//------------Funciones de salas
 
-    'creaSala'(nombre, prioridad, acepta, orden) {
-      checkRole(this, 'superadmin');
-      check(nombre, String);
-      check(prioridad, [String]);
-      check(acepta, [String]);
-      check(orden, Number);
+  'creaSala'(nombre, prioridad, acepta, orden) {
+    checkRole(this, 'superadmin');
+    check(nombre, String);
+    check(prioridad, [String]);
+    check(acepta, [String]);
+    check(orden, Number);
 
-      const existe = Salas.find({nombre: nombre}).count();
+    const existe = Salas.find({nombre: nombre}).count();
 
-      if (existe) {
-        throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
-      }
+    if (existe) {
+      throw new Meteor.Error('Error al insertar', 'Ya existe una sala con ese nombre');
+    }
 
-      Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden});
-    },
+    Salas.insert({nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden});
+  },
 
-    'editaSala'(id, nombre, prioridad, acepta, orden) {
-      checkRole(this, 'superadmin');
-      check(id, String);
-      check(nombre, String);
-      check(prioridad, [String]);
-      check(acepta, [String]);
-      check(orden, Number);
+  'editaSala'(id, nombre, prioridad, acepta, orden) {
+    checkRole(this, 'superadmin');
+    check(id, String);
+    check(nombre, String);
+    check(prioridad, [String]);
+    check(acepta, [String]);
+    check(orden, Number);
 
-      let salaOld = Salas.findOne({_id: id});
+    let salaOld = Salas.findOne({_id: id});
 
-      //Si cambia el nombre de la sala, actualiza todas las reservas hechas en esa sala
-      if (salaOld.nombre != nombre) {
-        Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
-      }
+    //Si cambia el nombre de la sala, actualiza todas las reservas hechas en esa sala
+    if (salaOld.nombre != nombre) {
+      Reservas.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
+      Calendario.update({sala: salaOld.nombre}, {$set: {sala: nombre}}, {multi: true});
+    }
 
-      Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden}});
-    },
+    Salas.update({_id: id}, {$set: {nombre: nombre, prioridad: prioridad, acepta: acepta, orden: orden}});
+  },
 
-    'borraSala'(id) {
-      checkRole(this, 'superadmin');
-      check(id, String);
+  'borraSala'(id) {
+    checkRole(this, 'superadmin');
+    check(id, String);
 
-      Salas.remove({_id: id});
-    },
+    Salas.remove({_id: id});
+  },
 
-    'seleccionaSalas'(salas) {
-      Meteor.users.update({_id: this.userId}, {$set: {'profile.salasSeleccionadas': salas}}
-      );
-    },
+  'seleccionaSalas'(salas) {
+    Meteor.users.update({_id: this.userId}, {$set: {'profile.salasSeleccionadas': salas}}
+    );
+  },
 
 //------------Funciones de usuario
   'creaUsuario'(nombre, email, ocupacion, instrumento) {

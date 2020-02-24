@@ -20,7 +20,7 @@ Meteor.publish('reservasSala', function(sala, ini, fin) {
 Meteor.publish('reservasUsuario', function(usuario, ini, fin) {
   return [
     Reservas.find({'dias.fecha': {$gte: ini, $lte: fin}, integrantes: usuario}),
-    Calendario.find({fecha: {$gte: ini, $lte: fin}, integrantes: usuario})
+    Calendario.find({fecha: {$gte: ini, $lte: fin}})
   ];
 });
 
