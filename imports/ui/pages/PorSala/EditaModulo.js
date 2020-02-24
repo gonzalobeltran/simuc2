@@ -3,9 +3,9 @@ import { Template } from 'meteor/templating';
 import { Reservas } from '/imports/api/collections/collections.js';
 
 import './EditaModulo.html';
-import '../../partials/SelectorDeHorario.js';
 
 Template.EditaModulo.onCreated(function() {
+  Session.set('salaDeReserva', Session.get('sala'));
   let horario = this.data.horario;
   if (!horario.reduce((a,b) => a+b)) horario[moment(this.data.fechaSelect).weekday()] = Math.pow(2, this.data.moduloSelect);
 
@@ -41,6 +41,15 @@ Template.EditaModulo.rendered = function(){
 }
 
 Template.EditaModulo.helpers({
+  salaSeleccionada() {
+    return Session.get('salaDeReserva');
+  },
+  listaDeSalas() { //Lista de salas
+    return Session.get('listaSalas');
+  },
+  estaSalaSeleccionada(sala) { //Marca la sala seleccionada
+    if (sala == Session.get('salaDeReserva')) return 'selected';
+  },
   fechaSeleccionada() {
     let modulos = Session.get('modulos');
     return( moment(this.fechaSelect).format('dd DD MMM YYYY') + ' - Módulo ' + modulos[this.moduloSelect]);
@@ -68,7 +77,7 @@ Template.EditaModulo.events({
     event.preventDefault();
 
     let id = this._id;
-    let sala = Session.get('sala');
+    let sala = Session.get('salaDeReserva');
     let ini = event.target.ini.value;
     let fin = event.target.fin.value;
     let horario = Session.get('horario');
@@ -91,5 +100,8 @@ Template.EditaModulo.events({
   'click .js-eliminaFechaSelect'() {
     Meteor.call('eliminaFechaSelect', this._id, this.fechaSelect);
     Modal.hide();
-  }
+  },
+  'change .js-selectorDeSala'(event) { //Selector de sala
+    Session.set('salaDeReserva', event.target.value);
+  },
 });

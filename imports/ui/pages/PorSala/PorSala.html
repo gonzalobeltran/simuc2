@@ -1,10 +1,12 @@
 <template name="PorSala">
 
-  <div class="print-only"><h4>{{salaActiva}}</h4><br></div>
-
-  <div class="row no-print">
+  <div class="row">
     <div class="col-sm-6">
-      {{> SelectorDeSala}}
+      <select name="sala" class="js-salaSelect form-control form-control-sm">
+        {{#each sala in salas}}
+          <option selected={{isSelected sala}}>{{sala}}</option>
+        {{/each}}
+      </select>
     </div>
     <div class="col-sm-6">
       <input type="text" class="form-control form-control-sm" value="{{fecha}}" id="fecha">

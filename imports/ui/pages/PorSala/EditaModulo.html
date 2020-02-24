@@ -13,7 +13,11 @@
               <!-- Sala -->
               <div class="form-group">
                 <label>Sala:</label>
-                {{> SelectorDeSala}}
+                <select name="salaEditaModulo" class="js-selectorDeSala form-control form-control-sm">
+                  {{#each sala in listaDeSalas}}
+                    <option selected={{estaSalaSeleccionada sala}}>{{sala}}</option>
+                  {{/each}}
+                </select>
               </div>
 
               <!-- Actividad -->

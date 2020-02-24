@@ -49,7 +49,4 @@ Template.Config.events({
   'click #resetReglamento'() {
     Meteor.call('resetReglamento');
   },
-  'click #actualizaDB'() {
-    Meteor.call('actualizaDB');
-  },
 });

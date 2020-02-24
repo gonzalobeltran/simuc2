@@ -1,4 +1,5 @@
 import { Config } from '/imports/api/collections/collections.js';
+import { Salas } from '/imports/api/collections/collections.js';
 
 // Espera la suscripción de los roles antes de iniciar las rutas
 FlowRouter.wait();
@@ -9,6 +10,11 @@ Tracker.autorun(() => {
 
   Meteor.subscribe('config');
   Session.set('config', Config.findOne({}));
+
+  Meteor.subscribe('salas');
+  let salas = Salas.find({}, {sort: {orden: 1}}).map((d) => {return d.nombre});
+  Session.set('listaSalas', salas);
+  Session.set('sala', salas[0]);
 });
 
 Subs = new SubsManager({

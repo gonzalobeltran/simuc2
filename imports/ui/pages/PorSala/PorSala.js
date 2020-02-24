@@ -6,7 +6,6 @@ import { Calendario } from '/imports/api/collections/collections.js';
 
 import './PorSala.html';
 import './EditaModulo.js';
-import '../../partials/SelectorDeSala.js';
 
 Template.PorSala.onCreated(function(){
   this.autorun( () => {
@@ -40,6 +39,12 @@ Template.PorSala.rendered = function() {
 Template.PorSala.helpers({
   salaActiva() {
     return Session.get('sala');
+  },
+  salas() { //Lista de salas
+    return Session.get('listaSalas');
+  },
+  isSelected(sala) { //Marca la sala seleccionada
+    if (sala == Session.get('sala')) return 'selected';
   },
   fecha() { //Retorna la fecha seleccionada
     return Session.get('fecha');
@@ -144,5 +149,8 @@ Template.PorSala.events({
   'click .js-verReserva'() {
     updateFechas(this.fecha);
     Session.set('sala', this.sala);
+  },
+  'change .js-salaSelect'(event) { //Selector de sala
+    Session.set('sala', event.target.value);
   },
 });
