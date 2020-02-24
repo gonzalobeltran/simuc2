@@ -5,7 +5,7 @@
     <!-- Fecha -->
     <input type="text" class="form-control" value="{{fecha}}" id="fechaDia">
   </div>
-  
+
   {{#if ready}}
 
 
@@ -40,7 +40,7 @@
           {{#each celda in fila}}
             <div class="d-flex {{masDeUna celda}}">
               {{#each celda}}
-                <div class="reserva {{accion}}" style="{{color}}" title="{{apellidos}}">
+                <div class="reserva {{accion}}" style="{{color}}" title="{{actividad}} - {{apellidos}}">
                   {{actividad}}
                   {{#if repite}}
                     <div class="pin"><i class="fa fa-map-pin"></i></div>

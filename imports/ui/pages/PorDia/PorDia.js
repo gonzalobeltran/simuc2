@@ -61,6 +61,7 @@ Template.PorDia.helpers({
     let semana = Session.get('semana');
     let salas = Session.get('salasSeleccionadas');
     let modulos = Session.get('modulos');
+    let fecha = Session.get('fecha');
 
     let celdas = [];
 
@@ -71,19 +72,24 @@ Template.PorDia.helpers({
         //Módulo vacío
         celdas[fila][columna] = [{
           sala: salas[columna],
-          fechas: [Session.get('fecha')],
-          fechaSelect: Session.get('fecha'),
-          modulos: [modulos[fila]],
+          ini: fecha,
+          fin: fecha,
+          dias: [{fecha: semana[columna], modulo: fila}],
+          fechaSelect: fecha,
+          moduloSelect: fila,
+          horario: [0, 0, 0, 0, 0, 0, 0],
           actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
         }];
 
-        let reservas = Reservas.find({sala: salas[columna], fechas: Session.get('fecha'), modulos: modulos[fila]}).fetch();
+        let reservas = Reservas.find({sala: salas[columna], dias: {$elemMatch: {fecha: fecha, modulo: fila}} }).fetch();
 
         for (let i in reservas) {
-          reservas[i].fechaSelect = Session.get('fecha');
+          reservas[i].fechaSelect = fecha;
+          reservas[i].moduloSelect = fila;
+          reservas[i].ini = reservas[i].dias[0].fecha;
+          reservas[i].fin = reservas[i].dias[reservas[i].dias.length - 1].fecha;
           celdas[fila][columna][i] = reservas[i];
         }
-
       }
     }
 
@@ -98,7 +104,7 @@ Template.PorDia.helpers({
     return 'desactivado';
   },
   repite() { //Agrega un pin si es una reserva con repetición
-    if (this.fechas.length > 1) return true;
+    if (this.dias[0].fecha != this.dias[this.dias.length - 1].fecha) return true;
     return false;
   },
   masDeUna(celda) {

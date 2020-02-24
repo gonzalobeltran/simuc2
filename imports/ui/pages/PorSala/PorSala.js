@@ -76,7 +76,6 @@ Template.PorSala.helpers({
           reservas[i].fin = reservas[i].dias[reservas[i].dias.length - 1].fecha;
           celdas[fila][columna][i] = reservas[i];
         }
-
       }
     }
 
