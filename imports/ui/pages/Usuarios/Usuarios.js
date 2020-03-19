@@ -62,7 +62,6 @@ Template.Usuarios.events({
     Modal.show('EditaUsuario', this);
   },
   'change .uploadCSV'(event) {
-    if (event.target.files[0].type != 'text/csv') return false;
     Session.set('cargandoArchivo', 'Cargando...');
     Papa.parse( event.target.files[0], {
       header: true,

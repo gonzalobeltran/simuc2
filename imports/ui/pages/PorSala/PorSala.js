@@ -12,7 +12,7 @@ Template.PorSala.onCreated(function(){
     let semana = Session.get('semana');
 
     //Se suscribe a las reservas de la sala activa y la semana activa, de lunes a domingo
-    Subs.subscribe('reservasSuperpuestas');
+    Subs.subscribe('reservasSuperpuestas', moment().format('YYYY-MM-DD'));
     let handle = Subs.subscribe('reservasSala', Session.get('sala'), semana[0], semana[6]);
     Session.set('ready', handle.ready());
     document.documentElement.style.setProperty("--colNum", 7);
@@ -119,11 +119,20 @@ Template.PorSala.helpers({
   },
   superpuestas() {
     let modulos = Session.get('modulos');
-    let superpuestas = Calendario.find({ cuenta: {$gt: 3} }).fetch();
+    let superpuestas = Calendario.find({ fecha: {$gte: moment().format('YYYY-MM-DD')}, cuenta: {$gt: 3} }, {sort: {fecha: 1}}).fetch();
+
+    let listaFechas = [];
+    let resultado = [];
+    let temp = "";
     for (let i in superpuestas) {
-      superpuestas[i].txt = superpuestas[i].sala + " / " + superpuestas[i].fecha + " - Módulo: " + modulos[superpuestas[i].modulo];
+      temp = superpuestas[i].fecha + superpuestas[i].sala;
+      if ( !listaFechas.includes(temp) ) {
+        listaFechas.push(temp);
+        superpuestas[i].txt = superpuestas[i].fecha + " - " + superpuestas[i].sala;
+        resultado.push(superpuestas[i]);
+      }
     }
-    return superpuestas;
+    return resultado;
   }
 });
 

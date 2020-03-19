@@ -35,8 +35,8 @@ Meteor.publish('reservasDia', function(fecha) {
 });
 
 //Publica los modulos con más de una reserva
-Meteor.publish('reservasSuperpuestas', function() {
-  return Calendario.find({ cuenta: {$gt: 2} });
+Meteor.publish('reservasSuperpuestas', function(fecha) {
+  return Calendario.find({ fecha: {$gte: fecha}, cuenta: {$gt: 2} });
 });
 
 //Publica el log con un filtro determinado
