@@ -149,10 +149,11 @@ header {
   padding: 5px;
   font-weight: bold;
   overflow: hidden;
+  white-space: nowrap;
 }
 
 .masDeUna {
-  border: 4px solid black !important;
+  border: 2px solid black !important;
   border-radius: 4px !important;
 }
 

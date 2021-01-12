@@ -58,6 +58,50 @@ apellidos = function(lista) {
 
 Meteor.methods({
 
+  'convertir'() {
+    reservas = Reservas.find().fetch();
+
+    for (let n in reservas) {
+      let ini = reservas[n].dias[0].fecha;
+      let fin = reservas[n].dias[reservas[n].dias.length - 1].fecha;
+      if (fin >= '2021-01-01') {
+        let horario = reservas[n].horario;
+
+        let nuevoHorario = [0, 0, 0, 0, 0, 0, 0,];
+
+        for (let dia in horario) {
+            if (horario[dia] & Math.pow(2, 0)) nuevoHorario[dia] += Math.pow(2,0) + Math.pow(2,1) + Math.pow(2,2);
+            if (horario[dia] & Math.pow(2, 1)) nuevoHorario[dia] += Math.pow(2,3) + Math.pow(2,4) + Math.pow(2,5);
+            if (horario[dia] & Math.pow(2, 2)) nuevoHorario[dia] += Math.pow(2,6) + Math.pow(2,7) + Math.pow(2,8);
+            if (horario[dia] & Math.pow(2, 3)) nuevoHorario[dia] += Math.pow(2,9);
+            if (horario[dia] & Math.pow(2, 4)) nuevoHorario[dia] += Math.pow(2,10) + Math.pow(2,11) + Math.pow(2,12);
+            if (horario[dia] & Math.pow(2, 5)) nuevoHorario[dia] += Math.pow(2,13) + Math.pow(2,14) + Math.pow(2,15);
+            if (horario[dia] & Math.pow(2, 6)) nuevoHorario[dia] += Math.pow(2,16) + Math.pow(2,17) + Math.pow(2,18);
+            if (horario[dia] & Math.pow(2, 7)) nuevoHorario[dia] += Math.pow(2,19) + Math.pow(2,20) + Math.pow(2,21);
+            if (horario[dia] & Math.pow(2, 8)) nuevoHorario[dia] += Math.pow(2,22) + Math.pow(2,23) + Math.pow(2,24);
+        }
+
+        Meteor.call('ReservaAdmin',
+          reservas[n]._id,
+          reservas[n].sala,
+          reservas[n].actividad,
+          reservas[n].integrantes,
+          reservas[n].prioridad,
+          ini,
+          fin,
+          nuevoHorario,
+          0
+        );
+        console.log(n);
+
+      } 
+      else {
+        Meteor.call('eliminaReserva', reservas[n]._id, 0);
+      }
+    }
+
+    console.log('Listo!');
+  },
 //------------Funciones de Reservas
 
   'ReservaUsuario'(sala, actividad, integrantes, fecha, modulo) {

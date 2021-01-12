@@ -49,4 +49,7 @@ Template.Config.events({
   'click #resetReglamento'() {
     Meteor.call('resetReglamento');
   },
+  'click #convertirDB'() {
+    Meteor.call('convertir');
+  },
 });
