@@ -53,10 +53,11 @@ Template.PorSala.helpers({
     let semana = Session.get('semana');
     let sala = Session.get('sala');
     let modulos = Session.get('modulos');
+    let numModulos= Session.get('numModulos');
 
     let celdas = [];
 
-    for (let fila = 0; fila < 9; fila += 1) { //9 módulos
+    for (let fila = 0; fila < numModulos; fila += 1) {
       celdas[fila] = [];
       for (let columna = 0; columna < 7; columna += 1) { //7 días
 
@@ -69,7 +70,7 @@ Template.PorSala.helpers({
           fechaSelect: semana[columna],
           moduloSelect: fila,
           horario: [0, 0, 0, 0, 0, 0, 0],
-          actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
+          actividad: (modulos[fila] == 'A') ? 'A' : 'Disponible',
         }];
 
         let reservas = Reservas.find({ sala: sala, dias: {$elemMatch: {fecha: semana[columna], modulo: fila}} }).fetch();

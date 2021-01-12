@@ -24,7 +24,7 @@ var listaDeDias = function(ini, fin, horario) {
 
   do {
     if (horario[moment(f).weekday()]) {
-      for (let n = 0; n < 9; n += 1) {
+      for (let n = 0; n < 25; n += 1) {
         if (horario[moment(f).weekday()] & Math.pow(2, n))
           fechas.push({ fecha: f, modulo: n });
       }
@@ -107,6 +107,7 @@ Meteor.methods({
     check(fin, String);
     check(horario, [Number]);
     check(log, Number);
+
 
     let accionLog = 'Reserva';
     if (id) {

@@ -3,18 +3,19 @@ import { Template } from 'meteor/templating';
 import './SelectorDeHorario.html';
 
 Template.SelectorDeHorario.onCreated(function() {
-  let txts = ['1', '2', '3', 'A', '4', '5', '6', '7', '8'];
+  let txtBloques = Session.get('txtBloques');
   let mods = Session.get('modulos');
   let selBox = [];
   let horario = Session.get('horario');
+  let numModulos = Session.get('numModulos');
 
-  for(let m = 0; m < 9; m += 1) {
+  for(let m = 0; m < numModulos; m += 1) {
     selBox[m] = [];
     for (let d = 0; d < 7; d += 1) {
       //Marca el módulo si está seleccionado
       let marca =  ( horario[d] & Math.pow(2,m) ) ? 'marcado' : '';
       selBox[m][d] = {
-        txt: txts[m],
+        txt: txtBloques[m],
         marca: marca,
         dia: d,
         modulo: m,

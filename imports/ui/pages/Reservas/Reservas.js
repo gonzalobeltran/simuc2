@@ -35,6 +35,7 @@ Template.Reservas.helpers({
   tablaReservas() { //Retorna la tabla con todas las reservas
     let semana = Session.get('semanaDesdeHoy');
     let modulos = Session.get('modulos');
+    let numModulos = Session.get('numModulos');
 
     let celdas = [];
     let ini = 0;
@@ -45,14 +46,14 @@ Template.Reservas.helpers({
       ini = fin = Session.get('diaReserva');
     }
 
-    for (let fila = 0; fila < 9; fila += 1) { //9 módulos
+    for (let fila = 0; fila < numModulos; fila += 1) { // módulos
       celdas[fila] = [];
       for (let columna = ini; columna <= fin; columna += 1) { //7 días
 
         let colCelda = verDia ? 0 : columna;
         //Módulo vacío
         celdas[fila][colCelda] = [{
-          sala: (modulos[fila] == 'almuerzo') ? 'A' : '-',
+          sala: (modulos[fila] == 'A') ? 'A' : '-',
           fecha: semana[columna],
           modulo: fila,
           nombreModulo: modulos[fila],
@@ -87,7 +88,7 @@ Template.Reservas.helpers({
   },
   accion() { //Cambia la acción del click dependiendo de la fecha y el módulo
     //No puede reservar el mismo día, en el módulo de almuerzo y los fines de semana
-    if (this.fecha <= Session.get('hoy') || this.nombreModulo == 'almuerzo' || moment(this.fecha).weekday() > 4) return 'desactivado';
+    if (this.fecha <= Session.get('hoy') || this.nombreModulo == 'A' || moment(this.fecha).weekday() > 4) return 'desactivado';
 
     //No puede eliminar una reserva recurrente
     if (this.dias[0].fecha != this.dias[this.dias.length - 1].fecha) return 'desactivado';

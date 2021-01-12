@@ -62,10 +62,11 @@ Template.PorDia.helpers({
     let salas = Session.get('salasSeleccionadas');
     let modulos = Session.get('modulos');
     let fecha = Session.get('fecha');
+    let numModulos = Session.get('numModulos');
 
     let celdas = [];
 
-    for (let fila = 0; fila < 9; fila += 1) { //9 módulos
+    for (let fila = 0; fila < numModulos; fila += 1) { //módulos
       celdas[fila] = [];
       for (let columna in salas) { //Todas las salas
 
@@ -78,7 +79,7 @@ Template.PorDia.helpers({
           fechaSelect: fecha,
           moduloSelect: fila,
           horario: [0, 0, 0, 0, 0, 0, 0],
-          actividad: (modulos[fila] == 'almuerzo') ? 'A' : 'Disponible',
+          actividad: (modulos[fila] == 'A') ? 'A' : 'Disponible',
         }];
 
         let reservas = Reservas.find({sala: salas[columna], dias: {$elemMatch: {fecha: fecha, modulo: fila}} }).fetch();
